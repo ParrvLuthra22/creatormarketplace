@@ -1,36 +1,175 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Creator Marketplace
+
+A modern creator discovery platform with JWT-based authentication, built with Next.js and Express.
+
+## Features
+
+### Landing Page
+- Clean, premium design with SF Pro typography
+- Orange/Pink color palette
+- Creator cards with hover effects
+- Responsive layout
+
+### Authentication System
+- JWT-based authentication with httpOnly cookies
+- User signup and login
+- Account types: Brand or Creator
+- Password hashing with bcrypt
+- Rate limiting on auth endpoints
+- Email and password validation
+
+## Tech Stack
+
+**Frontend:**
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- Lucide React (icons)
+
+**Backend:**
+- Node.js + Express
+- TypeScript
+- MongoDB + Mongoose
+- JWT for authentication
+- bcrypt for password hashing
+- Rate limiting middleware
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 20+
+- MongoDB running locally or connection string
 
+### Installation
+
+1. **Clone and install dependencies:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cd backend && npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up environment variables:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `backend/.env`:
+```
+JWT_SECRET=your_secret_key_here
+DATABASE_URL=mongodb://localhost:27017/creator-marketplace
+NODE_ENV=development
+PORT=5001
+COOKIE_DOMAIN=localhost
+CORS_ORIGIN=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create `.env.local`:
+```
+NEXT_PUBLIC_API_URL=http://localhost:5001
+```
 
-## Learn More
+3. **Start MongoDB:**
+```bash
+mongod
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run the backend:**
+```bash
+cd backend
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Run the frontend:**
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. **Open your browser:**
+Navigate to `http://localhost:3000`
 
-## Deploy on Vercel
+## API Endpoints
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Authentication
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**POST** `/api/auth/signup`
+- Create a new user account
+- Body: `{ fullName, email, password, accountType }`
+- Returns: User object and JWT token
+
+**POST** `/api/auth/login`
+- Authenticate existing user
+- Body: `{ email, password }`
+- Returns: User object and JWT token
+
+**GET** `/api/auth/me`
+- Get current authenticated user
+- Requires: Valid JWT cookie
+- Returns: User object
+
+**POST** `/api/auth/logout`
+- Clear authentication cookie
+- Returns: Success message
+
+## Project Structure
+
+```
+creator-marketplace/
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Main landing page
+│   ├── layout.tsx         # Root layout
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── Header.tsx
+│   ├── Hero.tsx
+│   ├── CreatorCard.tsx
+│   ├── CreatorSection.tsx
+│   ├── AuthModal.tsx
+│   └── ui/
+│       └── Button.tsx
+├── contexts/              # React contexts
+│   └── AuthContext.tsx
+├── lib/                   # Utilities
+│   ├── api.ts            # API client
+│   └── utils.ts          # Helper functions
+└── backend/               # Express backend
+    └── src/
+        ├── server.ts      # Express app
+        ├── config/        # Database config
+        ├── models/        # Mongoose models
+        ├── routes/        # API routes
+        ├── middleware/    # Auth & rate limiting
+        └── utils/         # JWT & validation
+```
+
+## Security Features
+
+- ✅ Password hashing with bcrypt (10 salt rounds)
+- ✅ JWT tokens with 7-day expiry
+- ✅ httpOnly cookies for token storage
+- ✅ Rate limiting (5 requests/minute on auth)
+- ✅ Email format validation
+- ✅ Password strength validation (min 8 chars, 1 number)
+- ✅ CORS configuration
+- ✅ Proper error handling and status codes
+
+## Development
+
+**Build for production:**
+```bash
+# Frontend
+npm run build
+
+# Backend
+cd backend && npm run build
+```
+
+**Type checking:**
+```bash
+# Frontend
+npm run type-check
+
+# Backend
+cd backend && npm run type-check
+```
+
+## License
+
+MIT
