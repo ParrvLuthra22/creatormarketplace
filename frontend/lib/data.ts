@@ -9,6 +9,9 @@ export interface BrandWork {
 export interface Pricing {
     starting: number;
     per: string;
+    reel?: number;
+    story?: number;
+    post?: number;
 }
 
 export interface Creator {
@@ -20,6 +23,9 @@ export interface Creator {
     niches: string[];
     followers: string;
     engagement: string;
+    avgLikes?: number;
+    location?: string;
+    bio?: string;
     contentFormats: ("Reel" | "Story" | "Post")[];
     pricing: Pricing;
     availability: "available" | "limited" | "unavailable";

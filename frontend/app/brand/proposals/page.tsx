@@ -6,6 +6,40 @@ import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+// Dummy data for proposals
+const DUMMY_PROPOSALS = [
+    {
+        id: 1,
+        creatorId: 1,
+        creatorName: "Priya Sharma",
+        creatorAvatar: "PS",
+        niche: "Fashion",
+        budget: 15000,
+        sentDate: "2024-01-15",
+        status: "Accepted" as const
+    },
+    {
+        id: 2,
+        creatorId: 2,
+        creatorName: "Arjun Mehta",
+        creatorAvatar: "AM",
+        niche: "Fitness",
+        budget: 8000,
+        sentDate: "2024-01-20",
+        status: "Sent" as const
+    },
+    {
+        id: 3,
+        creatorId: 3,
+        creatorName: "Zara Khan",
+        creatorAvatar: "ZK",
+        niche: "Beauty",
+        budget: 12000,
+        sentDate: "2024-01-22",
+        status: "Viewed" as const
+    }
+];
+
 export default function BrandProposalsPage() {
     const { user } = useAuth();
 
@@ -39,7 +73,7 @@ export default function BrandProposalsPage() {
                 <main className="container mx-auto px-4 md:px-6 py-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Sent Proposals</h1>
                     <p className="text-gray-600 mb-8">Track all your collaboration proposals sent to creators</p>
-                    <RecentProposals />
+                    <RecentProposals proposals={DUMMY_PROPOSALS} />
                 </main>
             </div>
         </RouteGuard>

@@ -113,7 +113,7 @@ export default function CreatorProfileViewPage() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
                                 <p className="text-2xl font-bold text-gray-900">
-                                    {creator.followers?.toLocaleString('en-IN') || '-'}
+                                    {creator.followers || '-'}
                                 </p>
                                 <p className="text-sm text-gray-600">Followers</p>
                             </div>

@@ -37,7 +37,11 @@ export default function BrandProfilePage() {
 
                 {/* Main Content */}
                 <main className="container mx-auto px-4 md:px-6 py-8">
-                    <BrandProfile />
+                    <BrandProfile
+                        totalSpend={124500}
+                        creatorsHired={8}
+                        pendingProposals={3}
+                    />
                 </main>
             </div>
         </RouteGuard>

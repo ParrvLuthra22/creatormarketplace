@@ -31,8 +31,8 @@ export function CreatorDiscovery() {
                         key={niche}
                         onClick={() => setSelectedNiche(niche)}
                         className={`px-4 py-2 rounded-full text-xs font-angelo transition-colors ${selectedNiche === niche
-                                ? "bg-white text-black"
-                                : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
+                            ? "bg-white text-black"
+                            : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
                             }`}
                     >
                         {niche}
@@ -127,7 +127,8 @@ export function CreatorDiscovery() {
 
             {selectedCreatorId && (
                 <CreatorProfileModal
-                    creatorId={selectedCreatorId}
+                    creator={CREATORS.find(c => c.id === selectedCreatorId) || null}
+                    isOpen={!!selectedCreatorId}
                     onClose={() => setSelectedCreatorId(null)}
                 />
             )}
