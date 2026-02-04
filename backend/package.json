@@ -18,7 +18,8 @@
     "express-rate-limit": "^7.1.5",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "razorpay": "^2.9.6"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

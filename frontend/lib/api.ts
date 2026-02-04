@@ -17,6 +17,7 @@ export interface SignupData {
     password: string;
     accountType: 'Brand' | 'Creator';
     instagramHandle?: string; // Required if accountType === 'Creator'
+    plan?: 'free' | 'basic' | 'pro'; // Optional, defaults to 'free'
 }
 
 export interface LoginData {
@@ -29,6 +30,7 @@ export interface User {
     fullName: string;
     email: string;
     accountType: 'Brand' | 'Creator';
+    plan: 'free' | 'basic' | 'pro';
     createdAt: string;
 }
 

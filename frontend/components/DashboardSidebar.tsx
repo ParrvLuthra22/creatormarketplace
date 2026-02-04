@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Home, Users, Mail, MessageCircle, BarChart3, Settings, LogOut } from "lucide-react";
+import { Home, Users, Mail, MessageCircle, BarChart3, Settings, LogOut, Lock } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -30,7 +30,7 @@ interface DashboardSidebarProps {
 export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     const handleActualLogout = async () => {
@@ -50,28 +50,55 @@ export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps
                 <h1 className="text-xl font-bold text-white font-milker">CreatorSync</h1>
             </div>
 
+            {/* Plan Badge */}
+            <div className="flex items-center justify-between px-5 mb-6">
+                <span className={`px-2.5 py-1 rounded-lg font-angelo text-[11px] text-white ${user?.plan === 'free'
+                    ? 'bg-[#1F1F1F]'
+                    : user?.plan === 'basic'
+                        ? 'bg-[#1A1A2A]'
+                        : 'bg-[#1A2A1A]'
+                    }`}>
+                    {user?.plan?.toUpperCase() || 'FREE'}
+                </span>
+
+                {user?.plan !== 'pro' && (
+                    <Link href="/pricing" className="text-[12px] font-angelo text-white hover:opacity-70 transition-opacity">
+                        Upgrade →
+                    </Link>
+                )}
+            </div>
+
             {/* Navigation - with bottom padding to prevent overlap with logout */}
             <nav className="flex-1 py-6 overflow-y-auto pb-24">
                 <ul className="space-y-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;
+                        const isMessagesLocked = item.name === 'Messages' && user?.plan !== 'pro';
 
                         return (
                             <li key={item.name}>
-                                <Link
-                                    href={item.href}
-                                    className={`flex items-center gap-3 px-6 py-3 text-sm font-angelo transition-colors relative ${isActive
-                                        ? "text-white bg-[#1A1A1A]"
-                                        : "text-[#6B6B6B] hover:text-white hover:bg-[#1A1A1A]/50"
-                                        }`}
-                                >
-                                    {isActive && (
-                                        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white" />
-                                    )}
-                                    <Icon className="w-5 h-5" />
-                                    <span>{item.name}</span>
-                                </Link>
+                                {isMessagesLocked ? (
+                                    <div className="flex items-center gap-3 px-6 py-3 text-sm font-angelo text-[#3D3D3D] cursor-not-allowed relative">
+                                        <Lock className="w-3 h-3" />
+                                        <Icon className="w-5 h-5" />
+                                        <span>{item.name}</span>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        href={item.href}
+                                        className={`flex items-center gap-3 px-6 py-3 text-sm font-angelo transition-colors relative ${isActive
+                                            ? "text-white bg-[#1A1A1A]"
+                                            : "text-[#6B6B6B] hover:text-white hover:bg-[#1A1A1A]/50"
+                                            }`}
+                                    >
+                                        {isActive && (
+                                            <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white" />
+                                        )}
+                                        <Icon className="w-5 h-5" />
+                                        <span>{item.name}</span>
+                                    </Link>
+                                )}
                             </li>
                         );
                     })}

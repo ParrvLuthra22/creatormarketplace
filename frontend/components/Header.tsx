@@ -27,6 +27,13 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
                     CreatorSync
                 </Link>
 
+                {/* Navigation */}
+                <nav className="hidden md:block">
+                    <Link href="/pricing" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
+                        Pricing
+                    </Link>
+                </nav>
+
                 <div className="flex items-center gap-4">
                     {user ? (
                         <>

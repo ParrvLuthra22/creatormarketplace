@@ -6,6 +6,12 @@ export interface IUser extends Document {
     email: string;
     password: string;
     accountType: 'Brand' | 'Creator';
+    plan: 'free' | 'basic' | 'pro';
+    subscriptionStatus: 'inactive' | 'active' | 'past_due' | 'cancelled' | 'expired';
+    razorpaySubscriptionId?: string;
+    razorpayCustomerId?: string;
+    subscriptionStartDate?: Date;
+    subscriptionEndDate?: Date;
     createdAt: Date;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -33,6 +39,30 @@ const UserSchema = new Schema<IUser>({
         type: String,
         enum: ['Brand', 'Creator'],
         required: [true, 'Account type is required'],
+    },
+    plan: {
+        type: String,
+        enum: ['free', 'basic', 'pro'],
+        default: 'free',
+    },
+    subscriptionStatus: {
+        type: String,
+        enum: ['inactive', 'active', 'past_due', 'cancelled', 'expired'],
+        default: 'inactive',
+    },
+    razorpaySubscriptionId: {
+        type: String,
+        sparse: true,
+    },
+    razorpayCustomerId: {
+        type: String,
+        sparse: true,
+    },
+    subscriptionStartDate: {
+        type: Date,
+    },
+    subscriptionEndDate: {
+        type: Date,
     },
     createdAt: {
         type: Date,

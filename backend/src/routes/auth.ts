@@ -12,7 +12,7 @@ const router = Router();
 // POST /api/auth/signup - Create user account
 router.post('/signup', authLimiter, async (req: Request, res: Response): Promise<void> => {
     try {
-        const { fullName, email, password, accountType, instagramHandle } = req.body;
+        const { fullName, email, password, accountType, instagramHandle, plan } = req.body;
 
         // Validate required fields
         if (!fullName || !email || !password || !accountType) {
@@ -65,6 +65,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
             email: email.toLowerCase(),
             password,
             accountType,
+            plan: plan || 'free', // Default to 'free' if not provided
         });
 
         await user.save();
@@ -106,6 +107,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
                 fullName: user.fullName,
                 email: user.email,
                 accountType: user.accountType,
+                plan: user.plan,
                 createdAt: user.createdAt,
             },
             profile,
@@ -172,6 +174,7 @@ router.post('/login', authLimiter, async (req: Request, res: Response): Promise<
                 fullName: user.fullName,
                 email: user.email,
                 accountType: user.accountType,
+                plan: user.plan,
                 createdAt: user.createdAt,
             },
             profile,
@@ -207,6 +210,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
                 fullName: user.fullName,
                 email: user.email,
                 accountType: user.accountType,
+                plan: user.plan,
                 createdAt: user.createdAt,
             },
             profile,

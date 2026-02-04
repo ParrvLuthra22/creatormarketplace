@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { CreatorSection } from "@/components/CreatorSection";
 import { AuthModal } from "@/components/AuthModal";
 import { AuthGateModal } from "@/components/AuthGateModal";
@@ -96,8 +97,29 @@ export default function Home() {
 
       <div className="flex flex-col items-center pt-0">
 
+        {/* Hero Section */}
+        <div className="hero-section text-center px-5 pt-12 pb-8 md:pt-12 md:pb-8">
+          <h1 className="hero-heading text-[34px] md:text-[28px] text-white mb-2" style={{ fontFamily: 'Milker, sans-serif' }}>
+            Find the right creator
+          </h1>
+          <p className="hero-subtext text-[16px] md:text-[14px] text-[#6B6B6B] mb-2 hidden sm:block">
+            Browse Instagram creators who match your brand
+          </p>
+          <div className="trust-pills hidden sm:flex items-center justify-center gap-4 mt-2">
+            <div className="pill bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-[14px] py-[6px] text-[13px] text-[#6B6B6B]">
+              ✓ 50+ Creators
+            </div>
+            <div className="pill bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-[14px] py-[6px] text-[13px] text-[#6B6B6B]">
+              ✓ Real engagement data
+            </div>
+            <div className="pill bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-[14px] py-[6px] text-[13px] text-[#6B6B6B]">
+              ✓ No agency fees
+            </div>
+          </div>
+        </div>
+
         {/* Search and Filters Container */}
-        <div className="container mx-auto max-w-4xl px-4 mt-8 mb-2">
+        <div className="container mx-auto max-w-4xl px-4 mt-0 mb-2">
 
           {/* SEARCH BAR */}
           <div className="mb-6">
@@ -153,6 +175,31 @@ export default function Home() {
         onClose={handleCloseModal}
         initialTab={modalState === 'login' ? 'login' : 'signup'}
       />
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Hero Section Responsive Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .hero-heading {
+            font-size: 28px;
+          }
+          .hero-subtext {
+            font-size: 14px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .hero-heading {
+            font-size: 24px;
+          }
+          .hero-subtext,
+          .trust-pills {
+            display: none !important;
+          }
+        }
+      `}</style>
     </main>
   );
 }

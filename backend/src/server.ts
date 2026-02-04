@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import connectDB from './config/db';
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
+import paymentsRoutes from './routes/payments';
 
 // Load environment variables
 dotenv.config();
@@ -48,6 +49,7 @@ app.use(
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/payments', paymentsRoutes);
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {

@@ -22,7 +22,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
         }
     }, [isOpen, initialTab]);
 
-    // Signup step state (1: account type selection, 2: form)
+    // Signup step state (1: account type selection, 2: form, 3: plan selection for Brand)
     const [signupStep, setSignupStep] = useState(1);
 
     // Login form state
@@ -38,6 +38,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
     const [accountType, setAccountType] = useState<"Brand" | "Creator" | null>(null);
     const [instagramHandle, setInstagramHandle] = useState("");
     const [companyName, setCompanyName] = useState("");
+    const [selectedPlan, setSelectedPlan] = useState<'free' | 'basic' | 'pro'>('free');
 
     // Validation errors
     const [loginEmailError, setLoginEmailError] = useState("");
@@ -191,6 +192,13 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
             return;
         }
 
+        // If Brand user, go to plan selection step
+        if (accountType === "Brand") {
+            setSignupStep(3);
+            return;
+        }
+
+        // If Creator, create account immediately with free plan
         setLoading(true);
 
         try {
@@ -200,6 +208,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                 password: signupPassword,
                 accountType: accountType!,
                 ...(accountType === "Creator" && { instagramHandle }),
+                plan: 'free',
             });
             setSuccessMessage(`${accountType} account created successfully!`);
             setTimeout(() => {
@@ -211,6 +220,31 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
             setLoading(false);
         }
     };
+
+    const handlePlanSelectionSubmit = async () => {
+        setError(null);
+        setSuccessMessage(null);
+        setLoading(true);
+
+        try {
+            await signup({
+                fullName: signupFullName,
+                email: signupEmail,
+                password: signupPassword,
+                accountType: accountType!,
+                plan: selectedPlan,
+            });
+            setSuccessMessage(`${accountType} account created successfully!`);
+            setTimeout(() => {
+                handleClose();
+            }, 1000);
+        } catch (err: any) {
+            setError(err.message || "Signup failed");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     if (!isOpen) return null;
 
@@ -234,16 +268,24 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
 
                 <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-white mb-2 font-milker">
-                        {activeTab === "login" ? "Welcome Back" : signupStep === 1 ? "What are you?" : "Create Account"}
+                        {activeTab === "login"
+                            ? "Welcome Back"
+                            : signupStep === 1
+                                ? "What are you?"
+                                : signupStep === 3
+                                    ? "Choose your plan"
+                                    : "Create Account"}
                     </h2>
                     <p className="text-[#6B6B6B]">
                         {activeTab === "login"
                             ? "Sign in to access your dashboard"
                             : signupStep === 1
                                 ? "Choose how you want to use CreatorSync"
-                                : accountType === "Brand"
-                                    ? "Join as a brand to discover creators"
-                                    : "Join as a creator to get discovered"}
+                                : signupStep === 3
+                                    ? "You can always upgrade later"
+                                    : accountType === "Brand"
+                                        ? "Join as a brand to discover creators"
+                                        : "Join as a creator to get discovered"}
                     </p>
                 </div>
 
@@ -543,7 +585,11 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             className="w-full bg-white text-black hover:bg-[#E5E5E5] py-6 text-lg mt-4 font-angelo"
                             disabled={loading}
                         >
-                            {loading ? "Creating Account..." : `Create ${accountType} Account`}
+                            {loading
+                                ? "Please wait..."
+                                : accountType === "Brand"
+                                    ? "Continue →"
+                                    : `Create ${accountType} Account`}
                         </Button>
 
                         <p className="text-center text-sm text-[#6B6B6B] mt-4">
@@ -560,6 +606,97 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             </button>
                         </p>
                     </form>
+                )}
+
+                {/* Signup Form - Step 3: Plan Selection (Brand only) */}
+                {activeTab === "signup" && signupStep === 3 && accountType === "Brand" && (
+                    <div className="space-y-4">
+                        {/* Back button */}
+                        <button
+                            type="button"
+                            onClick={() => setSignupStep(2)}
+                            className="text-sm text-[#6B6B6B] hover:text-white mb-2 font-angelo flex items-center gap-1"
+                            disabled={loading}
+                        >
+                            ← Back
+                        </button>
+
+                        {/* Plan Cards */}
+                        <div className="space-y-[10px]">
+                            {/* FREE CARD */}
+                            <button
+                                type="button"
+                                onClick={() => setSelectedPlan('free')}
+                                disabled={loading}
+                                className={`w-full flex items-center gap-4 bg-[#1A1A1A] border rounded-xl px-5 py-[18px] cursor-pointer transition-all disabled:opacity-50 ${selectedPlan === 'free'
+                                        ? 'border-white'
+                                        : 'border-[#1F1F1F] hover:border-[#3D3D3D]'
+                                    }`}
+                            >
+                                <div className="flex-1 text-left">
+                                    <p className="font-angelo text-[15px] text-white">Free</p>
+                                    <p className="text-[12px] text-[#6B6B6B]">Browse creators</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-angelo text-[18px] text-white">₹0</p>
+                                    <p className="text-[11px] text-[#6B6B6B]">/mo</p>
+                                </div>
+                            </button>
+
+                            {/* BASIC CARD */}
+                            <button
+                                type="button"
+                                onClick={() => setSelectedPlan('basic')}
+                                disabled={loading}
+                                className={`w-full flex items-center gap-4 bg-[#1A1A1A] border rounded-xl px-5 py-[18px] cursor-pointer transition-all disabled:opacity-50 ${selectedPlan === 'basic'
+                                        ? 'border-white'
+                                        : 'border-[#1F1F1F] hover:border-[#3D3D3D]'
+                                    }`}
+                            >
+                                <div className="flex-1 text-left">
+                                    <p className="font-angelo text-[15px] text-white">Basic</p>
+                                    <p className="text-[12px] text-[#6B6B6B]">Full discovery</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-angelo text-[18px] text-white">₹999</p>
+                                    <p className="text-[11px] text-[#6B6B6B]">/mo</p>
+                                </div>
+                            </button>
+
+                            {/* PRO CARD */}
+                            <button
+                                type="button"
+                                onClick={() => setSelectedPlan('pro')}
+                                disabled={loading}
+                                className={`w-full flex items-center gap-4 bg-[#1A1A1A] border rounded-xl px-5 py-[18px] cursor-pointer transition-all disabled:opacity-50 relative ${selectedPlan === 'pro'
+                                        ? 'border-white'
+                                        : 'border-[#1F1F1F] hover:border-[#3D3D3D]'
+                                    }`}
+                            >
+                                {/* Popular Badge */}
+                                <div className="absolute -top-2 -right-2 bg-[#1F1F1F] text-white font-angelo text-[10px] px-2 py-[2px] rounded-[10px]">
+                                    Popular
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <p className="font-angelo text-[15px] text-white">Pro</p>
+                                    <p className="text-[12px] text-[#6B6B6B]">Send proposals + chat</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-angelo text-[18px] text-white">₹2,999</p>
+                                    <p className="text-[11px] text-[#6B6B6B]">/mo</p>
+                                </div>
+                            </button>
+                        </div>
+
+                        {/* Continue Button */}
+                        <Button
+                            onClick={handlePlanSelectionSubmit}
+                            className="w-full bg-white text-black hover:bg-[#E5E5E5] text-[14px] h-[46px] mt-4 font-angelo"
+                            disabled={loading}
+                        >
+                            {loading ? "Creating Account..." : "Continue →"}
+                        </Button>
+                    </div>
                 )}
 
                 <p className="text-center text-xs text-[#3D3D3D] mt-6">

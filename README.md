@@ -51,17 +51,22 @@ cd backend && npm install
 
 2. **Set up environment variables:**
 
-Create `backend/.env`:
+Create `backend/.env` (copy from `backend/.env.example` and fill in your values):
 ```
-JWT_SECRET=your_secret_key_here
-DATABASE_URL=mongodb://localhost:27017/creator-marketplace
+JWT_SECRET=<your-secret-key>
+DATABASE_URL=<your-mongodb-connection-string>
 NODE_ENV=development
 PORT=5001
 COOKIE_DOMAIN=localhost
 CORS_ORIGIN=http://localhost:3000
+RAZORPAY_KEY_ID=<your-razorpay-key-id>
+RAZORPAY_KEY_SECRET=<your-razorpay-key-secret>
+RAZORPAY_WEBHOOK_SECRET=<your-razorpay-webhook-secret>
+RAZORPAY_PLAN_BASIC=<your-razorpay-basic-plan-id>
+RAZORPAY_PLAN_PRO=<your-razorpay-pro-plan-id>
 ```
 
-Create `.env.local`:
+Create `frontend/.env.local`:
 ```
 NEXT_PUBLIC_API_URL=http://localhost:5001
 ```

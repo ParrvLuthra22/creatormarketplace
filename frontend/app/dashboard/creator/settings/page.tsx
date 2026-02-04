@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorSidebar } from "@/components/CreatorSidebar";
@@ -12,13 +13,12 @@ import { ArrowRight } from "lucide-react";
 
 export default function CreatorSettings() {
     const { user } = useAuth();
+    const router = useRouter();
     const [emailNotifications, setEmailNotifications] = useState(true);
     const [newProposals, setNewProposals] = useState(true);
     const [profileViews, setProfileViews] = useState(false);
     const [marketingEmails, setMarketingEmails] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
-    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-    const [showTermsModal, setShowTermsModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const handleDeleteAccount = async () => {
@@ -174,7 +174,7 @@ export default function CreatorSettings() {
                         <p className="text-[13px] text-[#6B6B6B] mb-4">How we collect, use, and protect your data</p>
 
                         <div
-                            onClick={() => setShowPrivacyModal(true)}
+                            onClick={() => router.push('/privacy-policy')}
                             className="bg-[#0F0F0F] border border-[#1F1F1F] rounded-[10px] px-[18px] py-3.5 cursor-pointer hover:bg-[#1A1A1A] transition-colors flex items-center justify-between group"
                         >
                             <span className="text-sm font-angelo text-white">Read Privacy Policy</span>
@@ -190,7 +190,7 @@ export default function CreatorSettings() {
                         <p className="text-[13px] text-[#6B6B6B] mb-4">Rules and conditions for using CreatorSync</p>
 
                         <div
-                            onClick={() => setShowTermsModal(true)}
+                            onClick={() => router.push('/terms-and-conditions')}
                             className="bg-[#0F0F0F] border border-[#1F1F1F] rounded-[10px] px-[18px] py-3.5 cursor-pointer hover:bg-[#1A1A1A] transition-colors flex items-center justify-between group"
                         >
                             <span className="text-sm font-angelo text-white">Read Terms of Service</span>
@@ -210,18 +210,6 @@ export default function CreatorSettings() {
             <ChangePasswordModal
                 isOpen={showChangePassword}
                 onClose={() => setShowChangePassword(false)}
-            />
-
-            {/* Legal Modals */}
-            <LegalModal
-                isOpen={showPrivacyModal}
-                onClose={() => setShowPrivacyModal(false)}
-                type="privacy"
-            />
-            <LegalModal
-                isOpen={showTermsModal}
-                onClose={() => setShowTermsModal(false)}
-                type="terms"
             />
 
             {/* Delete Account Modal */}

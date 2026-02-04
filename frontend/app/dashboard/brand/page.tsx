@@ -6,22 +6,22 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { Search, Bell, TrendingUp, Users, Clock, ArrowRight } from "lucide-react";
+import { Search, Bell, TrendingUp, Users, Clock, ArrowRight, Lock } from "lucide-react";
 
 // Dummy creator data
 const CREATORS = [
-    { name: "Priya Sharma", handle: "@priyacreates", niche: "Fashion", followers: "45.2K", engagement: "4.5%", price: "₹5,000", avatar: "PS" },
-    { name: "Arjun Mehta", handle: "@arjunfit", niche: "Fitness", followers: "32.1K", engagement: "5.2%", price: "₹4,000", avatar: "AM" },
-    { name: "Zara Khan", handle: "@zarastyle", niche: "Beauty", followers: "28.7K", engagement: "3.8%", price: "₹3,500", avatar: "ZK" },
-    { name: "Rahul Verma", handle: "@techrahul", niche: "Tech", followers: "67.4K", engagement: "6.1%", price: "₹8,000", avatar: "RV" },
-    { name: "Anjali Desai", handle: "@foodwithanjali", niche: "Food", followers: "51.2K", engagement: "4.9%", price: "₹6,000", avatar: "AD" },
-    { name: "Kabir Singh", handle: "@kabircomedy", niche: "Comedy", followers: "89.3K", engagement: "7.3%", price: "₹10,000", avatar: "KS" },
-    { name: "Meera Patel", handle: "@meerafinance", niche: "Finance", followers: "23.8K", engagement: "3.2%", price: "₹3,000", avatar: "MP" },
-    { name: "Vikram Rao", handle: "@viktravel", niche: "Travel", followers: "41.6K", engagement: "4.7%", price: "₹5,500", avatar: "VR" },
-    { name: "Shreya Gupta", handle: "@shreyabeauty", niche: "Beauty", followers: "38.9K", engagement: "5.0%", price: "₹4,500", avatar: "SG" },
-    { name: "Aditya Kumar", handle: "@adifitness", niche: "Fitness", followers: "55.1K", engagement: "5.8%", price: "₹7,000", avatar: "AK" },
-    { name: "Pooja Jain", handle: "@poojastyle", niche: "Fashion", followers: "72.4K", engagement: "4.2%", price: "₹9,000", avatar: "PJ" },
-    { name: "Rohan Das", handle: "@rohantech", niche: "Tech", followers: "61.8K", engagement: "6.5%", price: "₹7,500", avatar: "RD" },
+    { name: "Priya Sharma", handle: "@priyacreates", niche: "Fashion", followers: "45.2K", engagement: "4.5%", price: "₹5,000", avatar: "PS", tier: "Growing", availability: "actively-accepting" },
+    { name: "Arjun Mehta", handle: "@arjunfit", niche: "Fitness", followers: "32.1K", engagement: "5.2%", price: "₹4,000", avatar: "AM", tier: "Growing", availability: "selective" },
+    { name: "Zara Khan", handle: "@zarastyle", niche: "Beauty", followers: "28.7K", engagement: "3.8%", price: "₹3,500", avatar: "ZK", tier: "Emerging", availability: "actively-accepting" },
+    { name: "Rahul Verma", handle: "@techrahul", niche: "Tech", followers: "67.4K", engagement: "6.1%", price: "₹8,000", avatar: "RV", tier: "Established", availability: "booked" },
+    { name: "Anjali Desai", handle: "@foodwithanjali", niche: "Food", followers: "51.2K", engagement: "4.9%", price: "₹6,000", avatar: "AD", tier: "Growing", availability: "actively-accepting" },
+    { name: "Kabir Singh", handle: "@kabircomedy", niche: "Comedy", followers: "89.3K", engagement: "7.3%", price: "₹10,000", avatar: "KS", tier: "Established", availability: "selective" },
+    { name: "Meera Patel", handle: "@meerafinance", niche: "Finance", followers: "23.8K", engagement: "3.2%", price: "₹3,000", avatar: "MP", tier: "Emerging", availability: "actively-accepting" },
+    { name: "Vikram Rao", handle: "@viktravel", niche: "Travel", followers: "41.6K", engagement: "4.7%", price: "₹5,500", avatar: "VR", tier: "Growing", availability: "booked" },
+    { name: "Shreya Gupta", handle: "@shreyabeauty", niche: "Beauty", followers: "38.9K", engagement: "5.0%", price: "₹4,500", avatar: "SG", tier: "Growing", availability: "selective" },
+    { name: "Aditya Kumar", handle: "@adifitness", niche: "Fitness", followers: "55.1K", engagement: "5.8%", price: "₹7,000", avatar: "AK", tier: "Growing", availability: "actively-accepting" },
+    { name: "Pooja Jain", handle: "@poojastyle", niche: "Fashion", followers: "72.4K", engagement: "4.2%", price: "₹9,000", avatar: "PJ", tier: "Established", availability: "actively-accepting" },
+    { name: "Rohan Das", handle: "@rohantech", niche: "Tech", followers: "61.8K", engagement: "6.5%", price: "₹7,500", avatar: "RD", tier: "Established", availability: "booked" },
 ];
 
 const PROPOSALS = [
@@ -36,6 +36,8 @@ export default function BrandDashboard() {
     const { user } = useAuth();
     const router = useRouter();
     const [selectedFilter, setSelectedFilter] = useState("All");
+    const [bannerDismissed, setBannerDismissed] = useState(false);
+    const [showProposalTooltip, setShowProposalTooltip] = useState(false);
 
     const filteredCreators = selectedFilter === "All"
         ? CREATORS
@@ -47,6 +49,33 @@ export default function BrandDashboard() {
             case "Viewed": return "bg-[#1A1A2A]";
             case "Declined": return "bg-[#2A1A1A]";
             default: return "bg-[#1F1F1F]";
+        }
+    };
+
+    const getTierStyle = (tier: string) => {
+        switch (tier) {
+            case "Emerging": return "bg-[#1F1F1F] text-[#AAAAAA]";
+            case "Growing": return "bg-[#1A1A2A] text-white";
+            case "Established": return "bg-[#1A2A1A] text-white";
+            default: return "bg-[#1F1F1F] text-[#AAAAAA]";
+        }
+    };
+
+    const getAvailabilityDot = (availability: string) => {
+        switch (availability) {
+            case "actively-accepting": return "bg-[#1A2A1A]";
+            case "selective": return "bg-[#2A2A1A]";
+            case "booked": return "bg-[#2A1A1A]";
+            default: return "bg-[#1A2A1A]";
+        }
+    };
+
+    const getAvailabilityLabel = (availability: string) => {
+        switch (availability) {
+            case "actively-accepting": return "Actively accepting";
+            case "selective": return "Selective";
+            case "booked": return "Booked";
+            default: return "Actively accepting";
         }
     };
 
@@ -63,6 +92,33 @@ export default function BrandDashboard() {
 
                 {/* MAIN CONTENT */}
                 <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
+                    {/* Upgrade Banner - Free Users Only */}
+                    {user?.plan === 'free' && !bannerDismissed && (
+                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-4 px-5 mb-6 flex items-center justify-between relative">
+                            <div className="flex items-center gap-3">
+                                <div className="text-xl">⚡</div>
+                                <div>
+                                    <p className="text-[15px] font-semibold text-white">Unlock full creator access</p>
+                                    <p className="text-[13px] text-[#6B6B6B]">See pricing, filters, and more</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => router.push('/pricing')}
+                                    className="bg-white text-black px-5 py-2 rounded-lg font-angelo text-[13px] font-semibold hover:opacity-85 transition-opacity"
+                                >
+                                    Upgrade Now
+                                </button>
+                                <button
+                                    onClick={() => setBannerDismissed(true)}
+                                    className="w-[22px] h-[22px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white hover:bg-[#2A2A2A] transition-colors text-[16px] leading-none"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* PAGE HEADER */}
                     <div className="flex justify-between items-center mb-7">
                         <h1 className="text-[28px] font-bold text-white font-milker">Home</h1>
@@ -75,27 +131,42 @@ export default function BrandDashboard() {
                     {/* STAT CARDS ROW */}
                     <div className="grid grid-cols-3 gap-4 mb-8 stat-cards-grid">
                         {/* Card 1 */}
-                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-5 relative stat-card">
+                        <div className={`bg-[#141414] rounded-[14px] p-5 relative stat-card ${user?.plan === 'free' ? 'border border-[#2A2A2A]' : 'border border-[#1F1F1F]'
+                            }`}>
                             <TrendingUp className="absolute top-5 right-5 w-5 h-5 text-[#3D3D3D]" />
                             <p className="text-[10px] uppercase text-[#6B6B6B] font-angelo tracking-widest">TOTAL SPEND</p>
-                            <p className="text-[30px] text-white font-angelo mt-2">₹1,24,500</p>
-                            <p className="text-xs text-[#6B6B6B] mt-1">Across 8 collaborations</p>
+                            <p className="text-[30px] text-white font-angelo mt-2">
+                                {user?.plan === 'free' ? '—' : '₹1,24,500'}
+                            </p>
+                            <p className="text-xs text-[#6B6B6B] mt-1">
+                                {user?.plan === 'free' ? 'Upgrade to track spend' : 'Across 8 collaborations'}
+                            </p>
                         </div>
 
                         {/* Card 2 */}
-                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-5 relative stat-card">
+                        <div className={`bg-[#141414] rounded-[14px] p-5 relative stat-card ${user?.plan === 'free' ? 'border border-[#2A2A2A]' : 'border border-[#1F1F1F]'
+                            }`}>
                             <Users className="absolute top-5 right-5 w-5 h-5 text-[#3D3D3D]" />
                             <p className="text-[10px] uppercase text-[#6B6B6B] font-angelo tracking-widest">CREATORS HIRED</p>
-                            <p className="text-[30px] text-white font-angelo mt-2">8</p>
-                            <p className="text-xs text-[#6B6B6B] mt-1">Active collaborations</p>
+                            <p className="text-[30px] text-white font-angelo mt-2">
+                                {user?.plan === 'free' ? '0' : '8'}
+                            </p>
+                            <p className="text-xs text-[#6B6B6B] mt-1">
+                                {user?.plan === 'free' ? 'Upgrade to track' : 'Active collaborations'}
+                            </p>
                         </div>
 
                         {/* Card 3 */}
-                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-5 relative stat-card">
+                        <div className={`bg-[#141414] rounded-[14px] p-5 relative stat-card ${user?.plan === 'free' ? 'border border-[#2A2A2A]' : 'border border-[#1F1F1F]'
+                            }`}>
                             <Clock className="absolute top-5 right-5 w-5 h-5 text-[#3D3D3D]" />
                             <p className="text-[10px] uppercase text-[#6B6B6B] font-angelo tracking-widest">PENDING</p>
-                            <p className="text-[30px] text-white font-angelo mt-2">3</p>
-                            <p className="text-xs text-[#6B6B6B] mt-1">Awaiting response</p>
+                            <p className="text-[30px] text-white font-angelo mt-2">
+                                {user?.plan === 'free' ? '0' : '3'}
+                            </p>
+                            <p className="text-xs text-[#6B6B6B] mt-1">
+                                {user?.plan === 'free' ? 'Upgrade to track' : 'Awaiting response'}
+                            </p>
                         </div>
                     </div>
 
@@ -122,21 +193,39 @@ export default function BrandDashboard() {
 
                         {/* List Container */}
                         <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] overflow-hidden">
-                            {/* Column Headers */}
-                            <div className="creator-list-header grid grid-cols-[2fr_1fr_1fr_1fr_1fr_40px] items-center px-5 py-3 border-b border-[#1F1F1F]">
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">CREATOR</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest niche-col">NICHE</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest followers-col">FOLLOWERS</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest engagement-col">ENGAGEMENT</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest price-col">PRICE</div>
-                                <div></div>
-                            </div>
+                            {/* Column Headers - Hidden for Free users */}
+                            {user?.plan !== 'free' && (
+                                <div className={`creator-list-header grid items-center px-5 py-3 border-b border-[#1F1F1F] ${user?.plan === 'pro'
+                                    ? 'grid-cols-[2fr_0.8fr_1fr_1fr_1fr_1fr_40px]'
+                                    : 'grid-cols-[2fr_1fr_1fr_1fr_1fr_40px]'
+                                    }`}>
+                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">CREATOR</div>
+                                    {user?.plan === 'pro' && (
+                                        <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest tier-col">TIER</div>
+                                    )}
+                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest niche-col">NICHE</div>
+                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest followers-col">FOLLOWERS</div>
+                                    {user?.plan === 'pro' && (
+                                        <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest signal-col">SIGNAL</div>
+                                    )}
+                                    {user?.plan !== 'pro' && (
+                                        <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest engagement-col">ENGAGEMENT</div>
+                                    )}
+                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest price-col">PRICE</div>
+                                    <div></div>
+                                </div>
+                            )}
 
                             {/* Creator Rows */}
-                            {filteredCreators.map((creator, index) => (
+                            {(user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators).map((creator, index) => (
                                 <div
                                     key={index}
-                                    className="creator-row grid grid-cols-[2fr_1fr_1fr_1fr_1fr_40px] items-center px-5 py-3.5 border-b border-[#1F1F1F] last:border-b-0 h-16 cursor-pointer hover:bg-[#1A1A1A] transition-colors"
+                                    className={`creator-row grid items-center px-5 py-3.5 border-b border-[#1F1F1F] last:border-b-0 h-16 cursor-pointer hover:bg-[#1A1A1A] transition-colors ${user?.plan === 'free'
+                                        ? 'grid-cols-[2fr_1fr_40px]'
+                                        : user?.plan === 'pro'
+                                            ? 'grid-cols-[2fr_0.8fr_1fr_1fr_1fr_1fr_40px]'
+                                            : 'grid-cols-[2fr_1fr_1fr_1fr_1fr_40px]'
+                                        } ${user?.plan === 'free' && index >= 7 ? 'blur-sm opacity-50' : ''}`}
                                 >
                                     {/* Creator Column */}
                                     <div className="flex items-center gap-3">
@@ -149,21 +238,48 @@ export default function BrandDashboard() {
                                         </div>
                                     </div>
 
-                                    {/* Niche Column */}
-                                    <div className="niche-col">
-                                        <span className="inline-block px-2.5 py-1 rounded-xl text-[11px] bg-[#1F1F1F] text-white font-angelo">
-                                            {creator.niche}
-                                        </span>
-                                    </div>
+                                    {/* Conditional columns - only for non-Free users */}
+                                    {user?.plan !== 'free' && (
+                                        <>
+                                            {/* Tier Column - Pro only */}
+                                            {user?.plan === 'pro' && (
+                                                <div className="tier-col">
+                                                    <span className={`px-2.5 py-0.5 rounded-xl text-[11px] font-angelo ${getTierStyle(creator.tier)}`}>
+                                                        {creator.tier}
+                                                    </span>
+                                                </div>
+                                            )}
 
-                                    {/* Followers */}
-                                    <div className="text-sm text-white followers-col">{creator.followers}</div>
+                                            {/* Niche Column */}
+                                            <div className="niche-col">
+                                                <span className="inline-block px-2.5 py-1 rounded-xl text-[11px] bg-[#1F1F1F] text-white font-angelo">
+                                                    {creator.niche}
+                                                </span>
+                                            </div>
 
-                                    {/* Engagement */}
-                                    <div className="text-sm text-[#6B6B6B] engagement-col">{creator.engagement}</div>
+                                            {/* Followers */}
+                                            <div className="text-sm text-white followers-col">{creator.followers}</div>
 
-                                    {/* Price */}
-                                    <div className="text-sm text-white font-angelo price-col">{creator.price}</div>
+                                            {/* Signal Column - Pro only */}
+                                            {user?.plan === 'pro' && (
+                                                <div className="signal-col flex items-center gap-2">
+                                                    <div className={`w-2.5 h-2.5 rounded-full ${getAvailabilityDot(creator.availability)}`}></div>
+                                                    <span className="text-[12px] text-white font-angelo">{getAvailabilityLabel(creator.availability)}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Engagement - Basic only */}
+                                            {user?.plan !== 'pro' && (
+                                                <div className="text-sm text-[#6B6B6B] engagement-col">{creator.engagement}</div>
+                                            )}
+
+                                            {/* Price */}
+                                            <div className="text-sm text-white font-angelo price-col">{creator.price}</div>
+                                        </>
+                                    )}
+
+                                    {/* For Free users, show empty column for spacing */}
+                                    {user?.plan === 'free' && <div></div>}
 
                                     {/* Arrow */}
                                     <div className="flex items-center justify-center">
@@ -172,10 +288,23 @@ export default function BrandDashboard() {
                                 </div>
                             ))}
 
-                            {/* See All Row */}
-                            <div className="text-center py-4 border-t border-[#1F1F1F] cursor-pointer hover:bg-[#1A1A1A] transition-colors">
-                                <span className="text-[13px] text-white font-angelo">See all creators →</span>
-                            </div>
+
+                            {/* Upgrade Overlay for Free users OR See All for others */}
+                            {user?.plan === 'free' ? (
+                                <div className="text-center py-6 border-t border-[#1F1F1F] bg-gradient-to-t from-[#0A0A0A] to-transparent">
+                                    <p className="text-sm text-white mb-3">Upgrade to Basic to see all creators</p>
+                                    <button
+                                        onClick={() => router.push('/pricing')}
+                                        className="px-6 py-2 bg-white text-black rounded-full font-angelo text-[13px] font-semibold hover:opacity-85 transition-opacity"
+                                    >
+                                        Upgrade Now →
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="text-center py-4 border-t border-[#1F1F1F] cursor-pointer hover:bg-[#1A1A1A] transition-colors">
+                                    <span className="text-[13px] text-white font-angelo">See all creators →</span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </main>
@@ -186,9 +315,38 @@ export default function BrandDashboard() {
                     <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-5">
                         <h3 className="text-base font-bold text-white font-milker mb-4">Quick Actions</h3>
                         <div className="flex flex-col gap-2.5">
-                            <button className="w-full h-11 bg-white text-black rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity">
-                                Send Proposal
-                            </button>
+                            <div className="relative">
+                                <button
+                                    onClick={() => {
+                                        if (user?.plan !== 'pro') {
+                                            setShowProposalTooltip(true);
+                                            setTimeout(() => setShowProposalTooltip(false), 3000);
+                                        } else {
+                                            // Normal proposal logic would go here
+                                        }
+                                    }}
+                                    className={`w-full h-11 rounded-[10px] font-angelo text-sm font-semibold transition-opacity flex items-center justify-center gap-2 ${user?.plan !== 'pro'
+                                        ? 'bg-white text-black opacity-40 cursor-not-allowed'
+                                        : 'bg-white text-black hover:opacity-85'
+                                        }`}
+                                    disabled={user?.plan !== 'pro'}
+                                >
+                                    {user?.plan !== 'pro' && <Lock className="w-4 h-4" />}
+                                    Send Proposal
+                                </button>
+
+                                {/* Tooltip */}
+                                {showProposalTooltip && (
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#141414] border border-[#1F1F1F] rounded-lg p-3 text-left z-10">
+                                        <p className="text-[13px] text-[#AAAAAA]">
+                                            Available on Pro plan — Upgrade to send proposals
+                                        </p>
+                                        <a href="/pricing" className="text-[13px] font-angelo text-white hover:opacity-70 inline-block mt-1">
+                                            Upgrade →
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
                             <button className="w-full h-11 bg-transparent border border-white text-white rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity">
                                 Browse Creators
                             </button>
@@ -254,11 +412,17 @@ export default function BrandDashboard() {
                         flex-wrap: wrap;
                     }
 
-                    .creator-list-header,
-                    .creator-row {
-                        grid-template-columns: 2fr 1fr 1fr 40px;
+                    /* Pro plan: Hide SIGNAL column, keep TIER */
+                    .signal-col {
+                        display: none;
                     }
 
+                    .creator-list-header,
+                    .creator-row {
+                        grid-template-columns: 2fr 0.8fr 1fr 1fr 40px !important;
+                    }
+
+                    /* Basic plan: Hide engagement and price */
                     .engagement-col,
                     .price-col {
                         display: none;
@@ -270,13 +434,15 @@ export default function BrandDashboard() {
                         grid-template-columns: 1fr;
                     }
 
-                    .creator-list-header,
-                    .creator-row {
-                        grid-template-columns: 2fr 1fr 40px;
-                    }
-
+                    /* Pro plan: Hide TIER and NICHE, keep FOLLOWERS */
+                    .tier-col,
                     .niche-col {
                         display: none;
+                    }
+
+                    .creator-list-header,
+                    .creator-row {
+                        grid-template-columns: 2fr 1fr 40px !important;
                     }
 
                     .creator-row {
