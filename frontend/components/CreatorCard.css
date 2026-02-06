@@ -141,6 +141,8 @@
     margin: 0 0 4px 0;
     letter-spacing: -0.5px;
     line-height: 1.2;
+    height: auto;
+    min-height: 26px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
