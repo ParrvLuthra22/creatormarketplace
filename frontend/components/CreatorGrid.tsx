@@ -118,29 +118,30 @@ export function CreatorGrid({
                 .creators-grid {
                     display: grid;
                     grid-template-columns: repeat(${columns.desktop}, 1fr);
-                    gap: 24px;
+                    gap: 40px;
                     max-width: 1400px;
                     margin: 0 auto;
+                    padding: 20px;
                 }
 
                 @media (max-width: 1200px) {
                     .creators-grid {
                         grid-template-columns: repeat(${columns.tablet}, 1fr);
-                        gap: 20px;
+                        gap: 32px;
                     }
                 }
 
                 @media (max-width: 768px) {
                     .creators-grid {
                         grid-template-columns: repeat(${columns.mobile}, 1fr);
-                        gap: 16px;
+                        gap: 24px;
                     }
                 }
 
                 @media (max-width: 480px) {
                     .creators-grid {
                         grid-template-columns: 1fr;
-                        gap: 12px;
+                        gap: 32px;
                     }
                 }
             `}</style>

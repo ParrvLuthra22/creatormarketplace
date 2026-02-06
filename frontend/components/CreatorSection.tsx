@@ -1,6 +1,6 @@
 "use client";
 
-import { CreatorGrid } from "./CreatorGrid";
+import { CreatorCarousel } from "./CreatorCarousel";
 
 interface Creator {
     id: string;
@@ -19,20 +19,28 @@ interface Creator {
 
 interface CreatorSectionProps {
     creators: Creator[];
-    isAuthenticated: boolean;
-    onAuthGate: () => void;
+    isAuthenticated?: boolean;
+    onAuthGate?: () => void;
+    isLoading?: boolean;
 }
 
-export function CreatorSection({ creators, isAuthenticated, onAuthGate }: CreatorSectionProps) {
+export function CreatorSection({
+    creators,
+    isAuthenticated = false,
+    onAuthGate,
+    isLoading = false
+}: CreatorSectionProps) {
     return (
         <section className="py-8 px-4 container mx-auto max-w-7xl w-full">
-            <CreatorGrid
+            <CreatorCarousel
                 creators={creators}
+                isLoading={isLoading}
                 isAuthenticated={isAuthenticated}
                 onAuthGate={onAuthGate}
                 showCTA={true}
                 emptyMessage="No creators found"
-                emptySubMessage="Try adjusting your filters or search terms"
+                emptySubMessage="Try adjusting your filters"
+                showMoreLink="/creators"
             />
         </section>
     );
