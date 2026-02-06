@@ -44,6 +44,8 @@ export default function BrandDashboard() {
         ? CREATORS
         : CREATORS.filter(c => c.niche === selectedFilter);
 
+    console.log('FILTERED CREATORS:', filteredCreators.map(c => ({ id: c.id, name: c.name, handle: c.instagramHandle })));
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case "Accepted": return "bg-[#1A2A1A]";
@@ -190,6 +192,15 @@ export default function BrandDashboard() {
                                     </button>
                                 ))}
                             </div>
+                        </div>
+
+                        {/* DEBUG OUTPUT */}
+                        <div style={{ background: 'yellow', color: 'black', padding: '20px', margin: '20px 0', fontSize: '16px', fontWeight: 'bold' }}>
+                            DEBUG - First Creator Data:<br />
+                            ID: {filteredCreators[0]?.id}<br />
+                            NAME: {filteredCreators[0]?.name || 'UNDEFINED'}<br />
+                            HANDLE: {filteredCreators[0]?.instagramHandle || 'UNDEFINED'}<br />
+                            Full Object: {JSON.stringify(filteredCreators[0])}
                         </div>
 
                         {/* Creator Carousel with Plan-based Access */}
