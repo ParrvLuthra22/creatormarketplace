@@ -7,7 +7,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Search, Bell, TrendingUp, Users, Clock, Lock } from "lucide-react";
-import { CreatorGrid } from "@/components/CreatorGrid";
+import { CreatorCarousel } from "@/components/CreatorCarousel";
 
 // Dummy creator data - converted to new format
 const CREATORS = [
@@ -192,22 +192,17 @@ export default function BrandDashboard() {
                             </div>
                         </div>
 
-                        {/* Creator Grid with Plan-based Access */}
+                        {/* Creator Carousel with Plan-based Access */}
                         <div className="relative">
-                            <CreatorGrid
+                            <CreatorCarousel
                                 creators={user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators}
                                 isAuthenticated={true}
                                 showCTA={true}
                                 ctaText="View Profile"
-                                columns={{ desktop: 4, tablet: 3, mobile: 2 }}
+                                showMoreLink="/dashboard/brand/creators"
                             />
 
-                            {/* Blur overlay for free users */}
-                            {user?.plan === 'free' && filteredCreators.length > 7 && (
-                                <div className="absolute bottom-0 left-0 right-0 h-[400px] bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none" />
-                            )}
-
-                            {/* Upgrade CTA for Free users OR See All for others */}
+                            {/* Upgrade CTA for Free users OR Explore More for others */}
                             {user?.plan === 'free' ? (
                                 <div className="text-center py-6 mt-6 bg-[#141414] border border-[#1F1F1F] rounded-[14px]">
                                     <p className="text-sm text-white mb-3">Upgrade to Basic to see all creators</p>
@@ -223,7 +218,7 @@ export default function BrandDashboard() {
                                     className="text-center py-4 mt-4 bg-[#141414] border border-[#1F1F1F] rounded-[14px] cursor-pointer hover:bg-[#1A1A1A] transition-colors"
                                     onClick={() => router.push('/dashboard/brand/creators')}
                                 >
-                                    <span className="text-[13px] text-white font-angelo">See all creators →</span>
+                                    <span className="text-[13px] text-white font-angelo">Explore More Creators →</span>
                                 </div>
                             )}
                         </div>
