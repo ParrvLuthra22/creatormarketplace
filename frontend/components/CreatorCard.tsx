@@ -114,11 +114,11 @@ export function CreatorCard({
                     {/* Stats Row */}
                     <div className="creator-stats">
                         <div className="stat">
-                            <span className="stat-number">{formatNumber(creator.followers || 0)}</span>
+                            <span className="stat-number">{formatNumber(Number(creator.followers) || 0)}</span>
                             <span className="stat-label">FOLLOWERS</span>
                         </div>
                         <div className="stat">
-                            <span className="stat-number">{formatNumber(creator.following || 0)}</span>
+                            <span className="stat-number">{formatNumber(Number(creator.following) || 0)}</span>
                             <span className="stat-label">FOLLOWING</span>
                         </div>
                     </div>
