@@ -18,6 +18,7 @@ export interface SignupData {
     accountType: 'Brand' | 'Creator';
     instagramHandle?: string; // Required if accountType === 'Creator'
     plan?: 'free' | 'basic' | 'pro'; // Optional, defaults to 'free'
+    selectedPlan?: 'free' | 'basic' | 'pro'; // For brand signup flow
 }
 
 export interface LoginData {
@@ -70,6 +71,8 @@ export interface AuthResponse {
     user: User;
     profile: BrandProfile | CreatorProfile;
     token: string;
+    requiresPayment?: boolean;
+    selectedPlan?: 'free' | 'basic' | 'pro';
 }
 
 export interface ApiError {
@@ -197,6 +200,30 @@ export const getCurrentUser = async (): Promise<{ user: User; profile: BrandProf
 export const logout = async (): Promise<void> => {
     await apiFetch<void>('/api/auth/logout', {
         method: 'POST',
+    });
+};
+
+// Public Creators API
+export interface PublicCreator {
+    id: string;
+    name?: string;
+    instagramHandle?: string;
+    profilePicture: string;
+    followers?: string;
+    following?: string;
+    bio?: string;
+    verified?: boolean;
+}
+
+export interface PublicCreatorsResponse {
+    success: boolean;
+    creators: PublicCreator[];
+    authenticated: boolean;
+}
+
+export const getPublicCreators = async (): Promise<PublicCreatorsResponse> => {
+    return apiFetch<PublicCreatorsResponse>('/api/profile/creators/public', {
+        method: 'GET',
     });
 };
 

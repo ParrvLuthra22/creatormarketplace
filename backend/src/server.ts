@@ -1,15 +1,15 @@
+import './config/env';
 import express, { Application, Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import connectDB from './config/db';
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
-import paymentsRoutes from './routes/payments';
+// import paymentsRoutes from './routes/payments';
 
 // Load environment variables
-dotenv.config();
+// dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 5001;
@@ -49,7 +49,7 @@ app.use(
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
-app.use('/api/payments', paymentsRoutes);
+// app.use('/api/payments', paymentsRoutes);
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {

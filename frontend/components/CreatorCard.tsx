@@ -1,66 +1,156 @@
 "use client";
 
-import { ArrowRight, Lock } from "lucide-react";
-import { Creator } from "@/lib/data";
+import { useRouter } from "next/navigation";
+import { formatNumber } from "@/lib/formatNumber";
+import { LockIcon } from "./icons/LockIcon";
+import "./CreatorCard.css";
 
-interface CreatorProps {
-    creator: Creator;
-    onViewProfile?: () => void;
+interface CreatorCardProps {
+    creator: {
+        id: string;
+        name?: string;
+        instagramHandle?: string;
+        profilePicture: string;
+        followers?: number | string;
+        following?: number | string;
+        bio?: string;
+        verified?: boolean;
+        featured?: boolean;
+        isActive?: boolean;
+        openToWork?: boolean;
+        category?: string;
+    };
     isAuthenticated?: boolean;
+    onAuthGate?: () => void;
+    showCTA?: boolean;
+    ctaText?: string;
+    onCtaClick?: (creator: any) => void;
 }
 
-export function CreatorCard({ creator, onViewProfile, isAuthenticated = false }: CreatorProps) {
-    // Generate a placeholder color based on name length if no image
-    const fallbackColor = (creator.name || "").length % 2 === 0 ? "bg-[#1F1F1F] text-white" : "bg-[#2A2A2A] text-white";
+export function CreatorCard({
+    creator,
+    isAuthenticated = true,
+    onAuthGate,
+    showCTA = true,
+    ctaText = "View Profile",
+    onCtaClick
+}: CreatorCardProps) {
+    const router = useRouter();
 
-    // Format price
-    const formattedPrice = `₹${(creator.pricing.starting / 1000).toFixed(0)}k`;
+    // Convert followers/following to numbers if they're strings
+    const followersNum = typeof creator.followers === 'string'
+        ? parseFloat(creator.followers.replace(/[KM]/g, '')) * (creator.followers.includes('K') ? 1000 : creator.followers.includes('M') ? 1000000 : 1)
+        : creator.followers || 0;
+
+    const followingNum = typeof creator.following === 'string'
+        ? parseFloat(creator.following.replace(/[KM]/g, '')) * (creator.following.includes('K') ? 1000 : creator.following.includes('M') ? 1000000 : 1)
+        : creator.following || 0;
+
+    const handleCardClick = () => {
+        if (!isAuthenticated && onAuthGate) {
+            onAuthGate();
+            return;
+        }
+
+        if (onCtaClick) {
+            onCtaClick(creator);
+        } else {
+            router.push(`/creator/${creator.id}`);
+        }
+    };
+
+    const handleCtaClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (onCtaClick) {
+            onCtaClick(creator);
+        } else {
+            router.push(`/creator/${creator.id}`);
+        }
+    };
 
     return (
-        <div
-            className="creator-row group flex items-center h-[72px] px-5 gap-[14px] overflow-hidden hover:bg-[#1A1A1A] transition-colors cursor-pointer border-b border-[#1F1F1F] last:border-b-0"
-            onClick={onViewProfile}
-        >
-            {/* CHILD 1 — Avatar (fixed width, no shrink) */}
-            <div className="creator-avatar w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-[#1F1F1F] flex items-center justify-center">
-                {creator.photo ? (
-                    <img src={creator.photo} alt={creator.name} className="w-full h-full object-cover" />
-                ) : (
-                    <div className={`w-full h-full flex items-center justify-center font-bold text-sm ${fallbackColor}`}>
-                        {creator.name.charAt(0)}
-                    </div>
-                )}
-            </div>
-
-            {/* CHILD 2 — Info block (takes remaining space, clips overflow) */}
-            <div className="flex-1 min-w-0 flex flex-col gap-[3px]">
-                <p className="text-[15px] text-white font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
-                    {creator.name}
-                </p>
-                <p className="text-[13px] text-[#6B6B6B] font-angelo whitespace-nowrap overflow-hidden text-ellipsis">
-                    {creator.handle}
-                </p>
-            </div>
-
-            {/* CHILD 3 — Right side stats (fixed width, no shrink) - HIDDEN when not authenticated */}
-            {isAuthenticated && (
-                <div className="creator-stats-right flex-shrink-0 text-right flex flex-col gap-[2px]">
-                    <p className="creator-followers text-[13px] text-[#6B6B6B]">{creator.followers}</p>
-                    <p className="creator-price text-[13px] text-white font-angelo">{formattedPrice}</p>
+        <div className="creator-card" onClick={handleCardClick}>
+            {/* Featured/Verified Badge */}
+            {isAuthenticated && (creator.featured || creator.verified) && (
+                <div className="creator-badge">
+                    {creator.featured ? 'FEATURED' : 'VERIFIED'}
                 </div>
             )}
 
-            {/* CHILD 4 — Arrow (fixed width) */}
-            <div className="flex-shrink-0 w-6 flex items-center justify-center">
-                {!isAuthenticated ? (
-                    <div className="flex items-center gap-1">
-                        <Lock className="w-3 h-3 text-[#4A4A4A]" />
-                        <ArrowRight className="w-[18px] h-[18px] text-[#4A4A4A] transition-colors" />
-                    </div>
+            {/* Profile Picture Section */}
+            <div className="creator-card-header">
+                <div className="profile-picture-container">
+                    <img
+                        src={creator.profilePicture || '/default-avatar.png'}
+                        alt={creator.name || 'Creator'}
+                        className="profile-picture"
+                    />
+
+                    {/* Verified Checkmark */}
+                    {isAuthenticated && creator.verified && (
+                        <div className="verified-checkmark">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+                                <path d="M13.5 4.5L6 12L2.5 8.5" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                    )}
+
+                    {/* Locked Overlay - Only for non-authenticated users */}
+                    {!isAuthenticated && (
+                        <div className="lock-overlay">
+                            <LockIcon className="lock-icon" />
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="creator-card-content">
+                {isAuthenticated ? (
+                    <>
+                        <h3 className="creator-name">{creator.name}</h3>
+                        <p className="creator-handle">@{creator.instagramHandle}</p>
+
+                        {creator.bio && (
+                            <p className="creator-bio">{creator.bio}</p>
+                        )}
+
+                        {/* Stats Row */}
+                        <div className="creator-stats">
+                            <div className="stat">
+                                <span className="stat-number">{formatNumber(followersNum)}</span>
+                                <span className="stat-label">FOLLOWERS</span>
+                            </div>
+                            <div className="stat">
+                                <span className="stat-number">{formatNumber(followingNum)}</span>
+                                <span className="stat-label">FOLLOWING</span>
+                            </div>
+                        </div>
+
+                        {/* Status Badges */}
+                        <div className="creator-badges-row">
+                            {creator.isActive && <span className="status-badge">ACTIVE</span>}
+                            {creator.openToWork && <span className="status-badge">OPEN TO WORK</span>}
+                            {creator.category && <span className="status-badge">{creator.category.toUpperCase()}</span>}
+                        </div>
+                    </>
                 ) : (
-                    <ArrowRight className="w-[18px] h-[18px] text-[#3D3D3D] group-hover:text-[#6B6B6B] transition-colors" />
+                    <>
+                        <h3 className="creator-name">Creator Profile</h3>
+                        <p className="creator-handle">Sign in to view details</p>
+                    </>
                 )}
             </div>
+
+            {/* CTA Button (appears on hover for authenticated, always visible for non-authenticated) */}
+            {showCTA && (
+                <button
+                    className={`creator-card-cta ${!isAuthenticated ? 'always-visible' : ''}`}
+                    onClick={handleCtaClick}
+                >
+                    {!isAuthenticated ? 'Sign In to View' : ctaText}
+                </button>
+            )}
         </div>
     );
 }

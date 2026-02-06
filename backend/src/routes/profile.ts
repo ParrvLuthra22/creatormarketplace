@@ -3,6 +3,7 @@ import BrandProfile from '../models/BrandProfile';
 import CreatorProfile from '../models/CreatorProfile';
 import User from '../models/User';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { optionalAuth, OptionalAuthRequest } from '../middleware/optionalAuth';
 
 const router = Router();
 
@@ -67,6 +68,79 @@ router.get('/creator/:userId', authMiddleware, async (req: AuthRequest, res: Res
         res.status(200).json({ profile });
     } catch (error: any) {
         console.error('Get creator profile error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// GET /api/profile/creators/public - Get public creator list (with optional auth)
+router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, res: Response): Promise<void> => {
+    try {
+        const isAuthenticated = !!req.userId;
+
+        // Fetch all creators
+        const creators = await User.find({ accountType: 'Creator' })
+            .select('_id fullName email')
+            .limit(20);
+
+        if (!creators || creators.length === 0) {
+            res.status(200).json({
+                success: true,
+                creators: [],
+                authenticated: isAuthenticated
+            });
+            return;
+        }
+
+        // Get creator profiles
+        const creatorIds = creators.map(c => c._id);
+        const profiles = await CreatorProfile.find({ userId: { $in: creatorIds } });
+
+        // Create a map of userId to profile
+        const profileMap = new Map();
+        profiles.forEach(profile => {
+            profileMap.set(profile.userId.toString(), profile);
+        });
+
+        if (!isAuthenticated) {
+            // Return only profile pictures for unauthenticated users
+            const limitedData = creators.map(creator => {
+                const profile = profileMap.get(creator._id.toString());
+                return {
+                    id: creator._id,
+                    profilePicture: profile?.profilePicture || '/api/placeholder/100/100',
+                };
+            });
+
+            res.status(200).json({
+                success: true,
+                creators: limitedData,
+                authenticated: false
+            });
+            return;
+        }
+
+        // Return full data for authenticated users
+        const fullData = creators.map(creator => {
+            const profile = profileMap.get(creator._id.toString());
+            return {
+                id: creator._id,
+                name: creator.fullName,
+                instagramHandle: profile?.instagramHandle || '',
+                profilePicture: profile?.profilePicture || '/api/placeholder/100/100',
+                followers: profile?.followers || '0',
+                following: profile?.following || '0',
+                bio: profile?.bio || '',
+                verified: profile?.verified || false,
+            };
+        });
+
+        res.status(200).json({
+            success: true,
+            creators: fullData,
+            authenticated: true
+        });
+    } catch (error: any) {
+        console.error('Get public creators error:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

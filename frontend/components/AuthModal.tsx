@@ -232,7 +232,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                 email: signupEmail,
                 password: signupPassword,
                 accountType: accountType!,
-                plan: selectedPlan,
+                selectedPlan: selectedPlan,
             });
             setSuccessMessage(`${accountType} account created successfully!`);
             setTimeout(() => {
@@ -610,7 +610,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
 
                 {/* Signup Form - Step 3: Plan Selection (Brand only) */}
                 {activeTab === "signup" && signupStep === 3 && accountType === "Brand" && (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {/* Back button */}
                         <button
                             type="button"
@@ -621,80 +621,165 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             ← Back
                         </button>
 
-                        {/* Plan Cards */}
-                        <div className="space-y-[10px]">
-                            {/* FREE CARD */}
+                        {/* Section Heading */}
+                        <div className="text-center mb-6">
+                            <h3 className="font-milker text-[24px] text-white mb-2">Choose Your Plan</h3>
+                            <p className="text-[14px] text-[#6B6B6B]">You can upgrade or downgrade anytime</p>
+                        </div>
+
+                        {/* Pricing Cards Grid */}
+                        <div className="grid grid-cols-1 gap-5">
+                            {/* FREE PLAN */}
                             <button
                                 type="button"
                                 onClick={() => setSelectedPlan('free')}
                                 disabled={loading}
-                                className={`w-full flex items-center gap-4 bg-[#1A1A1A] border rounded-xl px-5 py-[18px] cursor-pointer transition-all disabled:opacity-50 ${selectedPlan === 'free'
-                                        ? 'border-white'
-                                        : 'border-[#1F1F1F] hover:border-[#3D3D3D]'
+                                className={`relative text-left bg-[#141414] border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'free'
+                                    ? 'border-white border-2 bg-[#1A1A1A]'
+                                    : 'border-[#1F1F1F] hover:border-[#2A2A2A]'
                                     }`}
                             >
-                                <div className="flex-1 text-left">
-                                    <p className="font-angelo text-[15px] text-white">Free</p>
-                                    <p className="text-[12px] text-[#6B6B6B]">Browse creators</p>
+                                {selectedPlan === 'free' && (
+                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                        <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                )}
+                                <div className="mb-3">
+                                    <p className="font-milker text-[22px] text-white mb-1">Free</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="font-milker text-[36px] text-white">₹0</span>
+                                        <span className="text-[14px] text-[#6B6B6B]">/month</span>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="font-angelo text-[18px] text-white">₹0</p>
-                                    <p className="text-[11px] text-[#6B6B6B]">/mo</p>
-                                </div>
+                                <ul className="space-y-2 mb-4">
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>5 active proposals per month</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Basic creator search</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Email support</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>10% platform commission</span>
+                                    </li>
+                                </ul>
+                                <p className="text-[12px] text-[#6B6B6B] italic">Perfect to get started</p>
                             </button>
 
-                            {/* BASIC CARD */}
+                            {/* STARTER PLAN */}
                             <button
                                 type="button"
                                 onClick={() => setSelectedPlan('basic')}
                                 disabled={loading}
-                                className={`w-full flex items-center gap-4 bg-[#1A1A1A] border rounded-xl px-5 py-[18px] cursor-pointer transition-all disabled:opacity-50 ${selectedPlan === 'basic'
-                                        ? 'border-white'
-                                        : 'border-[#1F1F1F] hover:border-[#3D3D3D]'
+                                className={`relative text-left bg-[#141414] border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'basic'
+                                    ? 'border-white border-2 bg-[#1A1A1A]'
+                                    : 'border-[#1F1F1F] hover:border-[#2A2A2A]'
                                     }`}
                             >
-                                <div className="flex-1 text-left">
-                                    <p className="font-angelo text-[15px] text-white">Basic</p>
-                                    <p className="text-[12px] text-[#6B6B6B]">Full discovery</p>
+                                {selectedPlan === 'basic' && (
+                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                        <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                )}
+                                <div className="mb-3">
+                                    <p className="font-milker text-[22px] text-white mb-1">Starter</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="font-milker text-[36px] text-white">₹999</span>
+                                        <span className="text-[14px] text-[#6B6B6B]">/month</span>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="font-angelo text-[18px] text-white">₹999</p>
-                                    <p className="text-[11px] text-[#6B6B6B]">/mo</p>
-                                </div>
+                                <ul className="space-y-2 mb-4">
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Up to 10 active proposals</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Basic analytics</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Email support</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>5% platform commission</span>
+                                    </li>
+                                </ul>
+                                <p className="text-[12px] text-[#6B6B6B] italic">Great for small teams</p>
                             </button>
 
-                            {/* PRO CARD */}
+                            {/* PRO PLAN */}
                             <button
                                 type="button"
                                 onClick={() => setSelectedPlan('pro')}
                                 disabled={loading}
-                                className={`w-full flex items-center gap-4 bg-[#1A1A1A] border rounded-xl px-5 py-[18px] cursor-pointer transition-all disabled:opacity-50 relative ${selectedPlan === 'pro'
-                                        ? 'border-white'
-                                        : 'border-[#1F1F1F] hover:border-[#3D3D3D]'
+                                className={`relative text-left bg-[#141414] border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'pro'
+                                    ? 'border-white border-2 bg-[#1A1A1A]'
+                                    : 'border-[#1F1F1F] hover:border-[#2A2A2A]'
                                     }`}
                             >
-                                {/* Popular Badge */}
-                                <div className="absolute -top-2 -right-2 bg-[#1F1F1F] text-white font-angelo text-[10px] px-2 py-[2px] rounded-[10px]">
-                                    Popular
+                                {/* Most Popular Badge */}
+                                <div className="absolute -top-3 right-5 bg-white text-black text-[11px] font-angelo uppercase tracking-wider px-3 py-1.5 rounded-full">
+                                    Most Popular
                                 </div>
-                                <div className="flex-1 text-left">
-                                    <p className="font-angelo text-[15px] text-white">Pro</p>
-                                    <p className="text-[12px] text-[#6B6B6B]">Send proposals + chat</p>
+                                {selectedPlan === 'pro' && (
+                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                        <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                )}
+                                <div className="mb-3">
+                                    <p className="font-milker text-[22px] text-white mb-1">Pro</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="font-milker text-[36px] text-white">₹2,999</span>
+                                        <span className="text-[14px] text-[#6B6B6B]">/month</span>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="font-angelo text-[18px] text-white">₹2,999</p>
-                                    <p className="text-[11px] text-[#6B6B6B]">/mo</p>
-                                </div>
+                                <ul className="space-y-2 mb-4">
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Unlimited proposals</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Advanced analytics</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Priority support</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>3% platform commission</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
+                                        <span className="text-white mt-0.5">✓</span>
+                                        <span>Featured brand badge</span>
+                                    </li>
+                                </ul>
+                                <p className="text-[12px] text-[#6B6B6B] italic">Most popular choice</p>
                             </button>
                         </div>
 
                         {/* Continue Button */}
                         <Button
                             onClick={handlePlanSelectionSubmit}
-                            className="w-full bg-white text-black hover:bg-[#E5E5E5] text-[14px] h-[46px] mt-4 font-angelo"
+                            className="w-full bg-white text-black hover:bg-[#E5E5E5] text-[14px] h-[48px] mt-4 font-angelo uppercase"
                             disabled={loading}
                         >
-                            {loading ? "Creating Account..." : "Continue →"}
+                            {loading ? "Creating Account..." : "Create Account & Continue"}
                         </Button>
                     </div>
                 )}

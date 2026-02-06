@@ -8,7 +8,7 @@ import { CreatorSection } from "@/components/CreatorSection";
 import { AuthModal } from "@/components/AuthModal";
 import { AuthGateModal } from "@/components/AuthGateModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { CREATORS } from "@/lib/data";
+import { getPublicCreators, PublicCreator } from "@/lib/api";
 import { Search } from "lucide-react";
 
 const FILTER_NICHES = ["All", "Fashion", "Fitness", "Tech", "Beauty", "Food", "Travel", "Comedy", "Finance"];
@@ -18,13 +18,34 @@ export default function Home() {
   const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [creators, setCreators] = useState<PublicCreator[]>([]);
+  const [creatorsLoading, setCreatorsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const filteredCreators = CREATORS.filter(creator => {
-    const matchesNiche = selectedFilter === "All" || creator.niches.includes(selectedFilter);
+  // Fetch creators from public API
+  useEffect(() => {
+    const fetchCreators = async () => {
+      try {
+        const response = await getPublicCreators();
+        setCreators(response.creators);
+        setIsAuthenticated(response.authenticated);
+      } catch (error) {
+        console.error("Failed to fetch creators:", error);
+        setCreators([]);
+      } finally {
+        setCreatorsLoading(false);
+      }
+    };
+
+    fetchCreators();
+  }, []);
+
+  const filteredCreators = creators.filter(creator => {
     const matchesSearch = searchQuery === "" ||
-      creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      creator.handle.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesNiche && matchesSearch;
+      (creator.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (creator.instagramHandle?.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesSearch;
+    // Note: Niche filtering removed since backend doesn't return niche data yet
   });
 
   // Redirect logged-in users to their respective dashboards
@@ -98,11 +119,11 @@ export default function Home() {
       <div className="flex flex-col items-center pt-0">
 
         {/* Hero Section */}
-        <div className="hero-section text-center px-5 pt-12 pb-8 md:pt-12 md:pb-8">
-          <h1 className="hero-heading text-[34px] md:text-[28px] text-white mb-2" style={{ fontFamily: 'Milker, sans-serif' }}>
+        <div className="hero-section text-center px-5 pt-8 pb-6 md:pt-10 md:pb-7">
+          <h1 className="hero-heading text-[48px] md:text-[48px] text-white mb-2" style={{ fontFamily: 'Milker, sans-serif' }}>
             Find the right creator
           </h1>
-          <p className="hero-subtext text-[16px] md:text-[14px] text-[#6B6B6B] mb-2 hidden sm:block">
+          <p className="hero-subtext text-[16px] md:text-[16px] text-[#6B6B6B] mb-2 hidden sm:block">
             Browse Instagram creators who match your brand
           </p>
           <div className="trust-pills hidden sm:flex items-center justify-center gap-4 mt-2">
@@ -153,12 +174,18 @@ export default function Home() {
         </div>
 
         {/* Creator Discovery Section - visible to unauthenticated users (potential brands) */}
-        <CreatorSection
-          creators={filteredCreators}
-          onViewProfile={() => { }} // Not used when not authenticated
-          isAuthenticated={false}
-          onAuthGate={handleAuthGate}
-        />
+        {creatorsLoading ? (
+          <div className="py-12 text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <p className="text-[#6B6B6B] text-sm mt-3">Loading creators...</p>
+          </div>
+        ) : (
+          <CreatorSection
+            creators={filteredCreators}
+            isAuthenticated={isAuthenticated}
+            onAuthGate={handleAuthGate}
+          />
+        )}
       </div>
 
       {/* Auth Gate Modal */}
@@ -183,7 +210,7 @@ export default function Home() {
       <style jsx>{`
         @media (max-width: 768px) {
           .hero-heading {
-            font-size: 28px;
+            font-size: 36px;
           }
           .hero-subtext {
             font-size: 14px;
@@ -192,7 +219,7 @@ export default function Home() {
         
         @media (max-width: 480px) {
           .hero-heading {
-            font-size: 24px;
+            font-size: 36px;
           }
           .hero-subtext,
           .trust-pills {

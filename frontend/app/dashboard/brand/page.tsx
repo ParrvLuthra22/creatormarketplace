@@ -6,22 +6,23 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { Search, Bell, TrendingUp, Users, Clock, ArrowRight, Lock } from "lucide-react";
+import { Search, Bell, TrendingUp, Users, Clock, Lock } from "lucide-react";
+import { CreatorGrid } from "@/components/CreatorGrid";
 
-// Dummy creator data
+// Dummy creator data - converted to new format
 const CREATORS = [
-    { name: "Priya Sharma", handle: "@priyacreates", niche: "Fashion", followers: "45.2K", engagement: "4.5%", price: "₹5,000", avatar: "PS", tier: "Growing", availability: "actively-accepting" },
-    { name: "Arjun Mehta", handle: "@arjunfit", niche: "Fitness", followers: "32.1K", engagement: "5.2%", price: "₹4,000", avatar: "AM", tier: "Growing", availability: "selective" },
-    { name: "Zara Khan", handle: "@zarastyle", niche: "Beauty", followers: "28.7K", engagement: "3.8%", price: "₹3,500", avatar: "ZK", tier: "Emerging", availability: "actively-accepting" },
-    { name: "Rahul Verma", handle: "@techrahul", niche: "Tech", followers: "67.4K", engagement: "6.1%", price: "₹8,000", avatar: "RV", tier: "Established", availability: "booked" },
-    { name: "Anjali Desai", handle: "@foodwithanjali", niche: "Food", followers: "51.2K", engagement: "4.9%", price: "₹6,000", avatar: "AD", tier: "Growing", availability: "actively-accepting" },
-    { name: "Kabir Singh", handle: "@kabircomedy", niche: "Comedy", followers: "89.3K", engagement: "7.3%", price: "₹10,000", avatar: "KS", tier: "Established", availability: "selective" },
-    { name: "Meera Patel", handle: "@meerafinance", niche: "Finance", followers: "23.8K", engagement: "3.2%", price: "₹3,000", avatar: "MP", tier: "Emerging", availability: "actively-accepting" },
-    { name: "Vikram Rao", handle: "@viktravel", niche: "Travel", followers: "41.6K", engagement: "4.7%", price: "₹5,500", avatar: "VR", tier: "Growing", availability: "booked" },
-    { name: "Shreya Gupta", handle: "@shreyabeauty", niche: "Beauty", followers: "38.9K", engagement: "5.0%", price: "₹4,500", avatar: "SG", tier: "Growing", availability: "selective" },
-    { name: "Aditya Kumar", handle: "@adifitness", niche: "Fitness", followers: "55.1K", engagement: "5.8%", price: "₹7,000", avatar: "AK", tier: "Growing", availability: "actively-accepting" },
-    { name: "Pooja Jain", handle: "@poojastyle", niche: "Fashion", followers: "72.4K", engagement: "4.2%", price: "₹9,000", avatar: "PJ", tier: "Established", availability: "actively-accepting" },
-    { name: "Rohan Das", handle: "@rohantech", niche: "Tech", followers: "61.8K", engagement: "6.5%", price: "₹7,500", avatar: "RD", tier: "Established", availability: "booked" },
+    { id: "1", name: "Priya Sharma", instagramHandle: "priyacreates", niche: "Fashion", followers: 45200, following: 847, profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Fashion", isActive: true, openToWork: true, bio: "Fashion & lifestyle creator | Sponsored by top brands" },
+    { id: "2", name: "Arjun Mehta", instagramHandle: "arjunfit", niche: "Fitness", followers: 32100, following: 623, profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Fitness", isActive: true, openToWork: true, bio: "Fitness coach helping you achieve your goals 💪" },
+    { id: "3", name: "Zara Khan", instagramHandle: "zarastyle", niche: "Beauty", followers: 28700, following: 512, profilePicture: "/api/placeholder/140/140", verified: true, featured: false, category: "Beauty", isActive: false, openToWork: true, bio: "Beauty & skincare enthusiast" },
+    { id: "4", name: "Rahul Verma", instagramHandle: "techrahul", niche: "Tech", followers: 67400, following: 1205, profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Tech", isActive: true, openToWork: false, bio: "Tech reviewer | Gadget geek" },
+    { id: "5", name: "Anjali Desai", instagramHandle: "foodwithanjali", niche: "Food", followers: 51200, following: 934, profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Food", isActive: true, openToWork: true, bio: "Food blogger | Recipe creator" },
+    { id: "6", name: "Kabir Singh", instagramHandle: "kabircomedy", niche: "Comedy", followers: 89300, following: 1567, profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Comedy", isActive: true, openToWork: true, bio: "Stand-up comedian 😂" },
+    { id: "7", name: "Meera Patel", instagramHandle: "meerafinance", niche: "Finance", followers: 23800, following: 345, profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Finance", isActive: false, openToWork: false, bio: "Financial advisor | Investment tips" },
+    { id: "8", name: "Vikram Rao", instagramHandle: "viktravel", niche: "Travel", followers: 41600, following: 789, profilePicture: "/api/placeholder/140/140", verified: true, featured: false, category: "Travel", isActive: true, openToWork: true, bio: "Travel photographer 🌍" },
+    { id: "9", name: "Shreya Gupta", instagramHandle: "shreyabeauty", niche: "Beauty", followers: 38900, following: 678, profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Beauty", isActive: true, openToWork: true, bio: "Makeup artist | Beauty tutorials" },
+    { id: "10", name: "Aditya Kumar", instagramHandle: "adifitness", niche: "Fitness", followers: 55100, following: 1023, profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Fitness", isActive: true, openToWork: true, bio: "Personal trainer | Nutrition expert" },
+    { id: "11", name: "Pooja Jain", instagramHandle: "poojastyle", niche: "Fashion", followers: 72400, following: 1456, profilePicture: "/api/placeholder/140/140", verified: true, featured: false, category: "Fashion", isActive: false, openToWork: false, bio: "Fashion designer | Style tips" },
+    { id: "12", name: "Rohan Das", instagramHandle: "rohantech", niche: "Tech", followers: 61800, following: 1134, profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Tech", isActive: true, openToWork: true, bio: "Software engineer | Coding tutorials" },
 ];
 
 const PROPOSALS = [
@@ -170,7 +171,7 @@ export default function BrandDashboard() {
                         </div>
                     </div>
 
-                    {/* CREATOR LIST */}
+                    {/* CREATOR GRID */}
                     <div>
                         {/* Section Header with Filters */}
                         <div className="flex justify-between items-center mb-3">
@@ -191,107 +192,24 @@ export default function BrandDashboard() {
                             </div>
                         </div>
 
-                        {/* List Container */}
-                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] overflow-hidden">
-                            {/* Column Headers - Hidden for Free users */}
-                            {user?.plan !== 'free' && (
-                                <div className={`creator-list-header grid items-center px-5 py-3 border-b border-[#1F1F1F] ${user?.plan === 'pro'
-                                    ? 'grid-cols-[2fr_0.8fr_1fr_1fr_1fr_1fr_40px]'
-                                    : 'grid-cols-[2fr_1fr_1fr_1fr_1fr_40px]'
-                                    }`}>
-                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">CREATOR</div>
-                                    {user?.plan === 'pro' && (
-                                        <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest tier-col">TIER</div>
-                                    )}
-                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest niche-col">NICHE</div>
-                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest followers-col">FOLLOWERS</div>
-                                    {user?.plan === 'pro' && (
-                                        <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest signal-col">SIGNAL</div>
-                                    )}
-                                    {user?.plan !== 'pro' && (
-                                        <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest engagement-col">ENGAGEMENT</div>
-                                    )}
-                                    <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest price-col">PRICE</div>
-                                    <div></div>
-                                </div>
+                        {/* Creator Grid with Plan-based Access */}
+                        <div className="relative">
+                            <CreatorGrid
+                                creators={user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators}
+                                isAuthenticated={true}
+                                showCTA={true}
+                                ctaText="View Profile"
+                                columns={{ desktop: 4, tablet: 3, mobile: 2 }}
+                            />
+
+                            {/* Blur overlay for free users */}
+                            {user?.plan === 'free' && filteredCreators.length > 7 && (
+                                <div className="absolute bottom-0 left-0 right-0 h-[400px] bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none" />
                             )}
 
-                            {/* Creator Rows */}
-                            {(user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators).map((creator, index) => (
-                                <div
-                                    key={index}
-                                    className={`creator-row grid items-center px-5 py-3.5 border-b border-[#1F1F1F] last:border-b-0 h-16 cursor-pointer hover:bg-[#1A1A1A] transition-colors ${user?.plan === 'free'
-                                        ? 'grid-cols-[2fr_1fr_40px]'
-                                        : user?.plan === 'pro'
-                                            ? 'grid-cols-[2fr_0.8fr_1fr_1fr_1fr_1fr_40px]'
-                                            : 'grid-cols-[2fr_1fr_1fr_1fr_1fr_40px]'
-                                        } ${user?.plan === 'free' && index >= 7 ? 'blur-sm opacity-50' : ''}`}
-                                >
-                                    {/* Creator Column */}
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-[38px] h-[38px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 creator-avatar">
-                                            {creator.avatar}
-                                        </div>
-                                        <div className="min-w-0">
-                                            <p className="text-sm font-semibold text-white truncate">{creator.name}</p>
-                                            <p className="text-xs text-[#6B6B6B] font-angelo truncate">{creator.handle}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Conditional columns - only for non-Free users */}
-                                    {user?.plan !== 'free' && (
-                                        <>
-                                            {/* Tier Column - Pro only */}
-                                            {user?.plan === 'pro' && (
-                                                <div className="tier-col">
-                                                    <span className={`px-2.5 py-0.5 rounded-xl text-[11px] font-angelo ${getTierStyle(creator.tier)}`}>
-                                                        {creator.tier}
-                                                    </span>
-                                                </div>
-                                            )}
-
-                                            {/* Niche Column */}
-                                            <div className="niche-col">
-                                                <span className="inline-block px-2.5 py-1 rounded-xl text-[11px] bg-[#1F1F1F] text-white font-angelo">
-                                                    {creator.niche}
-                                                </span>
-                                            </div>
-
-                                            {/* Followers */}
-                                            <div className="text-sm text-white followers-col">{creator.followers}</div>
-
-                                            {/* Signal Column - Pro only */}
-                                            {user?.plan === 'pro' && (
-                                                <div className="signal-col flex items-center gap-2">
-                                                    <div className={`w-2.5 h-2.5 rounded-full ${getAvailabilityDot(creator.availability)}`}></div>
-                                                    <span className="text-[12px] text-white font-angelo">{getAvailabilityLabel(creator.availability)}</span>
-                                                </div>
-                                            )}
-
-                                            {/* Engagement - Basic only */}
-                                            {user?.plan !== 'pro' && (
-                                                <div className="text-sm text-[#6B6B6B] engagement-col">{creator.engagement}</div>
-                                            )}
-
-                                            {/* Price */}
-                                            <div className="text-sm text-white font-angelo price-col">{creator.price}</div>
-                                        </>
-                                    )}
-
-                                    {/* For Free users, show empty column for spacing */}
-                                    {user?.plan === 'free' && <div></div>}
-
-                                    {/* Arrow */}
-                                    <div className="flex items-center justify-center">
-                                        <ArrowRight className="w-[18px] h-[18px] text-white" />
-                                    </div>
-                                </div>
-                            ))}
-
-
-                            {/* Upgrade Overlay for Free users OR See All for others */}
+                            {/* Upgrade CTA for Free users OR See All for others */}
                             {user?.plan === 'free' ? (
-                                <div className="text-center py-6 border-t border-[#1F1F1F] bg-gradient-to-t from-[#0A0A0A] to-transparent">
+                                <div className="text-center py-6 mt-6 bg-[#141414] border border-[#1F1F1F] rounded-[14px]">
                                     <p className="text-sm text-white mb-3">Upgrade to Basic to see all creators</p>
                                     <button
                                         onClick={() => router.push('/pricing')}
@@ -301,7 +219,10 @@ export default function BrandDashboard() {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="text-center py-4 border-t border-[#1F1F1F] cursor-pointer hover:bg-[#1A1A1A] transition-colors">
+                                <div
+                                    className="text-center py-4 mt-4 bg-[#141414] border border-[#1F1F1F] rounded-[14px] cursor-pointer hover:bg-[#1A1A1A] transition-colors"
+                                    onClick={() => router.push('/dashboard/brand/creators')}
+                                >
                                     <span className="text-[13px] text-white font-angelo">See all creators →</span>
                                 </div>
                             )}

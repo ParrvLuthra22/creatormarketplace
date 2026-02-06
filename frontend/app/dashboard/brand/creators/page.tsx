@@ -5,22 +5,23 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { Search, Bell, ArrowRight } from "lucide-react";
+import { CreatorGrid } from "@/components/CreatorGrid";
+import { Search, Bell } from "lucide-react";
 
-// Dummy creator data
+// Dummy creator data - convert to new format with numeric followers
 const CREATORS = [
-    { name: "Priya Sharma", handle: "@priyacreates", niche: "Fashion", followers: "45.2K", engagement: "4.5%", price: "₹5,000", avatar: "PS" },
-    { name: "Arjun Mehta", handle: "@arjunfit", niche: "Fitness", followers: "32.1K", engagement: "5.2%", price: "₹4,000", avatar: "AM" },
-    { name: "Zara Khan", handle: "@zarastyle", niche: "Beauty", followers: "28.7K", engagement: "3.8%", price: "₹3,500", avatar: "ZK" },
-    { name: "Rahul Verma", handle: "@techrahul", niche: "Tech", followers: "67.4K", engagement: "6.1%", price: "₹8,000", avatar: "RV" },
-    { name: "Anjali Desai", handle: "@foodwithanjali", niche: "Food", followers: "51.2K", engagement: "4.9%", price: "₹6,000", avatar: "AD" },
-    { name: "Kabir Singh", handle: "@kabircomedy", niche: "Comedy", followers: "89.3K", engagement: "7.3%", price: "₹10,000", avatar: "KS" },
-    { name: "Meera Patel", handle: "@meerafinance", niche: "Finance", followers: "23.8K", engagement: "3.2%", price: "₹3,000", avatar: "MP" },
-    { name: "Vikram Rao", handle: "@viktravel", niche: "Travel", followers: "41.6K", engagement: "4.7%", price: "₹5,500", avatar: "VR" },
-    { name: "Shreya Gupta", handle: "@shreyabeauty", niche: "Beauty", followers: "38.9K", engagement: "5.0%", price: "₹4,500", avatar: "SG" },
-    { name: "Aditya Kumar", handle: "@adifitness", niche: "Fitness", followers: "55.1K", engagement: "5.8%", price: "₹7,000", avatar: "AK" },
-    { name: "Pooja Jain", handle: "@poojastyle", niche: "Fashion", followers: "72.4K", engagement: "4.2%", price: "₹9,000", avatar: "PJ" },
-    { name: "Rohan Das", handle: "@rohantech", niche: "Tech", followers: "61.8K", engagement: "6.5%", price: "₹7,500", avatar: "RD" },
+    { id: "1", name: "Priya Sharma", instagramHandle: "priyacreates", niche: "Fashion", followers: 45200, following: 847, engagement: "4.5%", price: "₹5,000", profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Fashion", isActive: true, openToWork: true, bio: "Fashion & lifestyle creator | Sponsored by top brands | DM for collabs 💼" },
+    { id: "2", name: "Arjun Mehta", instagramHandle: "arjunfit", niche: "Fitness", followers: 32100, following: 623, engagement: "5.2%", price: "₹4,000", profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Fitness", isActive: true, openToWork: true, bio: "Fitness coach helping you achieve your goals 💪" },
+    { id: "3", name: "Zara Khan", instagramHandle: "zarastyle", niche: "Beauty", followers: 28700, following: 512, engagement: "3.8%", price: "₹3,500", profilePicture: "/api/placeholder/140/140", verified: true, featured: false, category: "Beauty", isActive: false, openToWork: true, bio: "Beauty & skincare enthusiast | Product reviews" },
+    { id: "4", name: "Rahul Verma", instagramHandle: "techrahul", niche: "Tech", followers: 67400, following: 1205, engagement: "6.1%", price: "₹8,000", profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Tech", isActive: true, openToWork: false, bio: "Tech reviewer | Gadget geek | Latest tech trends" },
+    { id: "5", name: "Anjali Desai", instagramHandle: "foodwithanjali", niche: "Food", followers: 51200, following: 934, engagement: "4.9%", price: "₹6,000", profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Food", isActive: true, openToWork: true, bio: "Food blogger | Recipe creator | Restaurant reviews" },
+    { id: "6", name: "Kabir Singh", instagramHandle: "kabircomedy", niche: "Comedy", followers: 89300, following: 1567, engagement: "7.3%", price: "₹10,000", profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Comedy", isActive: true, openToWork: true, bio: "Stand-up comedian | Making you laugh daily 😂" },
+    { id: "7", name: "Meera Patel", instagramHandle: "meerafinance", niche: "Finance", followers: 23800, following: 345, engagement: "3.2%", price: "₹3,000", profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Finance", isActive: false, openToWork: false, bio: "Financial advisor | Investment tips | Money management" },
+    { id: "8", name: "Vikram Rao", instagramHandle: "viktravel", niche: "Travel", followers: 41600, following: 789, engagement: "4.7%", price: "₹5,500", profilePicture: "/api/placeholder/140/140", verified: true, featured: false, category: "Travel", isActive: true, openToWork: true, bio: "Travel photographer | Exploring the world 🌍" },
+    { id: "9", name: "Shreya Gupta", instagramHandle: "shreyabeauty", niche: "Beauty", followers: 38900, following: 678, engagement: "5.0%", price: "₹4,500", profilePicture: "/api/placeholder/140/140", verified: false, featured: false, category: "Beauty", isActive: true, openToWork: true, bio: "Makeup artist | Beauty tutorials | Product reviews" },
+    { id: "10", name: "Aditya Kumar", instagramHandle: "adifitness", niche: "Fitness", followers: 55100, following: 1023, engagement: "5.8%", price: "₹7,000", profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Fitness", isActive: true, openToWork: true, bio: "Personal trainer | Nutrition expert | Transform your body" },
+    { id: "11", name: "Pooja Jain", instagramHandle: "poojastyle", niche: "Fashion", followers: 72400, following: 1456, engagement: "4.2%", price: "₹9,000", profilePicture: "/api/placeholder/140/140", verified: true, featured: false, category: "Fashion", isActive: false, openToWork: false, bio: "Fashion designer | Style tips | Wardrobe essentials" },
+    { id: "12", name: "Rohan Das", instagramHandle: "rohantech", niche: "Tech", followers: 61800, following: 1134, engagement: "6.5%", price: "₹7,500", profilePicture: "/api/placeholder/140/140", verified: true, featured: true, category: "Tech", isActive: true, openToWork: true, bio: "Software engineer | Coding tutorials | Tech reviews" },
 ];
 
 const FILTER_NICHES = ["All", "Fashion", "Fitness", "Tech", "Beauty", "Food", "Travel", "Comedy", "Finance"];
@@ -34,7 +35,7 @@ export default function BrandCreators() {
         const matchesNiche = selectedFilter === "All" || creator.niche === selectedFilter;
         const matchesSearch = searchQuery === "" ||
             creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            creator.handle.toLowerCase().includes(searchQuery.toLowerCase());
+            creator.instagramHandle.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesNiche && matchesSearch;
     });
 
@@ -87,64 +88,15 @@ export default function BrandCreators() {
                         ))}
                     </div>
 
-                    {/* CREATOR LIST */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] overflow-hidden">
-                        {/* Column Headers */}
-                        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_40px] items-center px-5 py-3 border-b border-[#1F1F1F]">
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">CREATOR</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">NICHE</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">FOLLOWERS</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">ENGAGEMENT</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">PRICE</div>
-                            <div></div>
-                        </div>
-
-                        {/* Creator Rows */}
-                        {filteredCreators.map((creator, index) => (
-                            <div
-                                key={index}
-                                className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_40px] items-center px-5 py-3.5 border-b border-[#1F1F1F] last:border-b-0 h-16 cursor-pointer hover:bg-[#1A1A1A] transition-colors"
-                            >
-                                {/* Creator Column */}
-                                <div className="flex items-center gap-3">
-                                    <div className="w-[38px] h-[38px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                                        {creator.avatar}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-semibold text-white truncate">{creator.name}</p>
-                                        <p className="text-xs text-[#6B6B6B] font-angelo truncate">{creator.handle}</p>
-                                    </div>
-                                </div>
-
-                                {/* Niche Column */}
-                                <div>
-                                    <span className="inline-block px-2.5 py-1 rounded-xl text-[11px] bg-[#1F1F1F] text-white font-angelo">
-                                        {creator.niche}
-                                    </span>
-                                </div>
-
-                                {/* Followers */}
-                                <div className="text-sm text-white">{creator.followers}</div>
-
-                                {/* Engagement */}
-                                <div className="text-sm text-[#6B6B6B]">{creator.engagement}</div>
-
-                                {/* Price */}
-                                <div className="text-sm text-white font-angelo">{creator.price}</div>
-
-                                {/* Arrow */}
-                                <div className="flex items-center justify-center">
-                                    <ArrowRight className="w-[18px] h-[18px] text-white" />
-                                </div>
-                            </div>
-                        ))}
-
-                        {filteredCreators.length === 0 && (
-                            <div className="py-12 text-center">
-                                <p className="text-[#6B6B6B] text-sm">No creators found</p>
-                            </div>
-                        )}
-                    </div>
+                    {/* CREATOR GRID */}
+                    <CreatorGrid
+                        creators={filteredCreators}
+                        isAuthenticated={true}
+                        showCTA={true}
+                        ctaText="View Profile"
+                        emptyMessage="No creators found"
+                        emptySubMessage="Try adjusting your search or filters"
+                    />
                 </main>
 
                 <aside className="hidden lg:block w-[280px]" />

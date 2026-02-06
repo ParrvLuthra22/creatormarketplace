@@ -12,7 +12,7 @@ const router = Router();
 // POST /api/auth/signup - Create user account
 router.post('/signup', authLimiter, async (req: Request, res: Response): Promise<void> => {
     try {
-        const { fullName, email, password, accountType, instagramHandle, plan } = req.body;
+        const { fullName, email, password, accountType, instagramHandle, plan, selectedPlan } = req.body;
 
         // Validate required fields
         if (!fullName || !email || !password || !accountType) {
@@ -59,13 +59,34 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
             return;
         }
 
+        // Determine subscription plan and status for brands
+        let subscriptionPlan: 'free' | 'basic' | 'pro' = 'free';
+        let subscriptionStatus: 'inactive' | 'active' | 'past_due' | 'cancelled' | 'expired' = 'inactive';
+
+        if (accountType === 'Brand' && selectedPlan) {
+            // Map selectedPlan to plan field (starter -> basic)
+            if (selectedPlan === 'starter') {
+                subscriptionPlan = 'basic';
+            } else if (['free', 'basic', 'pro'].includes(selectedPlan)) {
+                subscriptionPlan = selectedPlan as 'free' | 'basic' | 'pro';
+            }
+
+            // Set subscription status
+            if (subscriptionPlan === 'free') {
+                subscriptionStatus = 'active'; // Free plan is active immediately
+            } else {
+                subscriptionStatus = 'inactive'; // Paid plans need payment (will be handled separately)
+            }
+        }
+
         // Create new user
         const user = new User({
             fullName,
             email: email.toLowerCase(),
             password,
             accountType,
-            plan: plan || 'free', // Default to 'free' if not provided
+            plan: plan || selectedPlan || subscriptionPlan,
+            subscriptionStatus,
         });
 
         await user.save();
@@ -108,10 +129,13 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
                 email: user.email,
                 accountType: user.accountType,
                 plan: user.plan,
+                subscriptionStatus: user.subscriptionStatus,
                 createdAt: user.createdAt,
             },
             profile,
             token,
+            requiresPayment: accountType === 'Brand' && subscriptionPlan !== 'free',
+            selectedPlan: subscriptionPlan,
         });
     } catch (error: any) {
         console.error('Signup error:', error);

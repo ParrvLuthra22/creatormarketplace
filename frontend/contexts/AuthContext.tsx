@@ -112,7 +112,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setProfile(response.profile);
             setModalState(null); // Close modal
 
-            // Redirect to role-specific dashboard
+            // Check if payment is required (for paid plans)
+            if (response.requiresPayment && response.selectedPlan) {
+                // Redirect to payment page with pre-selected plan
+                router.push(`/pricing?plan=${response.selectedPlan}&new=true`);
+                return;
+            }
+
+            // Redirect to role-specific dashboard (for free plan or creators)
             if (response.user.accountType === 'Brand') {
                 router.push('/dashboard/brand');
             } else {
