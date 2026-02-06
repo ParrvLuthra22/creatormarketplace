@@ -124,13 +124,17 @@ router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, re
             const profile = profileMap.get(creator._id.toString());
             return {
                 id: creator._id,
-                name: creator.fullName,
-                instagramHandle: profile?.instagramHandle || '',
-                profilePicture: profile?.profilePicture || '/api/placeholder/100/100',
+                name: creator.fullName, // Map fullName to name for frontend
+                instagramHandle: profile?.instagramHandle || 'unknown',
+                profilePicture: profile?.profilePicture || '/api/placeholder/140/140',
                 followers: profile?.followers || '0',
-                following: profile?.following || '0',
-                bio: profile?.bio || '',
-                verified: profile?.verified || false,
+                following: '0', // Not in schema yet
+                bio: '', // Not in schema yet  
+                verified: false, // Not in schema yet
+                featured: false,
+                isActive: true,
+                openToWork: true,
+                category: profile?.niches?.[0] || 'Other'
             };
         });
 
