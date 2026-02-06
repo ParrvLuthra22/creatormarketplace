@@ -110,9 +110,7 @@ export function CreatorCard({
 
                 {/* Content Section */}
                 <div className="creator-card-content">
-                    {creator.name && (
-                        <h3 className="creator-name">{creator.name}</h3>
-                    )}
+                    <h3 className="creator-name">{creator.name || 'Unknown Creator'}</h3>
                     <p className="creator-handle">@{creator.instagramHandle || 'unknown'}</p>
 
                     {creator.bio && (
