@@ -193,35 +193,26 @@ export default function BrandDashboard() {
                         </div>
 
                         {/* Creator Carousel with Plan-based Access */}
-                        <div className="relative">
-                            <CreatorCarousel
-                                creators={user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators}
-                                isAuthenticated={true}
-                                showCTA={true}
-                                ctaText="View Profile"
-                                showMoreLink="/dashboard/brand/creators"
-                            />
+                        <CreatorCarousel
+                            creators={user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators}
+                            isAuthenticated={true}
+                            showCTA={true}
+                            ctaText="View Profile"
+                            showMoreLink="/dashboard/brand/creators"
+                        />
 
-                            {/* Upgrade CTA for Free users OR Explore More for others */}
-                            {user?.plan === 'free' ? (
-                                <div className="text-center py-6 mt-6 bg-[#141414] border border-[#1F1F1F] rounded-[14px]">
-                                    <p className="text-sm text-white mb-3">Upgrade to Basic to see all creators</p>
-                                    <button
-                                        onClick={() => router.push('/pricing')}
-                                        className="px-6 py-2 bg-white text-black rounded-full font-angelo text-[13px] font-semibold hover:opacity-85 transition-opacity"
-                                    >
-                                        Upgrade Now →
-                                    </button>
-                                </div>
-                            ) : (
-                                <div
-                                    className="text-center py-4 mt-4 bg-[#141414] border border-[#1F1F1F] rounded-[14px] cursor-pointer hover:bg-[#1A1A1A] transition-colors"
-                                    onClick={() => router.push('/dashboard/brand/creators')}
+                        {/* Upgrade CTA for Free users only */}
+                        {user?.plan === 'free' && (
+                            <div className="text-center py-6 mt-6 bg-[#141414] border border-[#1F1F1F] rounded-[14px]">
+                                <p className="text-sm text-white mb-3">Upgrade to Basic to see all creators</p>
+                                <button
+                                    onClick={() => router.push('/pricing')}
+                                    className="px-6 py-2 bg-white text-black rounded-full font-angelo text-[13px] font-semibold hover:opacity-85 transition-opacity"
                                 >
-                                    <span className="text-[13px] text-white font-angelo">Explore More Creators →</span>
-                                </div>
-                            )}
-                        </div>
+                                    Upgrade Now →
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </main>
 
