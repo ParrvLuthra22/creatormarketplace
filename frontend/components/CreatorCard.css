@@ -131,13 +131,13 @@
 }
 
 .creator-name {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    display: block;
+    visibility: visible;
+    opacity: 1;
     font-family: 'Milker', sans-serif;
     font-size: 22px;
     font-weight: 700;
-    color: #FFFFFF !important;
+    color: #FFFFFF;
     margin: 0 0 4px 0;
     letter-spacing: -0.5px;
     line-height: 1.2;
