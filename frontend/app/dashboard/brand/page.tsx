@@ -44,8 +44,6 @@ export default function BrandDashboard() {
         ? CREATORS
         : CREATORS.filter(c => c.niche === selectedFilter);
 
-    console.log('FILTERED CREATORS:', filteredCreators.map(c => ({ id: c.id, name: c.name, handle: c.instagramHandle })));
-
     const getStatusColor = (status: string) => {
         switch (status) {
             case "Accepted": return "bg-[#1A2A1A]";

@@ -38,6 +38,16 @@ export function CreatorCard({
     ctaText = "View Profile",
     onCtaClick
 }: CreatorCardProps) {
+    // DEBUG: Log what we're actually receiving
+    console.log('CreatorCard received:', {
+        id: creator.id,
+        name: creator.name,
+        handle: creator.instagramHandle,
+        hasName: !!creator.name,
+        nameType: typeof creator.name,
+        fullObject: creator
+    });
+
     const router = useRouter();
 
     const handleClick = () => {
