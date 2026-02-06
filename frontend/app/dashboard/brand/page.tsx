@@ -194,15 +194,6 @@ export default function BrandDashboard() {
                             </div>
                         </div>
 
-                        {/* DEBUG OUTPUT */}
-                        <div style={{ background: 'yellow', color: 'black', padding: '20px', margin: '20px 0', fontSize: '16px', fontWeight: 'bold' }}>
-                            DEBUG - First Creator Data:<br />
-                            ID: {filteredCreators[0]?.id}<br />
-                            NAME: {filteredCreators[0]?.name || 'UNDEFINED'}<br />
-                            HANDLE: {filteredCreators[0]?.instagramHandle || 'UNDEFINED'}<br />
-                            Full Object: {JSON.stringify(filteredCreators[0])}
-                        </div>
-
                         {/* Creator Carousel with Plan-based Access */}
                         <CreatorCarousel
                             creators={user?.plan === 'free' ? filteredCreators.slice(0, 10) : filteredCreators}

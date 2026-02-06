@@ -110,9 +110,7 @@ export function CreatorCard({
 
                 {/* Content Section */}
                 <div className="creator-card-content">
-                    <h3 className="creator-name" style={{ color: 'red', fontSize: '24px', fontWeight: 'bold' }}>
-                        DEBUG: {JSON.stringify(creator.name)} | {creator.name || 'Unknown Creator'}
-                    </h3>
+                    <h3 className="creator-name">{creator.name || 'Unknown Creator'}</h3>
                     <p className="creator-handle">@{creator.instagramHandle || 'unknown'}</p>
 
                     {creator.bio && (
