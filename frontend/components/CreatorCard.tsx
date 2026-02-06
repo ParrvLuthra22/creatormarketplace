@@ -84,11 +84,17 @@ export function CreatorCard({
                 {/* Profile Picture Section */}
                 <div className="creator-card-header">
                     <div className="profile-picture-container">
-                        <img
-                            src={creator.profilePicture || '/default-avatar.png'}
-                            alt={creator.name || 'Creator'}
-                            className="profile-picture"
-                        />
+                        {creator.profilePicture && creator.profilePicture !== '/api/placeholder/140/140' ? (
+                            <img
+                                src={creator.profilePicture}
+                                alt={creator.name || creator.instagramHandle}
+                                className="profile-picture"
+                            />
+                        ) : (
+                            <div className="profile-picture-placeholder">
+                                {(creator.name || creator.instagramHandle || '?').charAt(0).toUpperCase()}
+                            </div>
+                        )}
                         {creator.verified && (
                             <div className="verified-checkmark">
                                 <Check size={16} strokeWidth={3} />
@@ -104,7 +110,9 @@ export function CreatorCard({
 
                 {/* Content Section */}
                 <div className="creator-card-content">
-                    <h3 className="creator-name">{creator.name || 'Unknown Creator'}</h3>
+                    {creator.name && (
+                        <h3 className="creator-name">{creator.name}</h3>
+                    )}
                     <p className="creator-handle">@{creator.instagramHandle || 'unknown'}</p>
 
                     {creator.bio && (
