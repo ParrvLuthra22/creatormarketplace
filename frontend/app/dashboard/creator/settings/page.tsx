@@ -9,6 +9,7 @@ import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { LegalModal } from "@/components/LegalModal";
 import { DeleteAccountModal } from "@/components/DeleteAccountModal";
+import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
 import { ArrowRight } from "lucide-react";
 
 export default function CreatorSettings() {
@@ -201,7 +202,7 @@ export default function CreatorSettings() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <CreatorRightSidebar />
 
                 <MobileBottomNav role="creator" />
             </div>

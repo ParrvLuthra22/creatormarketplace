@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { RouteGuard } from "@/components/RouteGuard";
+import { BrandRightSidebar } from "@/components/BrandRightSidebar";
 import { ArrowRight, Plus } from "lucide-react";
 
 const PROPOSALS = [
@@ -125,7 +126,7 @@ export default function BrandProposals() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <BrandRightSidebar />
 
                 <MobileBottomNav role="brand" />
             </div>

@@ -6,6 +6,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { CreatorGrid } from "@/components/CreatorGrid";
+import { BrandRightSidebar } from "@/components/BrandRightSidebar";
 import { Search, Bell } from "lucide-react";
 
 // Dummy creator data - convert to new format with numeric followers
@@ -99,7 +100,7 @@ export default function BrandCreators() {
                     />
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <BrandRightSidebar />
 
                 <MobileBottomNav role="brand" />
             </div>
