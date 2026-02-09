@@ -1,0 +1,234 @@
+/* Main Card Container */
+.proposal-card {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 3/4;
+    background: linear-gradient(to bottom, #1A1A1F 0%, #0F0F12 100%);
+    border: 1px solid #2A2A2A2F;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 200ms ease;
+}
+
+.proposal-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Status Badge (Top Left) */
+.proposal-status-badge {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 32px;
+    padding: 10px 20px;
+    font-family: 'Angelo', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    font-weight: 500;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.proposal-status-badge.new {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.proposal-status-badge.accepted {
+    background: rgba(139, 255, 139, 0.12);
+    color: #8BFF8B;
+}
+
+.proposal-status-badge.declined {
+    background: rgba(255, 139, 139, 0.12);
+    color: #FF8B8B;
+}
+
+/* Brand Logo Section */
+.proposal-card-header {
+    height: 52%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: radial-gradient(circle at center,
+            rgba(82, 39, 255, 0.08) 0%,
+            rgba(82, 39, 255, 0.04) 30%,
+            transparent 60%);
+    padding-top: 20px;
+}
+
+.brand-logo-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    filter: drop-shadow(0 8px 16px rgba(82, 39, 255, 0.2));
+}
+
+.brand-logo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(135deg, #2A2A2F 0%, #1A1A1F 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Milker', sans-serif;
+    font-size: 40px;
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 6px rgba(82, 39, 255, 0.08);
+}
+
+/* Content Section */
+.proposal-card-content {
+    height: 48%;
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.proposal-brand-name {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    font-family: 'Milker', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    height: auto;
+    min-height: 26px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 10;
+}
+
+.proposal-campaign-title {
+    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 10px 0;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Stats Row */
+.proposal-stats {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0 12px;
+    margin-bottom: auto;
+}
+
+.proposal-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.proposal-stat-value {
+    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.3px;
+}
+
+.proposal-stat-label {
+    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+/* Deadline Badge */
+.proposal-deadline-badge {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 6px 12px;
+    font-family: 'Angelo', sans-serif;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    white-space: nowrap;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .proposal-status-badge {
+        top: 16px;
+        left: 16px;
+        padding: 7px 14px;
+        font-size: 10px;
+    }
+
+    .brand-logo-container {
+        width: 110px;
+        height: 110px;
+    }
+
+    .proposal-brand-name {
+        font-size: 24px;
+    }
+
+    .proposal-campaign-title {
+        font-size: 13px;
+    }
+
+    .proposal-stat-value {
+        font-size: 18px;
+    }
+
+    .proposal-stat-label {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 480px) {
+    .proposal-card-header {
+        height: 48%;
+    }
+
+    .proposal-card-content {
+        height: 52%;
+        padding: 16px 20px 20px;
+    }
+
+    .brand-logo-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .proposal-brand-name {
+        font-size: 22px;
+    }
+
+    .proposal-stats {
+        gap: 20px;
+        padding: 12px 0 14px;
+    }
+}

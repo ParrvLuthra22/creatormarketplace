@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { BrandRightSidebar } from "@/components/BrandRightSidebar";
 import { Plus } from "lucide-react";
 
 export default function BrandProfile() {
@@ -113,7 +114,7 @@ export default function BrandProfile() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <BrandRightSidebar />
 
                 <MobileBottomNav role="brand" />
             </div>

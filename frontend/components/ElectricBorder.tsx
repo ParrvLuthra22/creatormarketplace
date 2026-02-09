@@ -25,6 +25,7 @@ interface ElectricBorderProps {
     color?: string;
     speed?: number;
     chaos?: number;
+    thickness?: number;
     borderRadius?: number;
     className?: string;
     style?: CSSProperties;
@@ -35,6 +36,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
     color = '#5227FF',
     speed = 1,
     chaos = 0.12,
+    thickness = 2,
     borderRadius = 24,
     className,
     style
@@ -223,7 +225,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
             ctx.scale(dpr, dpr);
 
             ctx.strokeStyle = color;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = thickness;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
@@ -299,12 +301,12 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
             }
             resizeObserver.disconnect();
         };
-    }, [color, speed, chaos, borderRadius, octavedNoise, getRoundedRectPoint]);
+    }, [color, speed, chaos, thickness, borderRadius, octavedNoise, getRoundedRectPoint]);
 
     return (
         <div
             ref={containerRef}
-            className={`relative overflow-visible isolate ${className ?? ''}`}
+            className={`relative overflow-visible isolate w-full ${className ?? ''}`}
             style={{ '--electric-border-color': color, borderRadius, ...style } as CSSProperties}
         >
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[2]">
@@ -313,11 +315,11 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
             <div className="absolute inset-0 rounded-[inherit] pointer-events-none z-0">
                 <div
                     className="absolute inset-0 rounded-[inherit] pointer-events-none"
-                    style={{ border: `2px solid ${hexToRgba(color, 0.6)}`, filter: 'blur(1px)' }}
+                    style={{ border: `${thickness}px solid ${hexToRgba(color, 0.6)}`, filter: 'blur(1px)' }}
                 />
                 <div
                     className="absolute inset-0 rounded-[inherit] pointer-events-none"
-                    style={{ border: `2px solid ${color}`, filter: 'blur(4px)' }}
+                    style={{ border: `${thickness}px solid ${color}`, filter: 'blur(4px)' }}
                 />
                 <div
                     className="absolute inset-0 rounded-[inherit] pointer-events-none -z-[1] scale-110 opacity-30"

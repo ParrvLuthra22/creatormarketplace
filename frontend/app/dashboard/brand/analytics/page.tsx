@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { BrandRightSidebar } from "@/components/BrandRightSidebar";
 import { TrendingUp, Send, Target, Clock } from "lucide-react";
 
 const ACTIVITIES = [
@@ -106,7 +107,7 @@ export default function BrandAnalytics() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <BrandRightSidebar />
 
                 <MobileBottomNav role="brand" />
             </div>

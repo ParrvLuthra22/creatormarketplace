@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorSidebar } from "@/components/CreatorSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
 
 const ACTIVITIES = [
     { text: "New proposal from FitLife Nutrition", time: "2 hours ago" },
@@ -105,7 +106,7 @@ export default function CreatorAnalytics() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <CreatorRightSidebar />
 
                 <MobileBottomNav role="creator" />
             </div>

@@ -9,6 +9,7 @@ import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { LegalModal } from "@/components/LegalModal";
 import { DeleteAccountModal } from "@/components/DeleteAccountModal";
+import { BrandRightSidebar } from "@/components/BrandRightSidebar";
 import { ArrowRight } from "lucide-react";
 
 export default function BrandSettings() {
@@ -305,7 +306,7 @@ export default function BrandSettings() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <BrandRightSidebar />
 
                 <MobileBottomNav role="brand" />
             </div>

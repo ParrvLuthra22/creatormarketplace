@@ -6,6 +6,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorSidebar } from "@/components/CreatorSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Plus, Check } from "lucide-react";
+import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
 
 const AVAILABLE_NICHES = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Comedy", "Finance", "Education"];
 
@@ -179,7 +180,7 @@ export default function CreatorProfile() {
                     </div>
                 </main>
 
-                <aside className="hidden lg:block w-[280px]" />
+                <CreatorRightSidebar />
 
                 <MobileBottomNav role="creator" />
             </div>

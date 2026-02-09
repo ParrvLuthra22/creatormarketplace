@@ -8,16 +8,18 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorSidebar } from "@/components/CreatorSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Search, Bell, DollarSign, Mail, Eye, ArrowRight, FileText, User as UserIcon, CheckCircle, ChevronDown, Check } from "lucide-react";
+import { ProposalCard } from "@/components/ProposalCard";
+import { ProposalCarousel } from "@/components/ProposalCarousel";
 
 // Dummy proposal data
 const PROPOSALS = [
-    { brand: "FitLife Nutrition", campaign: "Protein Shake Launch", content: "2 Reels, 3 Stories", budget: "₹15,000", deadline: "Feb 15, 2026", status: "New", avatar: "FL" },
-    { brand: "Urban Threads", campaign: "Summer Collection", content: "1 Reel, 5 Posts", budget: "₹22,000", deadline: "Feb 28, 2026", status: "New", avatar: "UT" },
-    { brand: "GlowUp Skincare", campaign: "Skincare Routine", content: "3 Reels", budget: "₹8,000", deadline: "Mar 5, 2026", status: "New", avatar: "GS" },
-    { brand: "TechVerse", campaign: "Gadget Review", content: "1 Video, 2 Posts", budget: "₹12,000", deadline: "Feb 20, 2026", status: "New", avatar: "TV" },
-    { brand: "NatureBite", campaign: "Organic Campaign", content: "4 Stories, 2 Posts", budget: "₹9,500", deadline: "Jan 30, 2026", status: "Accepted", avatar: "NB" },
-    { brand: "PixelArt Studio", campaign: "Design Tools", content: "2 Reels", budget: "₹6,000", deadline: "Jan 22, 2026", status: "Accepted", avatar: "PA" },
-    { brand: "QuickFit App", campaign: "App Promo", content: "1 Reel, 3 Stories", budget: "₹5,000", deadline: "Jan 10, 2026", status: "Declined", avatar: "QF" },
+    { id: 1, brandName: "FitLife Nutrition", title: "Protein Shake Launch", brandLogo: "FL", budget: 15000, deliverables: "2 Reels, 3 Stories", deadline: "2026-02-15", status: "new" as const },
+    { id: 2, brandName: "Urban Threads", title: "Summer Collection", brandLogo: "UT", budget: 22000, deliverables: "1 Reel, 5 Posts", deadline: "2026-02-28", status: "new" as const },
+    { id: 3, brandName: "GlowUp Skincare", title: "Skincare Routine", brandLogo: "GS", budget: 8000, deliverables: "3 Reels", deadline: "2026-03-05", status: "new" as const },
+    { id: 4, brandName: "TechVerse", title: "Gadget Review", brandLogo: "TV", budget: 12000, deliverables: "1 Video, 2 Posts", deadline: "2026-02-20", status: "new" as const },
+    { id: 5, brandName: "NatureBite", title: "Organic Campaign", brandLogo: "NB", budget: 9500, deliverables: "4 Stories, 2 Posts", deadline: "2026-01-30", status: "accepted" as const },
+    { id: 6, brandName: "PixelArt Studio", title: "Design Tools", brandLogo: "PA", budget: 6000, deliverables: "2 Reels", deadline: "2026-01-22", status: "accepted" as const },
+    { id: 7, brandName: "QuickFit App", title: "App Promo", brandLogo: "QF", budget: 5000, deliverables: "1 Reel, 3 Stories", deadline: "2026-01-10", status: "declined" as const },
 ];
 
 const ACTIVITIES = [
@@ -126,14 +128,14 @@ export default function CreatorDashboard() {
                     {/* PROPOSALS INBOX */}
                     <div>
                         {/* Section Header with Filters */}
-                        <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-xl font-bold text-white font-milker">Proposals</h2>
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-white font-milker">Proposals</h2>
                             <div className="flex gap-2 filter-pills">
                                 {FILTER_TABS.map(tab => (
                                     <button
                                         key={tab.label}
                                         onClick={() => setSelectedFilter(tab.label)}
-                                        className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors ${selectedFilter === tab.label
+                                        className={`px-4 py-2 rounded-full text-xs font-angelo transition-colors ${selectedFilter === tab.label
                                             ? "bg-white text-black"
                                             : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
                                             }`}
@@ -144,68 +146,15 @@ export default function CreatorDashboard() {
                             </div>
                         </div>
 
-                        {/* List Container */}
-                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] overflow-hidden">
-                            {/* Column Headers */}
-                            <div className="proposal-list-header grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3 border-b border-[#1F1F1F]">
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">BRAND</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest campaign-col">CAMPAIGN</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest budget-col">BUDGET</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest deadline-col">DEADLINE</div>
-                                <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest status-col">STATUS</div>
-                                <div></div>
-                            </div>
-
-                            {/* Proposal Rows */}
-                            {filteredProposals.slice(0, 3).map((proposal, index) => (
-                                <div
-                                    key={index}
-                                    className="proposal-row grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3.5 border-b border-[#1F1F1F] last:border-b-0 h-16 cursor-pointer hover:bg-[#1A1A1A] transition-colors"
-                                >
-                                    {/* Brand Column */}
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-[38px] h-[38px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 proposal-avatar">
-                                            {proposal.avatar}
-                                        </div>
-                                        <div className="min-w-0">
-                                            <p className="text-sm font-semibold text-white truncate">{proposal.brand}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Campaign Column */}
-                                    <div className="min-w-0 campaign-col">
-                                        <p className="text-sm text-white truncate">{proposal.campaign}</p>
-                                        <p className="text-[11px] text-[#6B6B6B] font-angelo truncate">{proposal.content}</p>
-                                    </div>
-
-                                    {/* Budget */}
-                                    <div className="text-sm text-white font-angelo budget-col">{proposal.budget}</div>
-
-                                    {/* Deadline */}
-                                    <div className="text-[13px] text-[#6B6B6B] deadline-col">{proposal.deadline}</div>
-
-                                    {/* Status */}
-                                    <div className="status-col">
-                                        <span className={`inline-block px-2.5 py-1 rounded-lg text-[10px] text-white font-angelo ${getStatusColor(proposal.status)}`}>
-                                            {proposal.status}
-                                        </span>
-                                    </div>
-
-                                    {/* Arrow */}
-                                    <div className="flex items-center justify-center">
-                                        <ArrowRight className="w-[18px] h-[18px] text-white" />
-                                    </div>
-                                </div>
-                            ))}
-
-                            {/* See All Row */}
-                            <div
-                                className="text-center py-4 border-t border-[#1F1F1F] cursor-pointer hover:bg-[#1A1A1A] transition-colors"
-                                onClick={() => router.push('/dashboard/creator/proposals')}
-                            >
-                                <span className="text-[13px] text-white font-angelo">See all proposals →</span>
-                            </div>
-                        </div>
+                        {/* Proposals Carousel */}
+                        <ProposalCarousel
+                            proposals={filteredProposals}
+                            onProposalClick={(proposal) => {
+                                console.log('Clicked proposal:', proposal.id);
+                                // Handle proposal click - could open modal or navigate
+                            }}
+                            showMoreLink="/dashboard/creator/proposals"
+                        />
                     </div>
                 </main>
 
