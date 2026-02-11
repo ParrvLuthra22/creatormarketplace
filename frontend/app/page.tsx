@@ -45,7 +45,6 @@ export default function Home() {
       (creator.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (creator.instagramHandle?.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesSearch;
-    // Note: Niche filtering removed since backend doesn't return niche data yet
   });
 
   // Redirect logged-in users to their respective dashboards
@@ -83,13 +82,23 @@ export default function Home() {
     setModalState(null);
   };
 
+  // Handler for "Show More Creators" button
+  const handleShowMore = () => {
+    if (!isAuthenticated) {
+      handleAuthGate();
+    } else {
+      // If already authenticated (should be redirected by useEffect, but just in case)
+      router.push('/dashboard/brand');
+    }
+  };
+
   // Show loading state while checking auth
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <p className="text-[#6B6B6B] text-sm">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00D084]"></div>
+          <p className="text-[#6B6B6B] text-sm font-angelo">Loading...</p>
         </div>
       </div>
     );
@@ -100,15 +109,15 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <p className="text-[#6B6B6B] text-sm">Redirecting to your dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00D084]"></div>
+          <p className="text-[#6B6B6B] text-sm font-angelo">Redirecting to your dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A]">
+    <main className="min-h-screen bg-[#0A0A0A] text-[#F5F1E8]">
       <Header
         user={user}
         onLoginClick={handleOpenLogin}
@@ -119,52 +128,52 @@ export default function Home() {
       <div className="flex flex-col items-center pt-0">
 
         {/* Hero Section */}
-        <div className="hero-section text-center px-5 pt-8 pb-6 md:pt-10 md:pb-7">
-          <h1 className="hero-heading text-[48px] md:text-[48px] text-white mb-2" style={{ fontFamily: 'Milker, sans-serif' }}>
+        <div className="hero-section text-center px-5 pt-12 pb-8 md:pt-16 md:pb-10">
+          <h1 className="hero-heading text-[48px] md:text-[64px] text-[#F5F1E8] mb-4 tracking-[-1px]" style={{ fontFamily: 'Milker, sans-serif' }}>
             Find the right creator
           </h1>
-          <p className="hero-subtext text-[16px] md:text-[16px] text-[#6B6B6B] mb-2 hidden sm:block">
+          <p className="hero-subtext text-[16px] md:text-[18px] text-[#C5C5C5] mb-6 hidden sm:block font-sf-pro font-light">
             Browse Instagram creators who match your brand
           </p>
           <div className="trust-pills hidden sm:flex items-center justify-center gap-4 mt-2">
-            <div className="pill bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-[14px] py-[6px] text-[13px] text-[#6B6B6B]">
+            <div className="pill bg-[#141414] border border-[#2A2A2A] rounded-[20px] px-[16px] py-[8px] text-[13px] text-[#C5C5C5] font-angelo tracking-wide">
               ✓ 50+ Creators
             </div>
-            <div className="pill bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-[14px] py-[6px] text-[13px] text-[#6B6B6B]">
+            <div className="pill bg-[#141414] border border-[#2A2A2A] rounded-[20px] px-[16px] py-[8px] text-[13px] text-[#C5C5C5] font-angelo tracking-wide">
               ✓ Real engagement data
             </div>
-            <div className="pill bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-[14px] py-[6px] text-[13px] text-[#6B6B6B]">
+            <div className="pill bg-[#141414] border border-[#2A2A2A] rounded-[20px] px-[16px] py-[8px] text-[13px] text-[#C5C5C5] font-angelo tracking-wide">
               ✓ No agency fees
             </div>
           </div>
         </div>
 
         {/* Search and Filters Container */}
-        <div className="container mx-auto max-w-4xl px-4 mt-0 mb-2">
+        <div className="container mx-auto max-w-4xl px-4 mt-0 mb-8">
 
           {/* SEARCH BAR */}
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B6B6B]" />
+          <div className="mb-8">
+            <div className="relative group">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B6B6B] group-focus-within:text-[#00D084] transition-colors" />
               <input
                 type="text"
                 placeholder="Search creators by name or handle..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 pl-12 pr-4 bg-[#141414] border border-[#1F1F1F] rounded-xl text-white text-sm focus:outline-none focus:border-[#3D3D3D] transition-colors"
+                className="w-full h-14 pl-14 pr-6 bg-[#141414] border border-[#2A2A2A] rounded-2xl text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] focus:ring-1 focus:ring-[#00D084]/20 transition-all placeholder:text-[#6B6B6B] shadow-lg shadow-black/20"
               />
             </div>
           </div>
 
           {/* FILTER PILLS */}
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div className="flex flex-wrap gap-2.5 justify-center mb-4">
             {FILTER_NICHES.map(niche => (
               <button
                 key={niche}
                 onClick={() => setSelectedFilter(niche)}
-                className={`px-4 py-2 rounded-full text-xs font-angelo transition-colors ${selectedFilter === niche
-                  ? "bg-white text-black"
-                  : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
+                className={`px-5 py-2.5 rounded-full text-xs font-angelo tracking-wider transition-all duration-300 border ${selectedFilter === niche
+                  ? "bg-[#00D084] text-[#0A0A0A] border-[#00D084] shadow-[0_0_15px_rgba(0,208,132,0.4)]"
+                  : "bg-[#141414] text-[#C5C5C5] border-[#2A2A2A] hover:border-[#00D084]/50 hover:text-white hover:bg-[#1A1A1A]"
                   }`}
               >
                 {niche}
@@ -175,15 +184,16 @@ export default function Home() {
 
         {/* Creator Discovery Section - visible to unauthenticated users (potential brands) */}
         {creatorsLoading ? (
-          <div className="py-12 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-            <p className="text-[#6B6B6B] text-sm mt-3">Loading creators...</p>
+          <div className="py-20 text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#00D084]"></div>
+            <p className="text-[#6B6B6B] text-sm mt-4 font-angelo tracking-widest uppercase">Loading creators...</p>
           </div>
         ) : (
           <CreatorSection
             creators={filteredCreators}
             isAuthenticated={isAuthenticated}
             onAuthGate={handleAuthGate}
+            onShowMore={handleShowMore}
           />
         )}
       </div>
@@ -211,6 +221,7 @@ export default function Home() {
         @media (max-width: 768px) {
           .hero-heading {
             font-size: 36px;
+            line-height: 1.1;
           }
           .hero-subtext {
             font-size: 14px;
@@ -219,7 +230,7 @@ export default function Home() {
         
         @media (max-width: 480px) {
           .hero-heading {
-            font-size: 36px;
+            font-size: 32px;
           }
           .hero-subtext,
           .trust-pills {

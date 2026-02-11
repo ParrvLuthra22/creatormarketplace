@@ -21,15 +21,15 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
     };
 
     return (
-        <header className="sticky top-0 left-0 right-0 z-[100] bg-[#0A0A0A]/80 backdrop-blur-md border-b border-[#1F1F1F] h-16">
+        <header className="sticky top-0 left-0 right-0 z-[100] bg-[#F8F8F8]/80 backdrop-blur-md border-b border-[#E5E5E5] h-16">
             <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
-                <Link href="/" className="text-xl font-bold tracking-tight text-white font-milker">
+                <Link href="/" className="text-xl font-bold tracking-tight text-[#0A0A0A] font-milker">
                     CreatorSync
                 </Link>
 
                 {/* Navigation */}
                 <nav className="hidden md:block">
-                    <Link href="/pricing" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
+                    <Link href="/pricing" className="text-sm text-[#6B6B6B] hover:text-[#0A0A0A] transition-colors">
                         Pricing
                     </Link>
                 </nav>
@@ -39,11 +39,11 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
                         <>
                             {/* User Avatar */}
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-black font-semibold text-sm shadow-sm">
+                                <div className="w-9 h-9 rounded-full bg-[#0A0A0A] flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                                     {user.fullName.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="hidden md:block">
-                                    <p className="text-sm font-semibold text-white">{user.fullName}</p>
+                                    <p className="text-sm font-semibold text-[#0A0A0A]">{user.fullName}</p>
                                     <p className="text-xs text-[#6B6B6B]">{user.accountType}</p>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleProfileClick}
-                                className="hidden sm:flex text-white hover:bg-[#1A1A1A] font-angelo"
+                                className="hidden sm:flex text-[#0A0A0A] hover:bg-[#E5E5E5] font-angelo"
                             >
                                 My Profile
                             </Button>
@@ -61,7 +61,7 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
                                 variant="ghost"
                                 size="sm"
                                 onClick={onLogoutClick}
-                                className="text-white hover:bg-[#1A1A1A] font-angelo"
+                                className="text-[#0A0A0A] hover:bg-[#E5E5E5] font-angelo"
                             >
                                 Logout
                             </Button>
@@ -72,7 +72,7 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
                                 variant="ghost"
                                 size="sm"
                                 onClick={onLoginClick}
-                                className="text-white hover:bg-[#1A1A1A] border border-white font-angelo"
+                                className="text-[#0A0A0A] hover:bg-[#E5E5E5] border border-[#0A0A0A] font-angelo"
                             >
                                 Login
                             </Button>
@@ -80,7 +80,7 @@ export function Header({ user, onLoginClick, onSignupClick, onLogoutClick }: Hea
                                 variant="primary"
                                 size="sm"
                                 onClick={onSignupClick}
-                                className="bg-white text-black hover:bg-[#E5E5E5] font-angelo"
+                                className="bg-[#0A0A0A] text-white hover:bg-[#2A2A2A] font-angelo"
                             >
                                 Sign Up
                             </Button>

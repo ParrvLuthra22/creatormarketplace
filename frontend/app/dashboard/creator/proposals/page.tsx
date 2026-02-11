@@ -7,6 +7,7 @@ import { CreatorSidebar } from "@/components/CreatorSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ProposalCard } from "@/components/ProposalCard";
 import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 const PROPOSALS = [
     { id: 1, brandName: "FitLife Nutrition", title: "Protein Shake Launch", brandLogo: "FL", budget: 15000, deliverables: "2 Reels, 3 Stories", deadline: "2026-02-15", status: "new" as const },
@@ -26,7 +27,7 @@ const FILTER_TABS = [
 ];
 
 export default function CreatorProposals() {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [selectedFilter, setSelectedFilter] = useState("All");
 
     const filteredProposals = selectedFilter === "All"
@@ -36,9 +37,25 @@ export default function CreatorProposals() {
             return p.status === statusMap[selectedFilter];
         });
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+
     return (
         <RouteGuard allowedRole="creator">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="min-h-screen bg-[#0A0A0A] text-[#F5F1E8] font-sf-pro">
+
+                {/* Fixed Header */}
+                <DashboardHeader
+                    user={user || { fullName: "Creator", accountType: "Creator", email: "", id: "", plan: "free", createdAt: new Date() }}
+                    onLogout={handleLogout}
+                />
+
+                {/* Left Sidebar */}
                 <div className="hidden md:block">
                     <CreatorSidebar
                         userName={user?.fullName || "Creator User"}
@@ -46,41 +63,52 @@ export default function CreatorProposals() {
                     />
                 </div>
 
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
-                    <h1 className="text-[28px] font-bold text-white font-milker mb-8">Proposals</h1>
+                {/* Right Sidebar */}
+                <div className="hidden xl:block">
+                    <CreatorRightSidebar />
+                </div>
 
-                    {/* Filter Pills */}
-                    <div className="flex gap-2 mb-4">
-                        {FILTER_TABS.map(tab => (
-                            <button
-                                key={tab.label}
-                                onClick={() => setSelectedFilter(tab.label)}
-                                className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors ${selectedFilter === tab.label
-                                    ? "bg-white text-black"
-                                    : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
-                                    }`}
-                            >
-                                {tab.label}{tab.count !== null ? ` (${tab.count})` : ''}
-                            </button>
-                        ))}
-                    </div>
+                {/* Main Content - REMOVED xl:mr-[320px] to fix overlap with hover sidebar */}
+                <main className="pt-24 pb-24 md:pb-12 px-6 md:ml-[240px] min-h-screen transition-all duration-300">
+                    <div className="max-w-[1240px] mx-auto">
+                        <h1 className="text-[28px] font-bold text-[#F5F1E8] font-milker mb-8">Proposals</h1>
 
-                    {/* Proposals Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredProposals.map((proposal) => (
-                            <ProposalCard
-                                key={proposal.id}
-                                proposal={proposal}
-                                onClick={() => {
-                                    console.log('Clicked proposal:', proposal.id);
-                                    // Handle proposal click - could open modal or navigate
-                                }}
-                            />
-                        ))}
+                        {/* Filter Pills */}
+                        <div className="flex gap-2 mb-8 flex-wrap">
+                            {FILTER_TABS.map(tab => (
+                                <button
+                                    key={tab.label}
+                                    onClick={() => setSelectedFilter(tab.label)}
+                                    className={`px-4 py-2 rounded-full text-xs font-angelo font-semibold tracking-wide transition-all duration-200 ${selectedFilter === tab.label
+                                        ? "bg-[#F5F1E8] text-[#0A0A0A] shadow-[0_0_12px_rgba(245,241,232,0.3)]"
+                                        : "bg-[#141414] text-[#6B6B6B] border border-[#2A2A2A] hover:border-[#F5F1E8] hover:text-[#F5F1E8]"
+                                        }`}
+                                >
+                                    {tab.label}{tab.count !== null ? ` (${tab.count})` : ''}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Proposals Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredProposals.map((proposal) => (
+                                <ProposalCard
+                                    key={proposal.id}
+                                    proposal={proposal}
+                                    onClick={() => {
+                                        console.log('Clicked proposal:', proposal.id);
+                                    }}
+                                />
+                            ))}
+                        </div>
+
+                        {filteredProposals.length === 0 && (
+                            <div className="flex flex-col items-center justify-center py-20 text-[#6B6B6B]">
+                                <p className="font-milker text-xl opacity-50">No proposals found</p>
+                            </div>
+                        )}
                     </div>
                 </main>
-
-                <CreatorRightSidebar />
 
                 <MobileBottomNav role="creator" />
             </div>

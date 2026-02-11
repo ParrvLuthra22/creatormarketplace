@@ -39,7 +39,7 @@ export default function BrandProposals() {
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
                 <div className="hidden md:block">
                     <DashboardSidebar
                         userName={user?.fullName || "Brand User"}
@@ -50,8 +50,8 @@ export default function BrandProposals() {
                 <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
                     {/* Page Header */}
                     <div className="flex justify-between items-center mb-8">
-                        <h1 className="text-[28px] font-bold text-white font-milker">Proposals</h1>
-                        <button className="px-5 h-11 bg-white text-black rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity flex items-center gap-2">
+                        <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker">Proposals</h1>
+                        <button className="px-5 h-11 bg-[#0A0A0A] text-white rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity flex items-center gap-2">
                             <Plus className="w-4 h-4" />
                             New Proposal
                         </button>
@@ -64,8 +64,8 @@ export default function BrandProposals() {
                                 key={tab}
                                 onClick={() => setSelectedFilter(tab)}
                                 className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors ${selectedFilter === tab
-                                    ? "bg-white text-black"
-                                    : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
+                                    ? "bg-[#0A0A0A] text-white"
+                                    : "bg-white text-[#0A0A0A] border border-[#E5E5E5] hover:bg-[#F0F0F0]"
                                     }`}
                             >
                                 {tab}
@@ -74,14 +74,14 @@ export default function BrandProposals() {
                     </div>
 
                     {/* Proposals List */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] overflow-hidden">
+                    <div className="bg-white border border-[#E5E5E5] rounded-[14px] overflow-hidden">
                         {/* Column Headers */}
-                        <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3 border-b border-[#1F1F1F]">
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">CREATOR</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">CAMPAIGN</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">BUDGET</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">DATE SENT</div>
-                            <div className="text-[10px] uppercase text-[#3D3D3D] tracking-widest">STATUS</div>
+                        <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3 border-b border-[#E5E5E5]">
+                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">CREATOR</div>
+                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">CAMPAIGN</div>
+                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">BUDGET</div>
+                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">DATE SENT</div>
+                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">STATUS</div>
                             <div></div>
                         </div>
 
@@ -89,23 +89,23 @@ export default function BrandProposals() {
                         {filteredProposals.map((proposal, index) => (
                             <div
                                 key={index}
-                                className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3.5 border-b border-[#1F1F1F] last:border-b-0 h-16 cursor-pointer hover:bg-[#1A1A1A] transition-colors"
+                                className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3.5 border-b border-[#E5E5E5] last:border-b-0 h-16 cursor-pointer hover:bg-[#F8F8F8] transition-colors"
                             >
                                 {/* Creator */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-[38px] h-[38px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                                    <div className="w-[38px] h-[38px] rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#0A0A0A] text-sm font-semibold flex-shrink-0">
                                         {proposal.avatar}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-semibold text-white truncate">{proposal.creator}</p>
+                                        <p className="text-sm font-semibold text-[#0A0A0A] truncate">{proposal.creator}</p>
                                     </div>
                                 </div>
 
                                 {/* Campaign */}
-                                <div className="text-sm text-white truncate">{proposal.campaign}</div>
+                                <div className="text-sm text-[#0A0A0A] truncate">{proposal.campaign}</div>
 
                                 {/* Budget */}
-                                <div className="text-sm text-white font-angelo">{proposal.budget}</div>
+                                <div className="text-sm text-[#0A0A0A] font-angelo">{proposal.budget}</div>
 
                                 {/* Date Sent */}
                                 <div className="text-[13px] text-[#6B6B6B]">{proposal.dateSent}</div>
@@ -119,7 +119,7 @@ export default function BrandProposals() {
 
                                 {/* Arrow */}
                                 <div className="flex items-center justify-center">
-                                    <ArrowRight className="w-[18px] h-[18px] text-white" />
+                                    <ArrowRight className="w-[18px] h-[18px] text-[#0A0A0A]" />
                                 </div>
                             </div>
                         ))}

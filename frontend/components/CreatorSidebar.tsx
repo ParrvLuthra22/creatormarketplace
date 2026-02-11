@@ -11,15 +11,15 @@ interface NavItem {
     name: string;
     href: string;
     icon: typeof Home;
+    badge?: number;
 }
 
 const navItems: NavItem[] = [
     { name: "Home", href: "/dashboard/creator", icon: Home },
-    { name: "Proposals", href: "/dashboard/creator/proposals", icon: Mail },
-    { name: "Messages", href: "/dashboard/creator/messages", icon: MessageCircle },
+    { name: "Proposals", href: "/dashboard/creator/proposals", icon: Mail, badge: 4 },
+    { name: "Messages", href: "/dashboard/creator/messages", icon: MessageCircle, badge: 2 },
     { name: "My Profile", href: "/dashboard/creator/profile", icon: User },
     { name: "Analytics", href: "/dashboard/creator/analytics", icon: BarChart3 },
-    { name: "Settings", href: "/dashboard/creator/settings", icon: Settings },
 ];
 
 interface CreatorSidebarProps {
@@ -44,64 +44,66 @@ export function CreatorSidebar({ userName, userAvatar }: CreatorSidebarProps) {
     };
 
     return (
-        <aside className="w-[220px] h-screen bg-[#0D0D0D] border-r border-[#1F1F1F] flex flex-col fixed left-0 top-0">
+        <aside className="w-[240px] h-screen bg-[#0F0F0F] border-r border-[#1F1F1F] flex flex-col fixed left-0 top-0 z-50 transition-all duration-300">
             {/* Logo */}
-            <div className="p-6 border-b border-[#1F1F1F] flex-shrink-0">
-                <h1 className="text-xl font-bold text-white font-milker">CreatorSync</h1>
+            <div className="p-8 pb-6 border-b border-[#1F1F1F] flex-shrink-0">
+                <h1 className="text-2xl font-bold text-[#F5F1E8] font-milker tracking-[-0.5px]">CreatorSync</h1>
             </div>
 
-            {/* Navigation - with bottom padding to prevent overlap with logout */}
-            <nav className="flex-1 py-6 overflow-y-auto pb-24">
-                <ul className="space-y-1">
-                    {navItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = pathname === item.href;
+            {/* Navigation */}
+            <nav className="flex-1 py-6 px-4 overflow-y-auto pb-24 space-y-1">
+                {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href;
 
-                        return (
-                            <li key={item.name}>
-                                <Link
-                                    href={item.href}
-                                    className={`flex items-center gap-3 px-6 py-3 text-sm font-angelo transition-colors relative ${isActive
-                                        ? "text-white bg-[#1A1A1A]"
-                                        : "text-[#6B6B6B] hover:text-white hover:bg-[#1A1A1A]/50"
-                                        }`}
-                                >
-                                    {isActive && (
-                                        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white" />
-                                    )}
-                                    <Icon className="w-5 h-5" />
-                                    <span>{item.name}</span>
-                                </Link>
-                            </li>
-                        );
-                    })}
-                </ul>
+                    return (
+                        <Link
+                            key={item.name}
+                            href={item.href}
+                            className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro tracking-[0.2px] transition-all duration-200 relative ${isActive
+                                    ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium pl-3.5 border-l-[3px] border-[#00D084]"
+                                    : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
+                                }`}
+                        >
+                            <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive ? 'text-[#00D084]' : 'text-[#6B6B6B] group-hover:text-[#C5C5C5]'}`} />
+                            <span className="flex-1">{item.name}</span>
+
+                            {item.badge && (
+                                <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#FF4757] text-[11px] font-bold text-white shadow-sm">
+                                    {item.badge}
+                                </span>
+                            )}
+                        </Link>
+                    );
+                })}
             </nav>
 
-            {/* User Profile with Logout - Fixed at bottom */}
-            <div
-                className="flex-shrink-0 p-4 px-5 border-t border-[#1F1F1F] bg-[#0D0D0D] cursor-pointer hover:bg-[#1A1A1A] transition-colors group"
-                onClick={() => setShowLogoutConfirm(true)}
-            >
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black font-semibold text-xs flex-shrink-0">
-                        {userAvatar || userName.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-semibold text-white truncate">{userName}</p>
-                        <span className="inline-block px-2 py-0.5 text-[10px] font-angelo bg-[#1F1F1F] text-[#6B6B6B] rounded-full">
-                            Creator
-                        </span>
-                    </div>
-                    <LogOut className="w-4 h-4 text-[#6B6B6B] group-hover:text-white transition-colors flex-shrink-0" />
+            {/* Bottom Actions */}
+            <div className="flex-shrink-0 p-4 border-t border-[#1F1F1F] bg-[#0F0F0F]">
+                <Link
+                    href="/dashboard/creator/settings"
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro mb-3 transition-colors ${pathname === "/dashboard/creator/settings"
+                            ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium"
+                            : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
+                        }`}
+                >
+                    <Settings className="w-5 h-5" />
+                    <span>Settings</span>
+                </Link>
+
+                <div
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro text-[#6B6B6B] hover:bg-[rgba(255,71,87,0.1)] hover:text-[#FF4757] cursor-pointer transition-colors"
+                    onClick={() => setShowLogoutConfirm(true)}
+                >
+                    <LogOut className="w-5 h-5" />
+                    <span>Log Out</span>
                 </div>
             </div>
 
-            {/* Logout Confirmation Modal */}
             <LogoutConfirmModal
                 isOpen={showLogoutConfirm}
+                onClose={() => setShowLogoutConfirm(false)}
                 onConfirm={handleActualLogout}
-                onCancel={() => setShowLogoutConfirm(false)}
             />
         </aside>
     );

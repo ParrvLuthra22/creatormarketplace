@@ -108,7 +108,7 @@ export default function BrandMessagesPage() {
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
                 {/* LEFT SIDEBAR */}
                 <div className="hidden md:block">
                     <DashboardSidebar
@@ -120,20 +120,20 @@ export default function BrandMessagesPage() {
                 {/* MESSAGES LAYOUT - Two Panel */}
                 <div className="flex-1 flex overflow-hidden md:ml-[220px]">
                     {/* CONVERSATION LIST PANEL */}
-                    <div className={`w-full md:w-[280px] bg-[#0D0D0D] border-r border-[#1F1F1F] flex flex-col ${showMobileChat ? 'hidden md:flex' : 'flex'}`}>
+                    <div className={`w-full md:w-[280px] bg-white border-r border-[#E5E5E5] flex flex-col ${showMobileChat ? 'hidden md:flex' : 'flex'}`}>
                         {/* Header */}
                         <div className="px-[18px] pt-6 pb-4">
-                            <h2 className="text-lg font-bold text-white font-milker">Messages</h2>
+                            <h2 className="text-lg font-bold text-[#0A0A0A] font-milker">Messages</h2>
                         </div>
 
                         {/* Search Bar */}
                         <div className="px-[14px] mb-4">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#3D3D3D]" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B6B]" />
                                 <input
                                     type="text"
                                     placeholder="Search conversations..."
-                                    className="w-full h-[38px] bg-[#141414] border border-[#1F1F1F] rounded-lg pl-10 pr-4 text-[13px] text-white placeholder:text-[#3D3D3D] focus:outline-none focus:border-white transition-colors"
+                                    className="w-full h-[38px] bg-[#F5F5F5] border border-[#E5E5E5] rounded-lg pl-10 pr-4 text-[13px] text-[#0A0A0A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0A0A0A] transition-colors"
                                 />
                             </div>
                         </div>
@@ -148,27 +148,27 @@ export default function BrandMessagesPage() {
                                         setShowMobileChat(true);
                                     }}
                                     className={`flex items-center gap-3 px-4 py-3 mx-2 mb-0.5 rounded-[10px] cursor-pointer transition-colors ${selectedConversation === conv.id
-                                        ? 'bg-[#1F1F1F]'
-                                        : 'hover:bg-[#1A1A1A]'
+                                        ? 'bg-[#F0F0F0]'
+                                        : 'hover:bg-[#F5F5F5]'
                                         }`}
                                 >
                                     {/* Avatar */}
                                     <div className="relative flex-shrink-0">
-                                        <div className="w-[38px] h-[38px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-sm font-semibold">
+                                        <div className="w-[38px] h-[38px] rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#0A0A0A] text-sm font-semibold">
                                             {conv.avatar}
                                         </div>
                                         {conv.unread && (
-                                            <div className="absolute bottom-0 right-0 w-2 h-2 bg-white rounded-full border-2 border-[#0D0D0D]"></div>
+                                            <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#0A0A0A] rounded-full border-2 border-white"></div>
                                         )}
                                     </div>
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-0.5">
-                                            <p className={`text-sm font-semibold truncate ${conv.unread ? 'text-white' : 'text-white'}`}>
+                                            <p className={`text-sm font-semibold truncate ${conv.unread ? 'text-[#0A0A0A]' : 'text-[#0A0A0A]'}`}>
                                                 {conv.name}
                                             </p>
-                                            <span className="text-[10px] text-[#3D3D3D] ml-2 flex-shrink-0">
+                                            <span className="text-[10px] text-[#6B6B6B] ml-2 flex-shrink-0">
                                                 {conv.timestamp}
                                             </span>
                                         </div>
@@ -177,7 +177,7 @@ export default function BrandMessagesPage() {
                                                 {conv.lastMessage}
                                             </p>
                                             {conv.unread && conv.unreadCount && (
-                                                <span className="ml-2 flex-shrink-0 min-w-[18px] h-[18px] bg-white rounded-full flex items-center justify-center text-[10px] text-black font-angelo font-semibold">
+                                                <span className="ml-2 flex-shrink-0 min-w-[18px] h-[18px] bg-[#0A0A0A] rounded-full flex items-center justify-center text-[10px] text-white font-angelo font-semibold">
                                                     {conv.unreadCount}
                                                 </span>
                                             )}
@@ -189,28 +189,28 @@ export default function BrandMessagesPage() {
                     </div>
 
                     {/* CHAT WINDOW */}
-                    <div className={`flex-1 flex flex-col bg-[#0A0A0A] ${!showMobileChat ? 'hidden md:flex' : 'flex'}`}>
+                    <div className={`flex-1 flex flex-col bg-[#F8F8F8] ${!showMobileChat ? 'hidden md:flex' : 'flex'}`}>
                         {selectedConv ? (
                             <>
                                 {/* Chat Header */}
-                                <div className="h-16 border-b border-[#1F1F1F] flex items-center justify-between px-6 bg-[#0A0A0A]">
+                                <div className="h-16 border-b border-[#E5E5E5] flex items-center justify-between px-6 bg-white">
                                     <div className="flex items-center gap-3">
                                         {/* Mobile Back Button */}
                                         <button
                                             onClick={() => setShowMobileChat(false)}
-                                            className="md:hidden text-white hover:text-[#6B6B6B] transition-colors"
+                                            className="md:hidden text-[#0A0A0A] hover:text-[#6B6B6B] transition-colors"
                                         >
                                             <ArrowLeft className="w-5 h-5" />
                                         </button>
 
                                         {/* Avatar */}
-                                        <div className="w-9 h-9 rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-sm font-semibold">
+                                        <div className="w-9 h-9 rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#0A0A0A] text-sm font-semibold">
                                             {selectedConv.avatar}
                                         </div>
 
                                         {/* Name & Status */}
                                         <div>
-                                            <p className="text-base font-semibold text-white">{selectedConv.name}</p>
+                                            <p className="text-base font-semibold text-[#0A0A0A]">{selectedConv.name}</p>
                                             <p className="text-[11px] text-[#6B6B6B]">Active now</p>
                                         </div>
                                     </div>
@@ -219,20 +219,20 @@ export default function BrandMessagesPage() {
                                     <div className="relative">
                                         <button
                                             onClick={() => setShowMenu(!showMenu)}
-                                            className="text-[#6B6B6B] hover:text-white transition-colors"
+                                            className="text-[#6B6B6B] hover:text-[#0A0A0A] transition-colors"
                                         >
                                             <MoreVertical className="w-5 h-5" />
                                         </button>
 
                                         {showMenu && (
-                                            <div className="absolute right-0 top-full mt-2 w-40 bg-[#141414] border border-[#1F1F1F] rounded-[10px] p-2 z-10">
-                                                <button className="w-full text-left px-3 py-2 text-[13px] text-white hover:bg-[#1A1A1A] rounded-lg transition-colors">
+                                            <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-[#E5E5E5] rounded-[10px] p-2 z-10 shadow-lg">
+                                                <button className="w-full text-left px-3 py-2 text-[13px] text-[#0A0A0A] hover:bg-[#F5F5F5] rounded-lg transition-colors">
                                                     View Profile
                                                 </button>
-                                                <button className="w-full text-left px-3 py-2 text-[13px] text-white hover:bg-[#1A1A1A] rounded-lg transition-colors">
+                                                <button className="w-full text-left px-3 py-2 text-[13px] text-[#0A0A0A] hover:bg-[#F5F5F5] rounded-lg transition-colors">
                                                     Clear Chat
                                                 </button>
-                                                <button className="w-full text-left px-3 py-2 text-[13px] text-white hover:bg-[#1A1A1A] rounded-lg transition-colors">
+                                                <button className="w-full text-left px-3 py-2 text-[13px] text-[#0A0A0A] hover:bg-[#F5F5F5] rounded-lg transition-colors">
                                                     Block User
                                                 </button>
                                             </div>
@@ -244,9 +244,9 @@ export default function BrandMessagesPage() {
                                 <div className="flex-1 overflow-y-auto px-6 py-6 space-y-3">
                                     {/* Date Separator */}
                                     <div className="flex items-center gap-3 my-4">
-                                        <div className="flex-1 h-px bg-[#1F1F1F]"></div>
-                                        <span className="text-[11px] text-[#3D3D3D]">Today</span>
-                                        <div className="flex-1 h-px bg-[#1F1F1F]"></div>
+                                        <div className="flex-1 h-px bg-[#E5E5E5]"></div>
+                                        <span className="text-[11px] text-[#6B6B6B]">Today</span>
+                                        <div className="flex-1 h-px bg-[#E5E5E5]"></div>
                                     </div>
 
                                     {DUMMY_MESSAGES.map((msg) => (
@@ -256,11 +256,11 @@ export default function BrandMessagesPage() {
                                         >
                                             <div
                                                 className={`max-w-[65%] ${msg.sender === 'me'
-                                                    ? 'bg-[#1F1F1F] rounded-[18px_18px_4px_18px]'
-                                                    : 'bg-[#141414] border border-[#1F1F1F] rounded-[18px_18px_18px_4px]'
+                                                    ? 'bg-[#0A0A0A] rounded-[18px_18px_4px_18px] text-white'
+                                                    : 'bg-white border border-[#E5E5E5] rounded-[18px_18px_18px_4px] text-[#0A0A0A]'
                                                     } px-3.5 py-2.5`}
                                             >
-                                                <p className="text-sm text-white mb-1">{msg.text}</p>
+                                                <p className={`text-sm mb-1 ${msg.sender === 'me' ? 'text-white' : 'text-[#0A0A0A]'}`}>{msg.text}</p>
                                                 <div className={`flex items-center gap-1 ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
                                                     <span className="text-[10px] text-[#6B6B6B]">{msg.timestamp}</span>
                                                     {msg.sender === 'me' && (
@@ -277,7 +277,7 @@ export default function BrandMessagesPage() {
 
                                     {/* Typing Indicator */}
                                     <div className="flex justify-start">
-                                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-[18px_18px_18px_4px] px-4 py-3">
+                                        <div className="bg-white border border-[#E5E5E5] rounded-[18px_18px_18px_4px] px-4 py-3">
                                             <div className="flex gap-1">
                                                 <div className="w-1.5 h-1.5 bg-[#6B6B6B] rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
                                                 <div className="w-1.5 h-1.5 bg-[#6B6B6B] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -288,9 +288,9 @@ export default function BrandMessagesPage() {
                                 </div>
 
                                 {/* Input Area */}
-                                <div className="h-18 border-t border-[#1F1F1F] px-5 py-3 bg-[#0A0A0A] flex items-center gap-3">
+                                <div className="h-18 border-t border-[#E5E5E5] px-5 py-3 bg-white flex items-center gap-3">
                                     {/* Attachment Icon */}
-                                    <button className="text-[#6B6B6B] hover:text-white transition-colors">
+                                    <button className="text-[#6B6B6B] hover:text-[#0A0A0A] transition-colors">
                                         <Paperclip className="w-5 h-5" />
                                     </button>
 
@@ -301,24 +301,24 @@ export default function BrandMessagesPage() {
                                         onChange={(e) => setMessageInput(e.target.value)}
                                         onKeyPress={handleKeyPress}
                                         placeholder="Type a message..."
-                                        className="flex-1 h-11 bg-[#141414] border border-[#1F1F1F] rounded-full px-5 text-sm text-white placeholder:text-[#3D3D3D] focus:outline-none focus:border-[#2A2A2A] transition-colors"
+                                        className="flex-1 h-11 bg-[#F5F5F5] border border-[#E5E5E5] rounded-full px-5 text-sm text-[#0A0A0A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0A0A0A] transition-colors"
                                     />
 
                                     {/* Send Button */}
                                     <button
                                         onClick={handleSendMessage}
-                                        className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-[#E5E5E5] transition-colors"
+                                        className="w-10 h-10 bg-[#0A0A0A] rounded-full flex items-center justify-center hover:opacity-85 transition-opacity"
                                     >
-                                        <Send className="w-[18px] h-[18px] text-black" />
+                                        <Send className="w-[18px] h-[18px] text-white" />
                                     </button>
                                 </div>
                             </>
                         ) : (
                             // Empty State
                             <div className="flex-1 flex flex-col items-center justify-center">
-                                <MessageCircle className="w-10 h-10 text-[#3D3D3D] mb-4" strokeWidth={1.5} />
+                                <MessageCircle className="w-10 h-10 text-[#CCCCCC] mb-4" strokeWidth={1.5} />
                                 <h3 className="text-lg font-milker text-[#6B6B6B] mb-2">No conversation selected</h3>
-                                <p className="text-[13px] text-[#3D3D3D]">Click a conversation on the left to start chatting</p>
+                                <p className="text-[13px] text-[#6B6B6B]">Click a conversation on the left to start chatting</p>
                             </div>
                         )}
                     </div>

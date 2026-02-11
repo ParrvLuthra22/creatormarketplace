@@ -119,20 +119,20 @@ export default function PricingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0A0A0A]">
+        <div className="min-h-screen bg-[#F8F8F8]">
             <PublicHeader />
 
             {/* Main Content */}
             <main className="max-w-[1100px] mx-auto px-5 pt-20 pb-[100px]">
                 {/* Hero Section */}
                 <div className="hero-section text-center mb-14">
-                    <h1 className="hero-heading text-[38px] font-milker text-white mb-[10px]">
+                    <h1 className="hero-heading text-[38px] font-milker text-[#0A0A0A] mb-[10px]">
                         Simple, transparent pricing
                     </h1>
                     <p className="hero-subtext text-[16px] text-[#6B6B6B] mb-4">
                         Start free. Upgrade when you're ready.
                     </p>
-                    <div className="inline-block bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-4 py-[6px] text-[13px] text-[#6B6B6B]">
+                    <div className="inline-block bg-white border border-[#E5E5E5] rounded-[20px] px-4 py-[6px] text-[13px] text-[#6B6B6B]">
                         Creators always join for free
                     </div>
                 </div>
@@ -303,7 +303,7 @@ export default function PricingPage() {
 
                 {/* FAQ Section */}
                 <div className="faq-section max-w-[680px] mx-auto mt-16 text-center">
-                    <h2 className="font-milker text-[24px] text-white mb-2">
+                    <h2 className="font-milker text-[24px] text-[#0A0A0A] mb-2">
                         Have questions?
                     </h2>
                     <p className="text-[15px] text-[#6B6B6B] mb-6">
@@ -334,7 +334,7 @@ export default function PricingPage() {
             </main>
 
             {/* Footer */}
-            <footer className="py-8 text-center border-t border-[#1F1F1F]">
+            <footer className="py-8 text-center border-t border-[#E5E5E5]">
                 <p className="text-[13px] text-[#3D3D3D]">
                     © 2026 CreatorSync. All rights reserved.
                 </p>

@@ -44,7 +44,7 @@ export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps
     };
 
     return (
-        <aside className="w-[220px] h-screen bg-[#0D0D0D] border-r border-[#1F1F1F] flex flex-col fixed left-0 top-0">
+        <aside className="w-[220px] h-screen bg-[#0D0D0D] border-r border-[#1F1F1F] flex flex-col fixed left-0 top-0 z-50">
             {/* Logo */}
             <div className="p-6 border-b border-[#1F1F1F] flex-shrink-0">
                 <h1 className="text-xl font-bold text-white font-milker">CreatorSync</h1>

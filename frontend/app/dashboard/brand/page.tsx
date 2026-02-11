@@ -82,7 +82,7 @@ export default function BrandDashboard() {
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
                 {/* LEFT SIDEBAR - Hidden on mobile */}
                 <div className="hidden md:block">
                     <DashboardSidebar
@@ -122,10 +122,10 @@ export default function BrandDashboard() {
 
                     {/* PAGE HEADER */}
                     <div className="flex justify-between items-center mb-7">
-                        <h1 className="text-[28px] font-bold text-white font-milker">Home</h1>
+                        <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker">Home</h1>
                         <div className="flex items-center gap-4">
-                            <Search className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-white transition-colors" />
-                            <Bell className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-white transition-colors" />
+                            <Search className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-black transition-colors" />
+                            <Bell className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-black transition-colors" />
                         </div>
                     </div>
 
@@ -175,15 +175,15 @@ export default function BrandDashboard() {
                     <div>
                         {/* Section Header with Filters */}
                         <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-xl font-bold text-white font-milker">Creators</h2>
+                            <h2 className="text-xl font-bold text-[#0A0A0A] font-milker">Creators</h2>
                             <div className="flex gap-2 filter-pills">
                                 {FILTER_NICHES.map(niche => (
                                     <button
                                         key={niche}
                                         onClick={() => setSelectedFilter(niche)}
-                                        className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors ${selectedFilter === niche
-                                            ? "bg-white text-black"
-                                            : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
+                                        className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors border ${selectedFilter === niche
+                                            ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
+                                            : "bg-white text-[#0A0A0A] border-[#E5E5E5] hover:bg-[#F0F0F0]"
                                             }`}
                                     >
                                         {niche}

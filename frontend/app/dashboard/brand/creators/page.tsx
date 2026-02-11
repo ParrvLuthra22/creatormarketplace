@@ -42,7 +42,7 @@ export default function BrandCreators() {
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
                 <div className="hidden md:block">
                     <DashboardSidebar
                         userName={user?.fullName || "Brand User"}
@@ -53,9 +53,9 @@ export default function BrandCreators() {
                 <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
                     {/* PAGE HEADER */}
                     <div className="flex justify-between items-center mb-7">
-                        <h1 className="text-[28px] font-bold text-white font-milker">Creators</h1>
+                        <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker">Creators</h1>
                         <div className="flex items-center gap-4">
-                            <Bell className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-white transition-colors" />
+                            <Bell className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-[#0A0A0A] transition-colors" />
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@ export default function BrandCreators() {
                                 placeholder="Search creators..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full h-12 pl-12 pr-4 bg-[#141414] border border-[#1F1F1F] rounded-xl text-white text-sm focus:outline-none focus:border-[#3D3D3D] transition-colors"
+                                className="w-full h-12 pl-12 pr-4 bg-white border border-[#E5E5E5] rounded-xl text-[#0A0A0A] text-sm focus:outline-none focus:border-[#0A0A0A] transition-colors"
                             />
                         </div>
                     </div>
@@ -80,8 +80,8 @@ export default function BrandCreators() {
                                 key={niche}
                                 onClick={() => setSelectedFilter(niche)}
                                 className={`px-4 py-2 rounded-full text-xs font-angelo transition-colors ${selectedFilter === niche
-                                    ? "bg-white text-black"
-                                    : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
+                                    ? "bg-[#0A0A0A] text-white"
+                                    : "bg-white text-[#0A0A0A] border border-[#E5E5E5] hover:bg-[#F0F0F0]"
                                     }`}
                             >
                                 {niche}

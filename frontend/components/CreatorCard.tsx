@@ -1,9 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, User } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
-import ElectricBorder from "./ElectricBorder";
 import "./CreatorCard.css";
 
 interface Creator {
@@ -39,6 +39,7 @@ export function CreatorCard({
     onCtaClick
 }: CreatorCardProps) {
     const router = useRouter();
+    const [imgError, setImgError] = useState(false);
 
     const handleClick = () => {
         if (!isAuthenticated && onAuthGate) {
@@ -57,23 +58,15 @@ export function CreatorCard({
         }
     };
 
-    // Determine electric border color based on creator status
-    const getBorderColor = () => {
-        if (creator.featured) return '#ff809f'; // Pink for featured
-        if (creator.verified) return '#8b5cf6'; // Purple for verified
-        if (creator.isActive) return '#00ff88'; // Green for active
-        return '#6366f1'; // Indigo default
-    };
+    // Determine if we should show placeholder
+    const showPlaceholder = !creator.profilePicture ||
+        creator.profilePicture === '/api/placeholder/140/140' ||
+        creator.profilePicture === '' ||
+        imgError;
 
     return (
-        <ElectricBorder
-            color={getBorderColor()}
-            speed={1}
-            chaos={0.12}
-            borderRadius={16}
-            style={{ maxWidth: '280px', width: '100%' }}
-        >
-            <div className="creator-card" onClick={handleClick}>
+        <div className="creator-card" onClick={handleClick}>
+            <div className="creator-card-inner">
                 {/* Featured/Verified Badge */}
                 {(creator.featured || creator.verified) && (
                     <div className="creator-badge">
@@ -83,36 +76,42 @@ export function CreatorCard({
 
                 {/* Profile Picture Section */}
                 <div className="creator-card-header">
-                    <div className="profile-picture-container">
-                        {creator.profilePicture && creator.profilePicture !== '/api/placeholder/140/140' ? (
+                    <div className={`profile-picture-container ${!isAuthenticated ? 'blur-[8px]' : ''}`}>
+                        {!showPlaceholder ? (
                             <img
                                 src={creator.profilePicture}
                                 alt={creator.name || creator.instagramHandle}
                                 className="profile-picture"
+                                onError={() => setImgError(true)}
                             />
                         ) : (
                             <div className="profile-picture-placeholder">
-                                {(creator.name || creator.instagramHandle || '?').charAt(0).toUpperCase()}
-                            </div>
-                        )}
-                        {creator.verified && (
-                            <div className="verified-checkmark">
-                                <Check size={16} strokeWidth={3} />
-                            </div>
-                        )}
-                        {!isAuthenticated && (
-                            <div className="lock-overlay">
-                                <Lock className="lock-icon" />
+                                <User className="w-10 h-10 opacity-40 text-white" strokeWidth={1.5} />
                             </div>
                         )}
                     </div>
+
+                    {creator.verified && (
+                        <div className="verified-checkmark">
+                            <Check size={16} strokeWidth={3} />
+                        </div>
+                    )}
+
+                    {/* Lock Overlay - Now centered over the blurred image */}
+                    {!isAuthenticated && (
+                        <div className="absolute inset-0 flex items-center justify-center z-20">
+                            <div className="bg-black/40 backdrop-blur-sm p-3 rounded-full border border-white/10">
+                                <Lock className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Content Section */}
                 <div className="creator-card-content">
-                    <h3
-                        className="creator-name"
-                        style={{
+                    {/* Name and Handle - ALWAYS VISIBLE */}
+                    <div className="mb-4">
+                        <h3 className="creator-name" style={{
                             display: 'block',
                             visibility: 'visible',
                             opacity: 1,
@@ -122,33 +121,36 @@ export function CreatorCard({
                             margin: '0 0 4px 0',
                             position: 'relative',
                             zIndex: 100
-                        }}
-                    >
-                        {creator.name || 'Unknown Creator'}
-                    </h3>
-                    <p className="creator-handle">@{creator.instagramHandle || 'unknown'}</p>
-
-                    {creator.bio && (
-                        <p className="creator-bio">{creator.bio}</p>
-                    )}
-
-                    {/* Stats Row */}
-                    <div className="creator-stats">
-                        <div className="stat">
-                            <span className="stat-number">{formatNumber(Number(creator.followers) || 0)}</span>
-                            <span className="stat-label">FOLLOWERS</span>
-                        </div>
-                        <div className="stat">
-                            <span className="stat-number">{formatNumber(Number(creator.following) || 0)}</span>
-                            <span className="stat-label">FOLLOWING</span>
-                        </div>
+                        }}>
+                            {creator.name || 'Unknown Creator'}
+                        </h3>
+                        <p className="creator-handle">@{creator.instagramHandle || 'unknown'}</p>
                     </div>
 
-                    {/* Status Badges */}
-                    <div className="creator-badges-row">
-                        {creator.category && <span className="status-badge">{creator.category.toUpperCase()}</span>}
-                        {creator.isActive && <span className="status-badge">LIVE</span>}
-                        {creator.openToWork && <span className="status-badge">V1.0</span>}
+                    {/* Bio - Blurred if not authenticated */}
+                    <div className={`${!isAuthenticated ? 'blur-sm opacity-50 select-none' : ''}`}>
+                        {creator.bio && (
+                            <p className="creator-bio">{creator.bio}</p>
+                        )}
+
+                        {/* Stats Row */}
+                        <div className="creator-stats">
+                            <div className="stat">
+                                <span className="stat-number">{formatNumber(Number(creator.followers) || 0)}</span>
+                                <span className="stat-label">FOLLOWERS</span>
+                            </div>
+                            <div className="stat">
+                                <span className="stat-number">{formatNumber(Number(creator.following) || 0)}</span>
+                                <span className="stat-label">FOLLOWING</span>
+                            </div>
+                        </div>
+
+                        {/* Status Badges */}
+                        <div className="creator-badges-row">
+                            {creator.category && <span className="status-badge">{creator.category.toUpperCase()}</span>}
+                            {creator.isActive && <span className="status-badge">LIVE</span>}
+                            {creator.openToWork && <span className="status-badge">V1.0</span>}
+                        </div>
                     </div>
                 </div>
 
@@ -162,6 +164,6 @@ export function CreatorCard({
                     </button>
                 )}
             </div>
-        </ElectricBorder>
+        </div>
     );
 }
