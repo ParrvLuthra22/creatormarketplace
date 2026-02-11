@@ -11,14 +11,14 @@ interface PolicyLayoutProps {
 
 export function PolicyLayout({ title, lastUpdated, children }: PolicyLayoutProps) {
     return (
-        <div className="min-h-screen bg-[#0A0A0A]">
+        <div className="min-h-screen bg-[#F8F8F8]">
             <PublicHeader />
 
             {/* Main Content */}
             <main className="max-w-[820px] mx-auto px-8 md:px-4 pt-[64px] pb-20">
                 {/* Page Header */}
                 <div className="pt-16 pb-9">
-                    <h1 className="text-4xl md:text-[36px] font-milker text-white mb-2">
+                    <h1 className="text-4xl md:text-[36px] font-milker text-[#0A0A0A] mb-2">
                         {title}
                     </h1>
                     <p className="text-[13px] text-[#6B6B6B]">
@@ -27,7 +27,7 @@ export function PolicyLayout({ title, lastUpdated, children }: PolicyLayoutProps
                 </div>
 
                 {/* Content Container */}
-                <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl px-9 py-10 md:px-[36px] md:py-[40px]">
+                <div className="bg-white border border-[#E5E5E5] rounded-2xl px-9 py-10 md:px-[36px] md:py-[40px]">
                     {children}
                 </div>
             </main>

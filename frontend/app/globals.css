@@ -17,34 +17,66 @@
   --font-heading: 'Milker', serif;
   --font-accent: 'Angelo', sans-serif;
 
-  /* Black & White Color Palette */
+  /* NEW COLOR SYSTEM - NO PURPLE */
+
+  /* New Green Theme Color System */
+
+  /* Primary Brand Colors */
+  --color-primary: #F5F1E8;
+  /* Off-White */
+  --color-accent: #00D084;
+  /* Green */
+  --color-accent-light: #00FFB0;
+  /* Light Green */
+  --color-accent-dark: #00A86B;
+  /* Dark Green */
+
+  /* Status Colors */
+  --color-success: #00D084;
+  --color-warning: #FFB020;
+  /* Amber */
+  --color-error: #FF4757;
+  /* Red */
+  --color-info: #2E86DE;
+  /* Blue */
+
+  /* Dark Backgrounds */
+  --color-bg-page: #0A0A0A;
+  --color-bg-sidebar: #0F0F0F;
+  --color-bg-card: #141414;
+  --color-bg-card-hover: #1A1A1A;
+
+  /* Text Colors */
+  --color-text-primary: #F5F1E8;
+  --color-text-secondary: #C5C5C5;
+  --color-text-tertiary: #6B6B6B;
+  --color-text-muted: #3D3D3D;
+
+  /* Borders */
+  --color-border-subtle: #1F1F1F;
+  --color-border-medium: #2A2A2A;
+  --color-border-accent: #F5F1E8;
+
+  /* Legacy mappings for compatibility */
   --color-background: #0A0A0A;
+  --color-foreground: #F5F1E8;
   --color-surface: #141414;
   --color-border: #1F1F1F;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #6B6B6B;
-  --color-text-muted: #3D3D3D;
   --color-input-bg: #0F0F0F;
   --color-hover: #1A1A1A;
-
-  /* Legacy color mappings for compatibility */
-  --color-primary: #FFFFFF;
-  --color-secondary: #6B6B6B;
-  --color-foreground: #FFFFFF;
-  --color-text-main: #FFFFFF;
-  --color-text-light: #6B6B6B;
 
   /* Border Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
   /* Shadows */
   --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(245, 241, 232, 0.15);
 }
 
 body {

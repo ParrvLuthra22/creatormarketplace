@@ -22,13 +22,15 @@ interface CreatorSectionProps {
     isAuthenticated?: boolean;
     onAuthGate?: () => void;
     isLoading?: boolean;
+    onShowMore?: () => void;
 }
 
 export function CreatorSection({
     creators,
     isAuthenticated = false,
     onAuthGate,
-    isLoading = false
+    isLoading = false,
+    onShowMore
 }: CreatorSectionProps) {
     return (
         <section className="py-8 px-4 container mx-auto max-w-7xl w-full">
@@ -40,7 +42,8 @@ export function CreatorSection({
                 showCTA={true}
                 emptyMessage="No creators found"
                 emptySubMessage="Try adjusting your filters"
-                showMoreLink="/creators"
+                showMoreLink={onShowMore ? undefined : "/creators"}
+                onShowMore={onShowMore}
             />
         </section>
     );

@@ -5,7 +5,7 @@ import { Button } from "./ui/Button";
 import { User } from "@/lib/api";
 import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search, Bell } from "lucide-react";
 
 interface DashboardHeaderProps {
     user: User;
@@ -20,9 +20,9 @@ const BRAND_NAV = [
 ];
 
 const CREATOR_NAV = [
-    { id: "explore", label: "Explore Brands", href: "/dashboard/creator" },
-    { id: "proposals", label: "Proposals", href: "/creator/proposals" },
-    { id: "profile", label: "My Profile", href: "/creator/profile" },
+    { id: "home", label: "Home", href: "/dashboard/creator" },
+    { id: "proposals", label: "Proposals", href: "/dashboard/creator/proposals" },
+    { id: "profile", label: "Profile", href: "/dashboard/creator/profile" },
 ];
 
 export function DashboardHeader({ user, onLogout }: DashboardHeaderProps) {
@@ -36,99 +36,53 @@ export function DashboardHeader({ user, onLogout }: DashboardHeaderProps) {
     // Determine active nav item
     const isActive = (href: string) => {
         if (href === "/dashboard/brand" || href === "/dashboard/creator") {
-            // Dashboard is active only if exactly on dashboard
             return pathname === href;
         }
         return pathname?.startsWith(href) || false;
     };
 
     return (
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
-                    <Link href="/" className="text-xl font-bold tracking-tight text-[#1A1A1A]">
-                        CreatorMarket
-                    </Link>
+        <header className="fixed top-0 left-0 md:left-[240px] right-0 xl:right-[320px] h-16 bg-[#0A0A0A] border-b border-[#1F1F1F] z-40 px-8 flex items-center justify-between transition-all duration-300">
+            {/* Page Title (Mobile/Tablet replacement for Nav) */}
+            <div className="flex items-center">
+                <h1 className="text-[28px] font-bold text-[#F5F1E8] font-milker tracking-[-0.5px]">Home</h1>
+            </div>
 
-                    {/* Navigation Tabs */}
-                    <nav className="hidden md:flex items-center gap-1">
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.id}
-                                href={item.href}
-                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${isActive(item.href)
-                                        ? isBrand
-                                            ? "bg-orange-50 text-[#FF6B35]"
-                                            : "bg-pink-50 text-[#FF6B9D]"
-                                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                                    }`}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
-                    </nav>
+            {/* Right Actions */}
+            <div className="flex items-center gap-4">
+                {/* Search Button */}
+                <button className="w-10 h-10 rounded-xl bg-[rgba(245,241,232,0.08)] border border-[rgba(245,241,232,0.12)] flex items-center justify-center text-[#F5F1E8] hover:bg-[rgba(0,208,132,0.15)] hover:border-[#00D084] hover:text-[#00D084] transition-all duration-200">
+                    <Search className="w-4 h-4" />
+                </button>
 
-                    {/* User Menu */}
-                    <div className="relative">
-                        <button
-                            onClick={() => setShowUserMenu(!showUserMenu)}
-                            className="flex items-center gap-3 hover:bg-gray-50 rounded-lg p-2 transition-colors"
-                        >
-                            <div
-                                className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-sm ${isBrand
-                                        ? "bg-gradient-to-br from-[#FF6B35] to-[#FF8F5D]"
-                                        : "bg-gradient-to-br from-[#FF6B35] to-[#FF6B9D]"
-                                    }`}
-                            >
-                                {user.fullName.charAt(0).toUpperCase()}
+                {/* Notifications Button */}
+                <button className="w-10 h-10 rounded-xl bg-[rgba(245,241,232,0.08)] border border-[rgba(245,241,232,0.12)] flex items-center justify-center text-[#F5F1E8] hover:bg-[rgba(0,208,132,0.15)] hover:border-[#00D084] hover:text-[#00D084] transition-all duration-200 relative">
+                    <Bell className="w-4 h-4" />
+                    <span className="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-[#FF4757] border border-[#0A0A0A]" />
+                </button>
+
+                {/* User Menu - Mobile Only (Desktop has sidebar) */}
+                <div className="md:hidden relative">
+                    <button
+                        onClick={() => setShowUserMenu(!showUserMenu)}
+                        className="flex items-center gap-3"
+                    >
+                        <div className="w-9 h-9 rounded-full border border-[#00D084] flex items-center justify-center text-[#0A0A0A] font-bold bg-[#00D084]">
+                            {user.fullName.charAt(0).toUpperCase()}
+                        </div>
+                    </button>
+
+                    {showUserMenu && (
+                        <>
+                            <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+                            <div className="absolute right-0 mt-2 w-48 bg-[#141414] border border-[#1F1F1F] rounded-xl shadow-xl z-50 py-1">
+                                <button className="w-full text-left px-4 py-2 text-sm text-[#F5F1E8] hover:bg-[#1A1A1A] hover:text-[#00D084]">Profile</button>
+                                <button className="w-full text-left px-4 py-2 text-sm text-[#F5F1E8] hover:bg-[#1A1A1A] hover:text-[#00D084]">Settings</button>
+                                <div className="h-px bg-[#1F1F1F] my-1" />
+                                <button onClick={onLogout} className="w-full text-left px-4 py-2 text-sm text-[#FF4757] hover:bg-[#1A1A1A]">Log Out</button>
                             </div>
-                            <div className="hidden md:block text-left">
-                                <p className="text-sm font-semibold text-gray-900">{user.fullName}</p>
-                                <p className="text-xs text-gray-500">{user.accountType}</p>
-                            </div>
-                            <ChevronDown className="w-4 h-4 text-gray-500 hidden md:block" />
-                        </button>
-
-                        {showUserMenu && (
-                            <>
-                                {/* Backdrop */}
-                                <div
-                                    className="fixed inset-0"
-                                    onClick={() => setShowUserMenu(false)}
-                                />
-                                {/* Dropdown */}
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                                    {/* Mobile Navigation */}
-                                    <div className="md:hidden border-b border-gray-100 pb-1 mb-1">
-                                        {navItems.map((item) => (
-                                            <Link
-                                                key={item.id}
-                                                href={item.href}
-                                                onClick={() => setShowUserMenu(false)}
-                                                className={`block px-4 py-2 text-sm ${isActive(item.href)
-                                                        ? "bg-gray-50 font-medium text-gray-900"
-                                                        : "text-gray-700 hover:bg-gray-50"
-                                                    }`}
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                    {/* Logout */}
-                                    <button
-                                        onClick={() => {
-                                            setShowUserMenu(false);
-                                            onLogout();
-                                        }}
-                                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
+                        </>
+                    )}
                 </div>
             </div>
         </header>

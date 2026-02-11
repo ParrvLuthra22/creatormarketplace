@@ -72,14 +72,14 @@ export default function CreatorsPage() {
     };
 
     return (
-        <main className="min-h-screen bg-[#0A0A0A]">
+        <main className="min-h-screen bg-[#F8F8F8]">
             {/* Header */}
-            <div className="border-b border-[#1F1F1F] bg-[#0D0D0D]">
+            <div className="border-b border-[#E5E5E5] bg-white">
                 <div className="container mx-auto max-w-7xl px-4 py-6">
-                    <h1 className="text-4xl font-bold text-white font-milker mb-2">
+                    <h1 className="text-4xl font-bold text-[#0A0A0A] font-milker mb-2">
                         Discover Creators
                     </h1>
-                    <p className="text-[#888888] font-sf-pro">
+                    <p className="text-[#6B6B6B] font-sf-pro">
                         Browse our curated list of talented creators
                     </p>
                 </div>
@@ -89,13 +89,13 @@ export default function CreatorsPage() {
             <div className="container mx-auto max-w-7xl px-4 py-8">
                 {/* Search Bar */}
                 <div className="relative mb-6">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666666]" size={20} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B]" size={20} />
                     <input
                         type="text"
                         placeholder="Search creators..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[#141414] border border-[#1F1F1F] rounded-xl pl-12 pr-4 py-3 text-white placeholder-[#666666] focus:outline-none focus:border-[#3D3D3D] transition-colors"
+                        className="w-full bg-white border border-[#E5E5E5] rounded-xl pl-12 pr-4 py-3 text-[#0A0A0A] placeholder-[#6B6B6B] focus:outline-none focus:border-[#0A0A0A] transition-colors"
                     />
                 </div>
 
@@ -106,8 +106,8 @@ export default function CreatorsPage() {
                             key={niche}
                             onClick={() => setSelectedNiche(niche)}
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedNiche === niche
-                                    ? "bg-white text-black"
-                                    : "bg-[#1F1F1F] text-[#888888] hover:bg-[#2A2A2A]"
+                                ? "bg-[#0A0A0A] text-white"
+                                : "bg-white text-[#6B6B6B] border border-[#E5E5E5] hover:bg-[#F0F0F0]"
                                 }`}
                         >
                             {niche}

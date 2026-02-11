@@ -26,7 +26,7 @@ export default function BrandAnalytics() {
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
                 <div className="hidden md:block">
                     <DashboardSidebar
                         userName={user?.fullName || "Brand User"}
@@ -35,7 +35,7 @@ export default function BrandAnalytics() {
                 </div>
 
                 <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
-                    <h1 className="text-[28px] font-bold text-white font-milker mb-8">Analytics</h1>
+                    <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker mb-8">Analytics</h1>
 
                     {/* TOP ROW - 4 Mini Stat Cards */}
                     <div className="grid grid-cols-4 gap-3.5 mb-6">

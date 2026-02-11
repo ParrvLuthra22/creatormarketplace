@@ -3,133 +3,117 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { ChevronDown, Check, Mail, Eye, CheckCircle, FileText } from "lucide-react";
+import { ChevronDown, Check, Mail, Eye, CheckCircle, FileText, ToggleRight, ToggleLeft, ChevronLeft } from "lucide-react";
 
 const ACTIVITIES = [
-    { icon: "📧", text: "New proposal from FitLife", time: "2 hours ago" },
-    { icon: "👁️", text: "Profile viewed by Urban Thr...", time: "5 hours ago" },
-    { icon: "✅", text: "Collaboration completed: Na...", time: "2 days ago" },
-    { icon: "📄", text: "New proposal from TechVerse", time: "3 days ago" },
-];
-
-const availabilityOptions = [
-    { value: "actively-accepting", label: "Actively accepting", dot: "bg-green-500" },
-    { value: "selective", label: "Selective", dot: "bg-yellow-500" },
-    { value: "booked", label: "Booked", dot: "bg-red-500" },
+    { icon: Mail, text: "New proposal from FitLife", time: "2h ago", type: "proposal" },
+    { icon: Eye, text: "Profile viewed by Urban...", time: "5h ago", type: "view" },
+    { icon: CheckCircle, text: "Collaboration completed", time: "2d ago", type: "complete" },
 ];
 
 export function CreatorRightSidebar() {
     const { user } = useAuth();
-    const [availability, setAvailability] = useState("actively-accepting");
-    const [showAvailabilityDropdown, setShowAvailabilityDropdown] = useState(false);
+    const [isAvailable, setIsAvailable] = useState(true);
 
-    const currentAvailability = availabilityOptions.find(opt => opt.value === availability) || availabilityOptions[0];
-
-    // Determine tier based on profile completeness (dummy logic)
-    const tier = { label: "Growing", bg: "bg-[#1A1A2A]", color: "text-white" };
+    // Activity Icon Styles
+    const getIconStyle = (type: string) => {
+        switch (type) {
+            case 'proposal': return 'bg-[rgba(255,176,32,0.15)] text-[#FFB020]';
+            case 'view': return 'bg-[rgba(46,134,222,0.15)] text-[#2E86DE]';
+            case 'complete': return 'bg-[rgba(0,208,132,0.15)] text-[#00D084]';
+            default: return 'bg-[rgba(245,241,232,0.1)] text-[#F5F1E8]';
+        }
+    };
 
     return (
-        <aside className="hidden lg:flex w-[280px] px-5 pl-4 py-8 flex-col gap-4 overflow-y-auto">
-            {/* WIDGET 1 - My Profile */}
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-5">
-                <h3 className="text-base font-bold text-white font-milker mb-4">My Profile</h3>
-                <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 rounded-full bg-[#1F1F1F] flex items-center justify-center text-white text-lg font-semibold mb-3">
-                        {user?.fullName?.charAt(0).toUpperCase() || "C"}
-                    </div>
-                    <p className="text-[15px] font-semibold text-white mb-1">{user?.fullName || "Creator User"}</p>
+        <aside className="hidden xl:flex w-[320px] h-screen bg-[#0F0F0F] border-l border-[#1F1F1F] flex-col fixed right-0 top-0 z-50 overflow-y-auto translate-x-[calc(100%-8px)] hover:translate-x-0 transition-transform duration-300 ease-out shadow-[-10px_0_30px_rgba(0,0,0,0.5)] group">
 
-                    {/* Tier Badge */}
-                    <div className="relative group mb-2">
-                        <span className={`px-2.5 py-0.5 rounded-xl text-[11px] font-angelo ${tier.bg} ${tier.color}`}>
-                            {tier.label}
-                        </span>
-                        {/* Tooltip */}
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-[#141414] border border-[#1F1F1F] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                            <p className="text-[12px] text-[#6B6B6B]">Tier based on your profile completeness and activity</p>
+            {/* Hover Handle/Strip */}
+            <div className="absolute left-0 top-0 bottom-0 w-[8px] bg-[#1F1F1F] group-hover:bg-[#00D084] transition-colors cursor-pointer flex items-center justify-center">
+                <div className="h-12 w-[3px] bg-[#6B6B6B] rounded-full group-hover:bg-white transition-colors" />
+            </div>
+
+            <div className="px-6 py-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                {/* PROFILE CARD */}
+                <div className="bg-gradient-to-br from-[#1A1A1A] to-[#141414] border border-[#2A2A2A] rounded-[20px] p-7 text-center mb-6 relative overflow-hidden group/card">
+                    <div className="absolute top-0 right-0 w-[100px] h-[100px] bg-[radial-gradient(circle,rgba(0,208,132,0.05)_0%,transparent_70%)] rounded-bl-[100px] pointer-events-none" />
+
+                    <div className="relative mb-4 inline-block">
+                        <div className="w-20 h-20 rounded-full border-[3px] border-[#00D084] bg-[#1F1F1F] flex items-center justify-center text-2xl font-bold text-white shadow-[0_8px_20px_rgba(0,0,0,0.4),0_0_0_8px_rgba(0,208,132,0.05)]">
+                            {user?.fullName?.charAt(0).toUpperCase() || "C"}
                         </div>
+                        <div className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-[#1A1A1A] ${isAvailable ? 'bg-[#00D084]' : 'bg-[#6B6B6B]'}`} />
                     </div>
 
-                    <p className="text-[13px] text-[#6B6B6B] font-angelo mb-3">
+                    <h3 className="text-xl font-bold text-[#F5F1E8] font-milker mb-1">
+                        {user?.fullName || "Creator User"}
+                    </h3>
+                    <p className="text-[13px] text-[#F5F1E8] font-sf-pro opacity-80 mb-4">
                         @testcreator
                     </p>
-                    <div className="flex gap-2 justify-center mb-3.5">
-                        <span className="px-2.5 py-1 rounded-xl text-[11px] bg-[#1F1F1F] text-white font-angelo">
-                            Fashion
-                        </span>
-                        <span className="px-2.5 py-1 rounded-xl text-[11px] bg-[#1F1F1F] text-white font-angelo">
-                            Lifestyle
-                        </span>
+
+                    <div className="flex justify-center gap-2 mb-6">
+                        {["Fashion", "Lifestyle"].map(tag => (
+                            <span key={tag} className="px-3 py-1.5 rounded-full bg-[rgba(245,241,232,0.1)] border border-[rgba(245,241,232,0.15)] text-[10px] font-angelo text-[#C5C5C5] uppercase tracking-wide">
+                                {tag}
+                            </span>
+                        ))}
                     </div>
 
-                    {/* Availability Selector */}
-                    <div className="w-full mb-3.5">
-                        <p className="text-[11px] uppercase text-[#6B6B6B] font-angelo tracking-wide mb-2 text-left">Availability</p>
-                        <div className="relative">
-                            <div
-                                onClick={() => setShowAvailabilityDropdown(!showAvailabilityDropdown)}
-                                className="bg-[#1A1A1A] border border-[#1F1F1F] rounded-[10px] px-3.5 py-2.5 cursor-pointer flex items-center justify-between hover:border-[#2A2A2A] transition-colors"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2.5 h-2.5 rounded-full ${currentAvailability.dot}`}></div>
-                                    <span className="text-[14px] text-white font-angelo">{currentAvailability.label}</span>
-                                </div>
-                                <ChevronDown className="w-3 h-3 text-[#6B6B6B]" />
-                            </div>
-
-                            {/* Dropdown Panel */}
-                            {showAvailabilityDropdown && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-[#141414] border border-[#1F1F1F] rounded-[10px] p-2 z-20">
-                                    {availabilityOptions.map((option) => (
-                                        <div
-                                            key={option.value}
-                                            onClick={() => {
-                                                setAvailability(option.value);
-                                                setShowAvailabilityDropdown(false);
-                                            }}
-                                            className="flex items-center justify-between px-3.5 py-2.5 rounded-lg hover:bg-[#1A1A1A] cursor-pointer transition-colors"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-2.5 h-2.5 rounded-full ${option.dot}`}></div>
-                                                <span className="text-[14px] text-white font-angelo">{option.label}</span>
-                                            </div>
-                                            {availability === option.value && (
-                                                <Check className="w-4 h-4 text-white" />
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                    {/* Availability Toggle */}
+                    <div
+                        className="flex justify-between items-center bg-[rgba(245,241,232,0.05)] rounded-xl px-4 py-3 mb-4 cursor-pointer hover:bg-[rgba(0,208,132,0.05)] transition-colors"
+                        onClick={() => setIsAvailable(!isAvailable)}
+                    >
+                        <span className="text-[13px] text-[#F5F1E8] font-sf-pro">Accepting Proposals</span>
+                        <div className={`w-10 h-6 rounded-full relative transition-colors duration-300 ${isAvailable ? 'bg-[#00D084]' : 'bg-[#2A2A2A]'}`}>
+                            <div className={`absolute top-1 w-4 h-4 rounded-full transition-all duration-300 ${isAvailable ? 'left-5 bg-[#0A0A0A]' : 'left-1 bg-[#6B6B6B]'}`} />
                         </div>
                     </div>
 
                     <Link
                         href="/dashboard/creator/profile"
-                        className="text-[13px] text-white font-angelo hover:opacity-85 transition-opacity cursor-pointer"
+                        className="block w-full py-3 border border-[#00D084] rounded-[10px] text-[12px] font-angelo font-semibold text-[#00D084] uppercase tracking-widest hover:bg-[#00D084] hover:text-[#FFFFFF] transition-all duration-200"
                     >
-                        Edit Profile →
+                        Edit Profile
                     </Link>
                 </div>
-            </div>
 
-            {/* WIDGET 2 - Recent Activity */}
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-5">
-                <h3 className="text-base font-bold text-white font-milker mb-4">Activity</h3>
-                <div>
-                    {ACTIVITIES.map((activity, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center gap-3 py-2.5 border-b border-[#1F1F1F] last:border-b-0"
-                        >
-                            <div className="w-7 h-7 rounded-full bg-[#1F1F1F] flex items-center justify-center text-sm flex-shrink-0">
-                                {activity.icon}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-[13px] text-white truncate">{activity.text}</p>
-                                <p className="text-[11px] text-[#6B6B6B]">{activity.time}</p>
-                            </div>
+                {/* QUICK STATS */}
+                <div className="pt-6 border-t border-[#1F1F1F] mb-8">
+                    <h4 className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px] mb-4">Quick Stats</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-[rgba(245,241,232,0.03)] border border-[rgba(245,241,232,0.08)] rounded-[10px] p-3 text-center transition-colors hover:border-[rgba(0,208,132,0.3)]">
+                            <p className="text-xl font-bold text-[#F5F1E8] font-milker mb-1">4.8</p>
+                            <p className="text-[10px] uppercase text-[#6B6B6B] font-sf-pro tracking-wide">Rating</p>
                         </div>
-                    ))}
+                        <div className="bg-[rgba(245,241,232,0.03)] border border-[rgba(245,241,232,0.08)] rounded-[10px] p-3 text-center transition-colors hover:border-[rgba(0,208,132,0.3)]">
+                            <p className="text-xl font-bold text-[#F5F1E8] font-milker mb-1">98%</p>
+                            <p className="text-[10px] uppercase text-[#6B6B6B] font-sf-pro tracking-wide">Response</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ACTIVITY FEED */}
+                <div>
+                    <div className="flex justify-between items-center mb-5">
+                        <h4 className="text-lg font-milker text-[#F5F1E8]">Activity</h4>
+                        <span className="text-xs text-[#6B6B6B] hover:text-[#00D084] cursor-pointer">See all</span>
+                    </div>
+
+                    <div className="space-y-3">
+                        {ACTIVITIES.map((item, i) => (
+                            <div key={i} className="group/item flex gap-3 p-3 rounded-xl bg-[rgba(245,241,232,0.03)] border border-[rgba(245,241,232,0.08)] hover:bg-[rgba(0,208,132,0.05)] hover:border-[rgba(0,208,132,0.15)] hover:translate-x-1 transition-all duration-200 cursor-pointer">
+                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${getIconStyle(item.type)}`}>
+                                    <item.icon className="w-4 h-4" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-[13px] text-[#F5F1E8] font-sf-pro truncate group-hover/item:text-[#00D084] transition-colors">{item.text}</p>
+                                    <p className="text-[11px] text-[#6B6B6B] font-sf-pro">{item.time}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </aside>

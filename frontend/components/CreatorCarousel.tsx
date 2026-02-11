@@ -32,6 +32,7 @@ interface CreatorCarouselProps {
     emptyMessage?: string;
     emptySubMessage?: string;
     showMoreLink?: string;
+    onShowMore?: () => void;
 }
 
 export function CreatorCarousel({
@@ -44,7 +45,8 @@ export function CreatorCarousel({
     onCtaClick,
     emptyMessage,
     emptySubMessage,
-    showMoreLink = "/creators"
+    showMoreLink = "/creators",
+    onShowMore
 }: CreatorCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const itemsPerPage = 3;
@@ -97,9 +99,12 @@ export function CreatorCarousel({
                     @media (max-width: 640px) {
                         .carousel-container {
                             padding: 0 40px;
+                            /* On mobile, stack vertically with gap */
+                            padding-bottom: 20px;
                         }
                         .carousel-grid {
                             grid-template-columns: 1fr;
+                            gap: 24px;
                         }
                     }
                 `}</style>
@@ -159,11 +164,17 @@ export function CreatorCarousel({
             </div>
 
             {/* Show More Button */}
-            {showMoreLink && (
+            {(showMoreLink || onShowMore) && (
                 <div className="carousel-footer">
-                    <a href={showMoreLink} className="show-more-button">
-                        Show More Creators →
-                    </a>
+                    {onShowMore ? (
+                        <button onClick={onShowMore} className="show-more-button">
+                            Show More Creators →
+                        </button>
+                    ) : (
+                        <a href={showMoreLink} className="show-more-button">
+                            Show More Creators →
+                        </a>
+                    )}
                 </div>
             )}
 
@@ -237,6 +248,8 @@ export function CreatorCarousel({
                     text-decoration: none;
                     transition: all 200ms ease;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    cursor: pointer;
+                    border: none;
                 }
 
                 .show-more-button:hover {

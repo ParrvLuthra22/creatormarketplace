@@ -26,7 +26,7 @@ export default function CreatorProfile() {
 
     return (
         <RouteGuard allowedRole="creator">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
+            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden text-[#F5F1E8]">
                 <div className="hidden md:block">
                     <CreatorSidebar
                         userName={user?.fullName || "Creator User"}
@@ -34,16 +34,16 @@ export default function CreatorProfile() {
                     />
                 </div>
 
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
-                    <h1 className="text-[28px] font-bold text-white font-milker mb-8">My Profile</h1>
+                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px] transition-all duration-300">
+                    <h1 className="text-[28px] font-bold text-[#F5F1E8] font-milker mb-8">My Profile</h1>
 
                     {/* CARD 1 - Creator Info */}
                     <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-white font-milker mb-5">Profile</h2>
+                        <h2 className="text-lg font-bold text-[#F5F1E8] font-milker mb-5">Profile</h2>
 
                         {/* Photo Upload */}
                         <div className="flex flex-col items-center mb-6">
-                            <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#2A2A2A] flex items-center justify-center cursor-pointer hover:border-[#6B6B6B] transition-colors">
+                            <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#2A2A2A] flex items-center justify-center cursor-pointer hover:border-[#00D084] hover:text-[#00D084] transition-colors bg-[#0F0F0F]">
                                 <Plus className="w-8 h-8 text-[#6B6B6B]" />
                             </div>
                             <p className="text-xs text-[#6B6B6B] font-angelo mt-2">Upload photo</p>
@@ -56,7 +56,7 @@ export default function CreatorProfile() {
                                 <input
                                     type="text"
                                     defaultValue={user?.fullName || ""}
-                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors"
                                 />
                             </div>
 
@@ -66,9 +66,9 @@ export default function CreatorProfile() {
                                 <input
                                     type="text"
                                     defaultValue={creatorProfile?.instagramHandle || "@creator"}
-                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors"
                                 />
-                                <p className="text-[11px] text-[#1A2A1A] font-angelo mt-1 flex items-center gap-1">
+                                <p className="text-[11px] text-[#00D084] font-angelo mt-1 flex items-center gap-1">
                                     <Check className="w-3 h-3" /> Connected
                                 </p>
                             </div>
@@ -79,7 +79,7 @@ export default function CreatorProfile() {
                                 <textarea
                                     rows={3}
                                     placeholder="Tell brands about yourself..."
-                                    className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors resize-none"
+                                    className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors resize-none placeholder:text-[#3D3D3D]"
                                 />
                             </div>
 
@@ -91,9 +91,9 @@ export default function CreatorProfile() {
                                         <button
                                             key={niche}
                                             onClick={() => toggleNiche(niche)}
-                                            className={`px-3 py-1.5 rounded-xl text-xs font-angelo transition-colors ${selectedNiches.includes(niche)
-                                                ? "bg-white text-black"
-                                                : "bg-[#1F1F1F] text-white hover:bg-[#2A2A2A]"
+                                            className={`px-3 py-1.5 rounded-xl text-xs font-angelo transition-colors border ${selectedNiches.includes(niche)
+                                                ? "bg-[#F5F1E8] text-[#0A0A0A] border-[#F5F1E8]"
+                                                : "bg-[#0F0F0F] text-[#6B6B6B] border-[#2A2A2A] hover:border-[#6B6B6B]"
                                                 }`}
                                         >
                                             {niche}
@@ -106,17 +106,17 @@ export default function CreatorProfile() {
 
                     {/* CARD 2 - Pricing */}
                     <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-white font-milker mb-5">Pricing</h2>
+                        <h2 className="text-lg font-bold text-[#F5F1E8] font-milker mb-5">Pricing</h2>
 
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Price per Reel</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-sm">₹</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B] text-sm">₹</span>
                                     <input
                                         type="number"
                                         placeholder="5000"
-                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors placeholder:text-[#3D3D3D]"
                                     />
                                 </div>
                             </div>
@@ -124,11 +124,11 @@ export default function CreatorProfile() {
                             <div>
                                 <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Price per Story</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-sm">₹</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B] text-sm">₹</span>
                                     <input
                                         type="number"
                                         placeholder="1500"
-                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors placeholder:text-[#3D3D3D]"
                                     />
                                 </div>
                             </div>
@@ -136,22 +136,22 @@ export default function CreatorProfile() {
                             <div>
                                 <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Price per Post</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-sm">₹</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B] text-sm">₹</span>
                                     <input
                                         type="number"
                                         placeholder="3000"
-                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors placeholder:text-[#3D3D3D]"
                                     />
                                 </div>
                             </div>
 
                             <div className="flex justify-between items-center py-3 border-t border-[#1F1F1F] mt-2">
                                 <div>
-                                    <p className="text-sm text-white">Custom packages</p>
+                                    <p className="text-sm text-[#F5F1E8]">Custom packages</p>
                                     <p className="text-xs text-[#6B6B6B]">Allow brands to request custom pricing</p>
                                 </div>
-                                <button className="w-12 h-6 rounded-full bg-white">
-                                    <div className="w-5 h-5 rounded-full bg-black translate-x-6" />
+                                <button className="w-12 h-6 rounded-full bg-[#2A2A2A]">
+                                    <div className="w-5 h-5 rounded-full bg-[#6B6B6B] translate-x-1 shadow-sm" />
                                 </button>
                             </div>
                         </div>
@@ -159,14 +159,14 @@ export default function CreatorProfile() {
 
                     {/* CARD 3 - Availability */}
                     <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-white font-milker mb-5">Availability</h2>
+                        <h2 className="text-lg font-bold text-[#F5F1E8] font-milker mb-5">Availability</h2>
 
                         <div>
                             <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Status</label>
                             <select
                                 value={availability}
                                 onChange={(e) => setAvailability(e.target.value)}
-                                className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors"
                             >
                                 <option>🟢 Available</option>
                                 <option>🟡 Limited</option>
@@ -174,13 +174,15 @@ export default function CreatorProfile() {
                             </select>
                         </div>
 
-                        <button className="mt-6 px-6 h-11 bg-white text-black rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity">
+                        <button className="mt-6 px-6 h-11 bg-[#F5F1E8] text-[#0A0A0A] rounded-[10px] font-angelo text-sm font-semibold hover:bg-[#00D084] hover:text-white transition-all shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_16px_rgba(0,208,132,0.4)]">
                             Save Profile
                         </button>
                     </div>
                 </main>
 
-                <CreatorRightSidebar />
+                <div className="hidden xl:block">
+                    <CreatorRightSidebar />
+                </div>
 
                 <MobileBottomNav role="creator" />
             </div>
