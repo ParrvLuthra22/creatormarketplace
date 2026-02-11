@@ -61,8 +61,8 @@ export function CreatorSidebar({ userName, userAvatar }: CreatorSidebarProps) {
                             key={item.name}
                             href={item.href}
                             className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro tracking-[0.2px] transition-all duration-200 relative ${isActive
-                                    ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium pl-3.5 border-l-[3px] border-[#00D084]"
-                                    : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
+                                ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium pl-3.5 border-l-[3px] border-[#00D084]"
+                                : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
                                 }`}
                         >
                             <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive ? 'text-[#00D084]' : 'text-[#6B6B6B] group-hover:text-[#C5C5C5]'}`} />
@@ -83,8 +83,8 @@ export function CreatorSidebar({ userName, userAvatar }: CreatorSidebarProps) {
                 <Link
                     href="/dashboard/creator/settings"
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro mb-3 transition-colors ${pathname === "/dashboard/creator/settings"
-                            ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium"
-                            : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
+                        ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium"
+                        : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
                         }`}
                 >
                     <Settings className="w-5 h-5" />
@@ -102,7 +102,7 @@ export function CreatorSidebar({ userName, userAvatar }: CreatorSidebarProps) {
 
             <LogoutConfirmModal
                 isOpen={showLogoutConfirm}
-                onClose={() => setShowLogoutConfirm(false)}
+                onCancel={() => setShowLogoutConfirm(false)}
                 onConfirm={handleActualLogout}
             />
         </aside>
