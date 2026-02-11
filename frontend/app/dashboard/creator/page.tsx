@@ -44,7 +44,7 @@ export default function CreatorDashboard() {
             <div className="min-h-screen bg-[#0A0A0A] text-[#F5F1E8] font-sf-pro selection:bg-[#F5F1E8] selection:text-[#0A0A0A]">
 
                 {/* Fixed Header */}
-                <DashboardHeader user={user || { fullName: "Creator", accountType: "Creator", email: "", id: "", plan: "free", createdAt: new Date() }} onLogout={handleLogout} />
+                <DashboardHeader user={user || { fullName: "Creator", accountType: "Creator", email: "", id: "", plan: "free", createdAt: new Date().toISOString() }} onLogout={handleLogout} />
 
                 {/* Left Sidebar - Fixed */}
                 <div className="hidden md:block">

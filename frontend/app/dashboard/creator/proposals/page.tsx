@@ -51,7 +51,7 @@ export default function CreatorProposals() {
 
                 {/* Fixed Header */}
                 <DashboardHeader
-                    user={user || { fullName: "Creator", accountType: "Creator", email: "", id: "", plan: "free", createdAt: new Date() }}
+                    user={user || { fullName: "Creator", accountType: "Creator", email: "", id: "", plan: "free", createdAt: new Date().toISOString() }}
                     onLogout={handleLogout}
                 />
 
