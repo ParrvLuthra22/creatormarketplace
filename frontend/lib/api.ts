@@ -33,6 +33,7 @@ export interface User {
     accountType: 'Brand' | 'Creator';
     plan: 'free' | 'basic' | 'pro';
     createdAt: string;
+    profilePicture?: string;
 }
 
 export interface BrandProfile {
