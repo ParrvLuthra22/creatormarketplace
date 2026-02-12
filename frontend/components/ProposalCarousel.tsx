@@ -54,15 +54,15 @@ export function ProposalCarousel({
     }
 
     return (
-        <div className="w-full max-w-[1240px] mx-auto px-12 relative group">
+        <div className="w-full max-w-[1240px] mx-auto px-8 pb-16 pt-12 relative group">
             <div className="relative">
                 {/* Previous Button */}
                 <button
                     onClick={handlePrev}
                     disabled={!canGoPrev}
                     className={`absolute -left-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#2A2A2A] bg-[#141414] text-[#F5F1E8] flex items-center justify-center transition-all duration-300 z-10 ${canGoPrev
-                            ? "opacity-100 hover:bg-[#F5F1E8] hover:text-[#0A0A0A] cursor-pointer hover:scale-110"
-                            : "opacity-0 cursor-default"
+                        ? "opacity-100 hover:bg-[#F5F1E8] hover:text-[#0A0A0A] cursor-pointer hover:scale-110"
+                        : "opacity-0 cursor-default"
                         }`}
                     aria-label="Previous proposals"
                 >
@@ -70,7 +70,7 @@ export function ProposalCarousel({
                 </button>
 
                 {/* Proposal Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 justify-items-center">
                     {visibleProposals.map((proposal) => (
                         <div key={proposal.id} className="transition-all duration-500 animate-in fade-in slide-in-from-right-4">
                             <ProposalCard
@@ -86,8 +86,8 @@ export function ProposalCarousel({
                     onClick={handleNext}
                     disabled={!canGoNext}
                     className={`absolute -right-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#2A2A2A] bg-[#141414] text-[#F5F1E8] flex items-center justify-center transition-all duration-300 z-10 ${canGoNext
-                            ? "opacity-100 hover:bg-[#F5F1E8] hover:text-[#0A0A0A] cursor-pointer hover:scale-110"
-                            : "opacity-0 cursor-default"
+                        ? "opacity-100 hover:bg-[#F5F1E8] hover:text-[#0A0A0A] cursor-pointer hover:scale-110"
+                        : "opacity-0 cursor-default"
                         }`}
                     aria-label="Next proposals"
                 >

@@ -10,13 +10,25 @@ interface StatsCardProps {
         positive: boolean;
     };
     action?: React.ReactNode;
+    clickable?: boolean;
+    onClick?: () => void;
 }
 
-function StatsCard({ title, value, subtext, icon: Icon, trend, action }: StatsCardProps) {
+function StatsCard({ title, value, subtext, icon: Icon, trend, action, clickable, onClick }: StatsCardProps) {
     return (
-        <div className="group relative bg-gradient-to-br from-[#1A1A1A] via-[#141414] to-[#0F0F0F] border border-[#2A2A2A] rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[#00D084] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_20px_rgba(0,208,132,0.15)] overflow-hidden">
+        <div
+            onClick={clickable ? onClick : undefined}
+            className={`group relative bg-gradient-to-br from-[#1A1A1A] via-[#141414] to-[#0F0F0F] border border-[#2A2A2A] rounded-2xl p-7 transition-all duration-300 hover:border-[#00D084] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_20px_rgba(0,208,132,0.15)] overflow-hidden ${clickable ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+        >
             {/* Background Decoration */}
             <div className="absolute -top-5 -right-5 w-[120px] h-[120px] rounded-full bg-[radial-gradient(circle,rgba(0,208,132,0.05)_0%,transparent_70%)] pointer-events-none" />
+
+            {/* Hover Arrow for Clickable Cards */}
+            {clickable && (
+                <div className="absolute top-6 right-6 text-[#6B6B6B] opacity-0 group-hover:opacity-100 group-hover:text-[#00D084] group-hover:translate-x-0.5 transition-all duration-300">
+                    <ArrowUpRight className="w-[18px] h-[18px]" />
+                </div>
+            )}
 
             {/* Header */}
             <div className="flex justify-between items-start mb-5 relative z-10">
@@ -24,7 +36,7 @@ function StatsCard({ title, value, subtext, icon: Icon, trend, action }: StatsCa
                     <div className="w-8 h-8 rounded-lg bg-[rgba(0,208,132,0.1)] flex items-center justify-center border border-[rgba(0,208,132,0.15)]">
                         <Icon className="w-4 h-4 text-[#00D084]" />
                     </div>
-                    <span className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px]">
+                    <span className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px] lowercase">
                         {title}
                     </span>
                 </div>
@@ -33,21 +45,21 @@ function StatsCard({ title, value, subtext, icon: Icon, trend, action }: StatsCa
 
             {/* Value */}
             <div className="mb-3 relative z-10">
-                <h3 className="text-[48px] font-bold text-[#F5F1E8] font-milker leading-none tracking-[-1px]">
+                <h3 className="text-[48px] font-bold text-[#F5F1E8] font-milker leading-none tracking-[-1px] lowercase">
                     {value}
                 </h3>
             </div>
 
             {/* Subtext & Trend */}
             <div className="flex flex-col gap-1 relative z-10">
-                <p className="text-sm text-[#6B6B6B] font-sf-pro">
+                <p className="text-sm text-[#6B6B6B] font-sf-pro lowercase">
                     {subtext}
                 </p>
 
                 {trend && (
                     <div className={`flex items-center gap-1.5 text-[13px] font-sf-pro mt-2 ${trend.positive ? 'text-[#00D084]' : 'text-[#FF4757]'}`}>
                         {trend.positive ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                        <span>{trend.value}</span>
+                        <span className="lowercase">{trend.value}</span>
                     </div>
                 )}
             </div>
@@ -60,9 +72,11 @@ interface CreatorStatsCardsProps {
     pendingProposals: number;
     isActive?: boolean;
     onToggleStatus?: () => void;
+    onEarningsClick?: () => void;
+    onProposalsClick?: () => void;
 }
 
-export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = true, onToggleStatus }: CreatorStatsCardsProps) {
+export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = true, onToggleStatus, onEarningsClick, onProposalsClick }: CreatorStatsCardsProps) {
     const formatCurrency = (amount: number) => {
         return `₹${amount.toLocaleString('en-IN')}`;
     };
@@ -73,26 +87,30 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
             <StatsCard
                 title="Total Earnings"
                 value={formatCurrency(totalEarnings)}
-                subtext="From 5 collaborations"
+                subtext="from 5 collaborations"
                 icon={DollarSign}
                 trend={{ value: "18% from last month", positive: true }}
+                clickable={true}
+                onClick={onEarningsClick}
             />
 
             {/* CARD 2: NEW PROPOSALS */}
             <StatsCard
                 title="New Proposals"
                 value={pendingProposals}
-                subtext="Awaiting your response"
+                subtext="awaiting your response"
                 icon={Mail}
                 action={
                     pendingProposals > 0 && (
                         <div className="px-2 py-1 bg-[rgba(255,176,32,0.15)] border border-[rgba(255,176,32,0.3)] rounded-md">
-                            <span className="text-[10px] font-angelo text-[#FFB020] uppercase tracking-wider">
-                                {Math.ceil(pendingProposals / 2)} Expire Soon
+                            <span className="text-[10px] font-angelo text-[#FFB020] uppercase tracking-wider lowercase">
+                                {Math.ceil(pendingProposals / 2)} expire soon
                             </span>
                         </div>
                     )
                 }
+                clickable={true}
+                onClick={onProposalsClick}
             />
 
             {/* CARD 3: STATUS */}
@@ -104,8 +122,8 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                         <div className="w-8 h-8 rounded-lg bg-[rgba(0,208,132,0.1)] flex items-center justify-center border border-[rgba(0,208,132,0.15)]">
                             <CheckCircle className="w-4 h-4 text-[#00D084]" />
                         </div>
-                        <span className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px]">
-                            Status
+                        <span className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px] lowercase">
+                            status
                         </span>
                     </div>
                     {/* Toggle Switch */}
@@ -118,14 +136,14 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                 </div>
 
                 <div className="mb-3 relative z-10">
-                    <h3 className="text-[32px] font-bold text-[#F5F1E8] font-milker leading-tight tracking-[-0.5px]">
-                        {isActive ? "Accepting" : "Not Accepting"}
+                    <h3 className="text-[32px] font-bold text-[#F5F1E8] font-milker leading-tight tracking-[-0.5px] lowercase">
+                        {isActive ? "accepting" : "not accepting"}
                     </h3>
                 </div>
 
                 <div className="flex flex-col gap-1 relative z-10">
-                    <p className="text-sm text-[#6B6B6B] font-sf-pro">
-                        {isActive ? "You are visible to brands" : "Your profile is hidden"}
+                    <p className="text-sm text-[#6B6B6B] font-sf-pro lowercase">
+                        {isActive ? "you are visible to brands" : "your profile is hidden"}
                     </p>
                 </div>
             </div>

@@ -10,13 +10,13 @@ import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
 
 const PROPOSALS = [
-    { id: 1, brandName: "FitLife Nutrition", title: "Protein Shake Launch", brandLogo: "FL", budget: 15000, deliverables: "2 Reels, 3 Stories", deadline: "2026-02-15", status: "new" as const },
-    { id: 2, brandName: "Urban Threads", title: "Summer Collection", brandLogo: "UT", budget: 22000, deliverables: "1 Reel, 5 Posts", deadline: "2026-02-28", status: "new" as const },
-    { id: 3, brandName: "GlowUp Skincare", title: "Skincare Routine", brandLogo: "GS", budget: 8000, deliverables: "3 Reels", deadline: "2026-03-05", status: "new" as const },
-    { id: 4, brandName: "TechVerse", title: "Gadget Review", brandLogo: "TV", budget: 12000, deliverables: "1 Video, 2 Posts", deadline: "2026-02-20", status: "new" as const },
-    { id: 5, brandName: "NatureBite", title: "Organic Campaign", brandLogo: "NB", budget: 9500, deliverables: "4 Stories, 2 Posts", deadline: "2026-01-30", status: "accepted" as const },
-    { id: 6, brandName: "PixelArt Studio", title: "Design Tools", brandLogo: "PA", budget: 6000, deliverables: "2 Reels", deadline: "2026-01-22", status: "accepted" as const },
-    { id: 7, brandName: "QuickFit App", title: "App Promo", brandLogo: "QF", budget: 5000, deliverables: "1 Reel, 3 Stories", deadline: "2026-01-10", status: "declined" as const },
+    { id: 1, brandName: "FitLife Nutrition", title: "Protein Shake Launch", brandLogo: "/images/brand-placeholder.png", budget: 15000, deliverables: "2 Reels, 3 Stories", deadline: "2026-02-15", status: "new" as const },
+    { id: 2, brandName: "Urban Threads", title: "Summer Collection", brandLogo: "/images/brand-placeholder.png", budget: 22000, deliverables: "1 Reel, 5 Posts", deadline: "2026-02-28", status: "new" as const },
+    { id: 3, brandName: "GlowUp Skincare", title: "Skincare Routine", brandLogo: "/images/brand-placeholder.png", budget: 8000, deliverables: "3 Reels", deadline: "2026-03-05", status: "new" as const },
+    { id: 4, brandName: "TechVerse", title: "Gadget Review", brandLogo: "/images/brand-placeholder.png", budget: 12000, deliverables: "1 Video, 2 Posts", deadline: "2026-02-20", status: "new" as const },
+    { id: 5, brandName: "NatureBite", title: "Organic Campaign", brandLogo: "/images/brand-placeholder.png", budget: 9500, deliverables: "4 Stories, 2 Posts", deadline: "2026-01-30", status: "accepted" as const },
+    { id: 6, brandName: "PixelArt Studio", title: "Design Tools", brandLogo: "/images/brand-placeholder.png", budget: 6000, deliverables: "2 Reels", deadline: "2026-01-22", status: "accepted" as const },
+    { id: 7, brandName: "QuickFit App", title: "App Promo", brandLogo: "/images/brand-placeholder.png", budget: 5000, deliverables: "1 Reel, 3 Stories", deadline: "2026-01-10", status: "declined" as const },
 ];
 
 const FILTER_TABS = [

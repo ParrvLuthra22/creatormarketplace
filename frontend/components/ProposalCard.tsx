@@ -111,14 +111,6 @@ export function ProposalCard({ proposal, onClick }: ProposalCardProps) {
                     <span className="due-date-text">Due {formatDate(proposal.deadline)}</span>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="proposal-progress">
-                    <div
-                        className={`progress-fill ${isExpired ? 'expired' : ''}`}
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-
                 {/* Footer Button */}
                 <div className="proposal-footer">
                     <button className="view-proposal-btn">
