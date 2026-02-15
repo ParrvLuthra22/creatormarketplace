@@ -3,7 +3,8 @@
     position: relative;
     width: 100%;
     max-width: 360px;
-    height: 480px;
+    min-height: 480px;
+    height: auto;
     background: #141414;
     border: 2px solid #2A2A2A;
     border-radius: 20px;
@@ -13,6 +14,8 @@
     flex-shrink: 0;
     z-index: 1;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
 }
 
 /* Hover state */
@@ -35,9 +38,11 @@
     position: relative;
     background: #141414;
     border-radius: 18px;
-    height: 100%;
+    flex: 1;
     z-index: 1;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Status Badge */
@@ -47,9 +52,9 @@
     right: 20px;
     padding: 8px 18px;
     border-radius: 24px;
-    font-family: 'Angelo', sans-serif;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-size: 10px;
-    text-transform: uppercase;
+    text-transform: lowercase;
     letter-spacing: 1.4px;
     font-weight: 600;
     backdrop-filter: blur(8px);
@@ -104,14 +109,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Milker', serif;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-size: 36px;
     color: #F5F1E8;
     margin-bottom: 20px;
 }
 
 .brand-name {
-    font-family: 'Milker', serif;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-size: 26px;
     font-weight: 700;
     color: #F5F1E8;
@@ -155,7 +160,7 @@
 }
 
 .info-value {
-    font-family: 'Milker', serif;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-size: 32px;
     font-weight: 700;
     color: #F5F1E8;
@@ -165,7 +170,7 @@
 }
 
 .info-label {
-    font-family: 'Angelo', sans-serif;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-size: 11px;
     text-transform: lowercase;
     color: #6B6B6B;
@@ -224,18 +229,15 @@
 
 /* View Proposal Button */
 .proposal-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
     padding: 0 32px 32px;
+    margin-top: auto;
 }
 
 .view-proposal-btn {
     width: 100%;
-    background: #F5F1E8;
-    color: #0A0A0A;
-    font-family: 'Angelo', sans-serif;
+    background: #0095f6;
+    color: #FFFFFF;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-size: 13px;
     text-transform: lowercase;
     letter-spacing: 1.4px;
@@ -245,14 +247,14 @@
     border: none;
     cursor: pointer;
     transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 149, 246, 0.3);
     font-weight: 700;
 }
 
 .proposal-card:hover .view-proposal-btn {
-    background: linear-gradient(135deg, #00D084 0%, #00FFB0 100%);
-    color: #0A0A0A;
-    box-shadow: 0 8px 24px rgba(0, 208, 132, 0.4);
+    background: #0074cc;
+    color: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 149, 246, 0.5);
     transform: translateY(-2px) scale(1.02);
     font-weight: 700;
 }
@@ -265,7 +267,8 @@
 @media (max-width: 768px) {
     .proposal-card {
         width: 320px;
-        height: 460px;
+        min-height: 460px;
+        height: auto;
     }
 
     .brand-logo,

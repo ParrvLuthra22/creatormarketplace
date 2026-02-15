@@ -58,7 +58,7 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
             <aside className={`w-[240px] h-screen bg-[#0F0F0F] border-r border-[#1F1F1F] flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo */}
                 <div className="p-8 pb-6 border-b border-[#1F1F1F] flex-shrink-0 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-[#F5F1E8] font-milker tracking-[-0.5px]">CreatorSync</h1>
+                    <h1 className="text-2xl font-bold text-[#F5F1E8] font-sans tracking-[-0.5px]">CreatorSync</h1>
                     {/* Close button for mobile */}
                     <button onClick={onClose} className="md:hidden text-[#6B6B6B] hover:text-[#F5F1E8]">
                         <X size={20} />
