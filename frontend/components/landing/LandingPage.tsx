@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import CreatorCardFloat from './CreatorCardFloat';
-import LandingAuthModal from './LandingAuthModal';
+import { AuthModal } from '@/components/AuthModal';
 import './LandingPage.css';
 
 // Type definition for particlesJS
@@ -220,10 +220,10 @@ const LandingPage = () => {
             </div>
 
             {/* Auth Modal */}
-            <LandingAuthModal
+            <AuthModal
                 isOpen={showAuthModal}
                 onClose={() => setShowAuthModal(false)}
-                defaultTab={authModalTab}
+                initialTab={authModalTab}
             />
         </div>
     );

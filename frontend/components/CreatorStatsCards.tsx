@@ -36,7 +36,7 @@ function StatsCard({ title, value, subtext, icon: Icon, trend, action, clickable
                     <div className="w-8 h-8 rounded-lg bg-[rgba(0,208,132,0.1)] flex items-center justify-center border border-[rgba(0,208,132,0.15)]">
                         <Icon className="w-4 h-4 text-[#00D084]" />
                     </div>
-                    <span className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px] lowercase">
+                    <span className="text-[11px] font-sans text-[#6B6B6B] lowercase">
                         {title}
                     </span>
                 </div>
@@ -45,7 +45,7 @@ function StatsCard({ title, value, subtext, icon: Icon, trend, action, clickable
 
             {/* Value */}
             <div className="mb-3 relative z-10">
-                <h3 className="text-[48px] font-bold text-[#F5F1E8] font-milker leading-none tracking-[-1px] lowercase">
+                <h3 className="text-[48px] font-bold text-[#F5F1E8] font-sans leading-none tracking-[-1px] lowercase">
                     {value}
                 </h3>
             </div>
@@ -103,7 +103,7 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                 action={
                     pendingProposals > 0 && (
                         <div className="px-2 py-1 bg-[rgba(255,176,32,0.15)] border border-[rgba(255,176,32,0.3)] rounded-md">
-                            <span className="text-[10px] font-angelo text-[#FFB020] uppercase tracking-wider lowercase">
+                            <span className="text-[10px] font-sans text-[#FFB020] lowercase">
                                 {Math.ceil(pendingProposals / 2)} expire soon
                             </span>
                         </div>
@@ -122,7 +122,7 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                         <div className="w-8 h-8 rounded-lg bg-[rgba(0,208,132,0.1)] flex items-center justify-center border border-[rgba(0,208,132,0.15)]">
                             <CheckCircle className="w-4 h-4 text-[#00D084]" />
                         </div>
-                        <span className="text-[11px] font-angelo uppercase text-[#6B6B6B] tracking-[1.5px] lowercase">
+                        <span className="text-[11px] font-sans text-[#6B6B6B] lowercase">
                             status
                         </span>
                     </div>
@@ -136,7 +136,7 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                 </div>
 
                 <div className="mb-3 relative z-10">
-                    <h3 className="text-[32px] font-bold text-[#F5F1E8] font-milker leading-tight tracking-[-0.5px] lowercase">
+                    <h3 className="text-[32px] font-bold text-[#F5F1E8] font-sans leading-tight tracking-[-0.5px] lowercase">
                         {isActive ? "accepting" : "not accepting"}
                     </h3>
                 </div>

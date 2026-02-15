@@ -32,7 +32,7 @@ export function EmptyCreatorState({
                 }
 
                 .empty-message {
-                    font-family: 'Milker', sans-serif;
+                    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
                     font-size: 20px;
                     font-weight: 600;
                     color: white;

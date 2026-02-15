@@ -97,7 +97,7 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                 >
                     <Menu className="w-5 h-5" />
                 </button>
-                <h1 className="text-[20px] font-bold text-[#F5F1E8] font-milker tracking-wider lowercase">home</h1>
+                <h1 className="text-[20px] font-bold text-[#F5F1E8] font-sans tracking-wider lowercase">home</h1>
             </div>
 
             {/* Right Actions */}
@@ -186,7 +186,7 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                                     <p className="text-[15px] font-bold text-[#F5F1E8] font-sf-pro truncate">{user.fullName}</p>
                                     <p className="text-[12px] text-[#6B6B6B] font-sf-pro truncate">{user.email}</p>
                                     <div className="mt-1 inline-block px-2.5 py-1 rounded-[10px] bg-[rgba(0,208,132,0.15)]">
-                                        <span className="text-[9px] font-angelo font-bold text-[#00D084] uppercase tracking-wider">{user.accountType.toLowerCase()}</span>
+                                        <span className="text-[9px] font-sans font-bold text-[#00D084] tracking-wider">{user.accountType.toLowerCase()}</span>
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                                             <p className="text-[#F5F1E8] font-sf-pro font-medium text-[14px]">{result.name}</p>
                                             <p className="text-[#6B6B6B] font-sf-pro text-[12px]">{result.subtitle}</p>
                                         </div>
-                                        <span className="text-[10px] font-angelo font-bold text-[#00D084] uppercase tracking-wider px-2 py-1 bg-[rgba(0,208,132,0.1)] rounded-lg">{result.type}</span>
+                                        <span className="text-[10px] font-sans font-bold text-[#00D084] tracking-wider px-2 py-1 bg-[rgba(0,208,132,0.1)] rounded-lg">{result.type}</span>
                                     </div>
                                 ))}
                             </div>

@@ -1,6 +1,4 @@
-/* Google Fonts - Milker & Angelo */
-@import url('https://fonts.googleapis.com/css2?family=Milker&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Angelo&display=swap');
+/* Fonts - Standardizing on SF Pro Display */
 
 @import "tailwindcss";
 
@@ -14,8 +12,8 @@
 
 @theme {
   --font-sans: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-heading: 'Milker', serif;
-  --font-accent: 'Angelo', sans-serif;
+  --font-heading: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-accent: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /* NEW COLOR SYSTEM - NO PURPLE */
 
@@ -226,13 +224,13 @@ body {
   }
 }
 
-/* Font Utility Classes */
+/* Font Utility Classes - Redefined for Consistency */
 .font-milker {
-  font-family: 'Milker', serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 .font-angelo {
-  font-family: 'Angelo', sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 /* Header Height Variable */
