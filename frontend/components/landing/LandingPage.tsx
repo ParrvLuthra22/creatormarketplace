@@ -24,7 +24,8 @@ const LandingPage = () => {
             instagramHandle: 'priyasharma',
             profilePicture: '',
             followers: 125000,
-            following: 847
+            following: 847,
+            isPremium: true
         },
         {
             id: 2,
@@ -32,7 +33,8 @@ const LandingPage = () => {
             instagramHandle: 'alexcreates',
             profilePicture: '',
             followers: 89000,
-            following: 632
+            following: 632,
+            isPremium: false
         },
         {
             id: 3,
@@ -40,7 +42,8 @@ const LandingPage = () => {
             instagramHandle: 'mayastyle',
             profilePicture: '',
             followers: 210000,
-            following: 1200
+            following: 1200,
+            isPremium: true
         },
         {
             id: 4,
@@ -48,7 +51,8 @@ const LandingPage = () => {
             instagramHandle: 'jameswilson',
             profilePicture: '',
             followers: 156000,
-            following: 923
+            following: 923,
+            isPremium: false
         }
     ];
 
