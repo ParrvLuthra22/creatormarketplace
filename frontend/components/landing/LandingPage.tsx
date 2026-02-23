@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import CreatorCardFloat from './CreatorCardFloat';
 import { AuthModal } from '@/components/AuthModal';
 import './LandingPage.css';
 
-// Type definition for particlesJS
 declare global {
     interface Window {
         particlesJS: (id: string, config: any) => void;
@@ -13,57 +13,93 @@ declare global {
 }
 
 const LandingPage = () => {
+    const router = useRouter();
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authModalTab, setAuthModalTab] = useState<'login' | 'signup'>('login');
 
-    // Featured creators data
+    // Featured creators data (8 cards for better coverage)
     const featuredCreators = [
         {
             id: 1,
             name: 'priya sharma',
             instagramHandle: 'priyasharma',
-            profilePicture: '',
+            profilePicture: null,
             followers: 125000,
             following: 847,
             isPremium: true
         },
         {
             id: 2,
-            name: 'alex chen',
-            instagramHandle: 'alexcreates',
-            profilePicture: '',
-            followers: 89000,
-            following: 632,
-            isPremium: false
-        },
-        {
-            id: 3,
             name: 'maya patel',
             instagramHandle: 'mayastyle',
-            profilePicture: '',
+            profilePicture: null,
             followers: 210000,
             following: 1200,
             isPremium: true
         },
         {
+            id: 3,
+            name: 'alex chen',
+            instagramHandle: 'alexcreates',
+            profilePicture: null,
+            followers: 89000,
+            following: 632,
+            isPremium: false
+        },
+        {
             id: 4,
             name: 'james wilson',
             instagramHandle: 'jameswilson',
-            profilePicture: '',
+            profilePicture: null,
             followers: 156000,
             following: 923,
+            isPremium: false
+        },
+        {
+            id: 5,
+            name: 'sara jones',
+            instagramHandle: 'sarajones',
+            profilePicture: null,
+            followers: 98000,
+            following: 512,
+            isPremium: true
+        },
+        {
+            id: 6,
+            name: 'rahul kumar',
+            instagramHandle: 'rahulk',
+            profilePicture: null,
+            followers: 67000,
+            following: 401,
+            isPremium: false
+        },
+        {
+            id: 7,
+            name: 'lisa brown',
+            instagramHandle: 'lisab',
+            profilePicture: null,
+            followers: 45000,
+            following: 289,
+            isPremium: false
+        },
+        {
+            id: 8,
+            name: 'kevin lee',
+            instagramHandle: 'kevinl',
+            profilePicture: null,
+            followers: 78000,
+            following: 356,
             isPremium: false
         }
     ];
 
     // Initialize Particle.js
     useEffect(() => {
-        // Check if window exists and particlesJS is loaded
         if (typeof window !== 'undefined' && window.particlesJS) {
             window.particlesJS('particles-js', {
                 particles: {
                     number: {
-                        value: 80,
+                        value: 100,
                         density: {
                             enable: true,
                             value_area: 800
@@ -80,28 +116,25 @@ const LandingPage = () => {
                         random: true,
                         anim: {
                             enable: true,
-                            speed: 0.5,
+                            speed: 0.3,
                             opacity_min: 0.05,
                             sync: false
                         }
                     },
                     size: {
-                        value: 3,
-                        random: true,
-                        anim: {
-                            enable: false
-                        }
+                        value: 2.5,
+                        random: true
                     },
                     line_linked: {
                         enable: true,
-                        distance: 150,
+                        distance: 130,
                         color: '#F5F1E8',
                         opacity: 0.1,
                         width: 1
                     },
                     move: {
                         enable: true,
-                        speed: 2,
+                        speed: 1,
                         direction: 'none',
                         random: true,
                         straight: false,
@@ -129,13 +162,13 @@ const LandingPage = () => {
                     },
                     modes: {
                         grab: {
-                            distance: 200,
+                            distance: 160,
                             line_linked: {
-                                opacity: 0.4
+                                opacity: 0.3
                             }
                         },
                         push: {
-                            particles_nb: 4
+                            particles_nb: 3
                         }
                     }
                 },
@@ -163,6 +196,13 @@ const LandingPage = () => {
         <div className="landing-page">
             {/* Particles Background */}
             <div id="particles-js"></div>
+
+            {/* Gradient Orbs (very subtle) */}
+            <div className="gradient-orbs">
+                <div className="orb orb-1"></div>
+                <div className="orb orb-2"></div>
+                <div className="orb orb-3"></div>
+            </div>
 
             {/* Floating Creator Cards */}
             <div className="floating-cards">
@@ -215,13 +255,56 @@ const LandingPage = () => {
                         i'm a brand
                     </button>
                 </div>
+
+                {/* Floating Stats */}
+                <div className="floating-stats">
+                    <div className="stat-bubble">
+                        <div className="stat-number">2,400+</div>
+                        <div className="stat-label">creators</div>
+                    </div>
+                    <div className="stat-bubble">
+                        <div className="stat-number">850+</div>
+                        <div className="stat-label">brands</div>
+                    </div>
+                    <div className="stat-bubble">
+                        <div className="stat-number">12k+</div>
+                        <div className="stat-label">collabs</div>
+                    </div>
+                </div>
+
+                {/* Scroll Indicator */}
+                <div className="scroll-indicator">
+                    <span className="scroll-text">explore</span>
+                    <div className="scroll-line"></div>
+                </div>
             </section>
 
-            {/* Scroll Indicator (optional) */}
-            <div className="scroll-indicator">
-                <span className="scroll-text">scroll</span>
-                <div className="scroll-line"></div>
-            </div>
+            {/* Features Section */}
+            <section className="features-section" id="features">
+                <div className="features-grid">
+                    <div className="feature-card">
+                        <div className="feature-icon">🤝</div>
+                        <h3 className="feature-title">seamless matching</h3>
+                        <p className="feature-text">
+                            AI-powered algorithm connects brands with creators who genuinely align with their vision.
+                        </p>
+                    </div>
+                    <div className="feature-card">
+                        <div className="feature-icon">💳</div>
+                        <h3 className="feature-title">secure payments</h3>
+                        <p className="feature-text">
+                            Integrated Razorpay ensures safe, instant transactions with full transparency.
+                        </p>
+                    </div>
+                    <div className="feature-card">
+                        <div className="feature-icon">📊</div>
+                        <h3 className="feature-title">real-time analytics</h3>
+                        <p className="feature-text">
+                            Track campaign performance, engagement metrics, and ROI all in one dashboard.
+                        </p>
+                    </div>
+                </div>
+            </section>
 
             {/* Auth Modal */}
             <AuthModal
