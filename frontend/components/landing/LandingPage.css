@@ -5,7 +5,6 @@
     background: #0A0A0A;
     position: relative;
     overflow-x: hidden;
-    color: #F5F1E8;
 }
 
 /* Particles Background */
@@ -19,6 +18,80 @@
     background: #0A0A0A;
 }
 
+/* Subtle Gradient Orbs */
+.gradient-orbs {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.08;
+    animation: float-orb 25s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(245, 241, 232, 0.3), transparent);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(245, 241, 232, 0.2), transparent);
+    top: 50%;
+    right: 15%;
+    animation-delay: 8s;
+}
+
+.orb-3 {
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(245, 241, 232, 0.25), transparent);
+    bottom: 10%;
+    left: 20%;
+    animation-delay: 16s;
+}
+
+@keyframes float-orb {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -30px) scale(1.05);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.95);
+    }
+}
+
+/* Floating Cards Container */
+.floating-cards {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
 /* Top Navigation */
 .top-nav {
     position: fixed;
@@ -26,19 +99,20 @@
     left: 0;
     right: 0;
     height: 80px;
-    background: transparent;
+    background: rgba(10, 10, 10, 0.8);
     z-index: 1000;
     padding: 0 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(245, 241, 232, 0.06);
 }
 
 .logo {
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: 'Milker', serif;
     font-size: 20px;
     font-weight: 600;
-    letter-spacing: -0.3px;
     color: #F5F1E8;
 }
 
@@ -49,9 +123,9 @@
 }
 
 .nav-links a {
-    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'SF Pro', sans-serif;
     font-size: 14px;
-    color: rgba(245, 241, 232, 0.6);
+    color: rgba(245, 241, 232, 0.5);
     text-decoration: none;
     transition: color 200ms ease;
 }
@@ -66,7 +140,7 @@
     color: #0A0A0A;
     border: none;
     border-radius: 8px;
-    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'SF Pro', sans-serif;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -76,37 +150,37 @@
 .nav-cta:hover {
     background: #FFFFFF;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245, 241, 232, 0.2);
+    box-shadow: 0 4px 16px rgba(245, 241, 232, 0.2);
 }
 
 /* Hero Section */
 .hero-section {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     z-index: 10;
-    padding: 0 40px;
+    padding: 120px 40px 80px;
 }
 
 .hero-badge {
     display: inline-block;
     padding: 6px 16px;
-    background: rgba(245, 241, 232, 0.08);
-    border: 1px solid rgba(245, 241, 232, 0.15);
+    background: rgba(245, 241, 232, 0.06);
+    border: 1px solid rgba(245, 241, 232, 0.12);
     border-radius: 20px;
     font-size: 12px;
     text-transform: lowercase;
     letter-spacing: 1.5px;
-    color: rgba(245, 241, 232, 0.7);
+    color: rgba(245, 241, 232, 0.6);
     margin-bottom: 32px;
 }
 
 .hero-headline {
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: 'Milker', serif;
     font-size: 96px;
     font-weight: 800;
     line-height: 1.1;
@@ -117,10 +191,10 @@
 }
 
 .hero-subtext {
-    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'SF Pro', sans-serif;
     font-size: 18px;
     line-height: 1.6;
-    color: rgba(245, 241, 232, 0.6);
+    color: rgba(245, 241, 232, 0.5);
     max-width: 600px;
     margin-bottom: 48px;
 }
@@ -128,7 +202,7 @@
 .hero-buttons {
     display: flex;
     gap: 16px;
-    align-items: center;
+    margin-bottom: 80px;
 }
 
 .primary-button {
@@ -137,11 +211,11 @@
     color: #0A0A0A;
     border: none;
     border-radius: 10px;
-    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'SF Pro', sans-serif;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 300ms ease;
 }
 
 .primary-button:hover {
@@ -154,18 +228,48 @@
     padding: 16px 36px;
     background: transparent;
     color: #F5F1E8;
-    border: 1.5px solid rgba(245, 241, 232, 0.3);
+    border: 1.5px solid rgba(245, 241, 232, 0.25);
     border-radius: 10px;
-    font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'SF Pro', sans-serif;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 300ms ease;
 }
 
 .secondary-button:hover {
-    border-color: #F5F1E8;
+    border-color: rgba(245, 241, 232, 0.5);
     background: rgba(245, 241, 232, 0.05);
+}
+
+/* Floating Stats */
+.floating-stats {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 40px;
+}
+
+.stat-bubble {
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 241, 232, 0.08);
+    border-radius: 16px;
+    padding: 20px 32px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #F5F1E8;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: rgba(245, 241, 232, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Scroll Indicator */
@@ -179,14 +283,14 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 .scroll-text {
     font-size: 11px;
     text-transform: lowercase;
     letter-spacing: 1.5px;
-    color: rgba(245, 241, 232, 0.6);
+    color: rgba(245, 241, 232, 0.5);
 }
 
 .scroll-line {
@@ -208,6 +312,54 @@
         transform: translateY(10px);
         opacity: 1;
     }
+}
+
+/* Features Section */
+.features-section {
+    position: relative;
+    z-index: 10;
+    padding: 100px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.feature-card {
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 241, 232, 0.08);
+    border-radius: 20px;
+    padding: 40px;
+    transition: all 300ms ease;
+}
+
+.feature-card:hover {
+    border-color: rgba(245, 241, 232, 0.15);
+    transform: translateY(-4px);
+    background: rgba(18, 18, 18, 0.7);
+}
+
+.feature-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.feature-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #F5F1E8;
+}
+
+.feature-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(245, 241, 232, 0.5);
 }
 
 /* Mobile Responsive */
@@ -236,5 +388,14 @@
     .primary-button,
     .secondary-button {
         width: 100%;
+    }
+
+    .floating-stats {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
     }
 }
