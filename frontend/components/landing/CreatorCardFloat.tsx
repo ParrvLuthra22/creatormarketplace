@@ -24,42 +24,46 @@ const CreatorCardFloat: React.FC<CreatorCardFloatProps> = ({ creator, index, onC
         return num.toString();
     };
 
-    // Determine if card should be smaller (cards 7 and 8)
-    const isSmaller = index === 6 || index === 7;
-
     return (
         <div
-            className={`creator-card-float card-${index + 1} ${isSmaller ? 'small' : ''}`}
+            className={`creator-card-float card-pos-${index + 1}`}
             onClick={onCardClick}
         >
-            {creator.isPremium && (
-                <div className="premium-badge">premium</div>
-            )}
+            <div className="card-header">
+                <div className="card-avatar">
+                    {creator.profilePicture ? (
+                        <img src={creator.profilePicture} alt={creator.name} />
+                    ) : (
+                        <div className="avatar-placeholder">
+                            {creator.name.charAt(0).toUpperCase()}
+                        </div>
+                    )}
+                </div>
+                <div className="card-profile-info">
+                    <div className="card-name">{creator.name}</div>
+                    <div className="card-handle">@{creator.instagramHandle}</div>
+                </div>
 
-            <div className={`card-avatar ${isSmaller ? 'small' : ''}`}>
-                {creator.profilePicture ? (
-                    <img src={creator.profilePicture} alt={creator.name} />
-                ) : (
-                    <div className="avatar-placeholder">
-                        {creator.name.charAt(0).toUpperCase()}
-                    </div>
+                {creator.isPremium && (
+                    <div className="premium-badge">Matched</div>
                 )}
             </div>
 
-            <div className="card-name">{creator.name}</div>
-            <div className="card-handle">@{creator.instagramHandle}</div>
-
             <div className="card-stats">
                 <div className="stat">
+                    <div className="stat-label">Followers</div>
                     <div className="stat-number">{formatNumber(creator.followers)}</div>
-                    <div className="stat-label">followers</div>
                 </div>
-                {!isSmaller && (
-                    <div className="stat">
-                        <div className="stat-number">{formatNumber(creator.following)}</div>
-                        <div className="stat-label">following</div>
-                    </div>
-                )}
+                <div className="stat divider"></div>
+                <div className="stat">
+                    <div className="stat-label">Engagement</div>
+                    <div className="stat-number">4.2%</div>
+                </div>
+            </div>
+
+            <div className="card-footer">
+                <div className="tag">Fashion</div>
+                <div className="tag">Lifestyle</div>
             </div>
         </div>
     );
