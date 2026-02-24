@@ -55,12 +55,12 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                 />
             )}
 
-            <aside className={`w-[240px] h-screen bg-[#0F0F0F] border-r border-[#1F1F1F] flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside className={`w-[240px] h-screen bg-white border-r border-[#E5E5E5] flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo */}
-                <div className="p-8 pb-6 border-b border-[#1F1F1F] flex-shrink-0 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-[#F5F1E8] font-sans tracking-[-0.5px]">CreatorSync</h1>
+                <div className="p-8 pb-6 border-b border-[#E5E5E5] flex-shrink-0 flex justify-between items-center">
+                    <h1 className="text-2xl font-bold text-black font-sans tracking-[-0.5px]">CreatorSync</h1>
                     {/* Close button for mobile */}
-                    <button onClick={onClose} className="md:hidden text-[#6B6B6B] hover:text-[#F5F1E8]">
+                    <button onClick={onClose} className="md:hidden text-[#6B6B6B] hover:text-black">
                         <X size={20} />
                     </button>
                 </div>
@@ -76,16 +76,16 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                                 key={item.name}
                                 href={item.href}
                                 onClick={onClose} // Close sidebar on nav click
-                                className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro tracking-[0.2px] transition-all duration-200 relative lowercase ${isActive
-                                    ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium pl-3.5 border-l-[3px] border-[#00D084]"
-                                    : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
+                                className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-[0.2px] transition-all duration-200 relative lowercase ${isActive
+                                    ? "bg-[#F4EFE6] text-black font-bold pl-3.5 border-l-[3px] border-[#4A46FF]"
+                                    : "text-[#6B6B6B] hover:bg-gray-50 hover:text-black"
                                     }`}
                             >
-                                <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive ? 'text-[#00D084]' : 'text-[#6B6B6B] group-hover:text-[#C5C5C5]'}`} />
+                                <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive ? 'text-black' : 'text-[#6B6B6B] group-hover:text-black'}`} />
                                 <span className="flex-1">{item.name}</span>
 
                                 {item.badge && (
-                                    <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#FF4757] text-[11px] font-bold text-white shadow-sm">
+                                    <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#E5FA4A] text-black text-[11px] font-bold shadow-sm">
                                         {item.badge}
                                     </span>
                                 )}
@@ -95,13 +95,13 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                 </nav>
 
                 {/* Bottom Actions */}
-                <div className="flex-shrink-0 p-4 border-t border-[#1F1F1F] bg-[#0F0F0F]">
+                <div className="flex-shrink-0 p-4 border-t border-[#E5E5E5] bg-white">
                     <Link
                         href="/dashboard/creator/settings"
                         onClick={onClose}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro mb-3 transition-colors lowercase ${pathname === "/dashboard/creator/settings"
-                            ? "bg-[rgba(0,208,132,0.08)] text-[#00D084] font-medium"
-                            : "text-[#6B6B6B] hover:bg-[rgba(0,208,132,0.05)] hover:text-[#C5C5C5]"
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold mb-3 transition-colors lowercase ${pathname === "/dashboard/creator/settings"
+                            ? "bg-[#F4EFE6] text-black"
+                            : "text-[#6B6B6B] hover:bg-gray-50 hover:text-black"
                             }`}
                     >
                         <Settings className="w-5 h-5" />
@@ -109,7 +109,7 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                     </Link>
 
                     <div
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sf-pro text-[#6B6B6B] hover:bg-[rgba(255,71,87,0.1)] hover:text-[#FF4757] cursor-pointer transition-colors lowercase"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-[#6B6B6B] hover:bg-red-50 hover:text-red-500 cursor-pointer transition-colors lowercase"
                         onClick={() => setShowLogoutConfirm(true)}
                     >
                         <LogOut className="w-5 h-5" />

@@ -12,7 +12,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ userName, userAvatar, children, rightSidebar }: DashboardLayoutProps) {
     return (
-        <div className="min-h-screen bg-[#0A0A0A] text-[#F5F1E8]">
+        <div className="min-h-screen bg-[#F4EFE6] text-black">
             {/* Left Sidebar */}
             <DashboardSidebar userName={userName} userAvatar={userAvatar} />
 
@@ -25,7 +25,7 @@ export function DashboardLayout({ userName, userAvatar, children, rightSidebar }
 
             {/* Right Sidebar */}
             {rightSidebar && (
-                <aside className="w-[300px] h-screen fixed right-0 top-0 p-8 overflow-y-auto z-50 bg-[#0F0F0F] border-l border-[#1F1F1F]">
+                <aside className="w-[300px] h-screen fixed right-0 top-0 p-8 overflow-y-auto z-50 bg-white border-l border-[#E5E5E5] text-black">
                     {rightSidebar}
                 </aside>
             )}
