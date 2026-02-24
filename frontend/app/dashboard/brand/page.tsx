@@ -46,19 +46,19 @@ export default function BrandDashboard() {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "Accepted": return "bg-[#1A2A1A]";
-            case "Viewed": return "bg-[#1A1A2A]";
-            case "Declined": return "bg-[#2A1A1A]";
-            default: return "bg-[#1F1F1F]";
+            case "Accepted": return "bg-green-100 text-green-700";
+            case "Viewed": return "bg-blue-100 text-blue-700";
+            case "Declined": return "bg-red-100 text-red-700";
+            default: return "bg-gray-100 text-gray-700";
         }
     };
 
     const getTierStyle = (tier: string) => {
         switch (tier) {
-            case "Emerging": return "bg-[#1F1F1F] text-[#AAAAAA]";
-            case "Growing": return "bg-[#1A1A2A] text-white";
-            case "Established": return "bg-[#1A2A1A] text-white";
-            default: return "bg-[#1F1F1F] text-[#AAAAAA]";
+            case "Emerging": return "bg-gray-100 text-gray-600";
+            case "Growing": return "bg-blue-50 text-blue-700";
+            case "Established": return "bg-green-50 text-green-700";
+            default: return "bg-gray-100 text-gray-600";
         }
     };
 
@@ -92,27 +92,27 @@ export default function BrandDashboard() {
                 </div>
 
                 {/* MAIN CONTENT */}
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
+                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px] bg-[#F4EFE6]">
                     {/* Upgrade Banner - Free Users Only */}
                     {user?.plan === 'free' && !bannerDismissed && (
-                        <div className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-4 px-5 mb-6 flex items-center justify-between relative">
+                        <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 px-5 mb-6 flex items-center justify-between relative shadow-sm">
                             <div className="flex items-center gap-3">
                                 <div className="text-xl">⚡</div>
                                 <div>
-                                    <p className="text-[15px] font-semibold text-white">Unlock full creator access</p>
+                                    <p className="text-[15px] font-bold text-black">Unlock full creator access</p>
                                     <p className="text-[13px] text-[#6B6B6B]">See pricing, filters, and more</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => router.push('/pricing')}
-                                    className="bg-white text-black px-5 py-2 rounded-lg font-angelo text-[13px] font-semibold hover:opacity-85 transition-opacity"
+                                    className="bg-black text-white px-5 py-2 rounded-lg text-[13px] font-bold hover:bg-gray-800 transition-colors"
                                 >
                                     Upgrade Now
                                 </button>
                                 <button
                                     onClick={() => setBannerDismissed(true)}
-                                    className="w-[22px] h-[22px] rounded-full bg-[#1F1F1F] flex items-center justify-center text-white hover:bg-[#2A2A2A] transition-colors text-[16px] leading-none"
+                                    className="w-[22px] h-[22px] rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-black transition-colors text-[16px] leading-none"
                                 >
                                     ×
                                 </button>
@@ -122,7 +122,7 @@ export default function BrandDashboard() {
 
                     {/* PAGE HEADER */}
                     <div className="flex justify-between items-center mb-7">
-                        <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker">Home</h1>
+                        <h1 className="text-[28px] font-bold text-black">Home</h1>
                         <div className="flex items-center gap-4">
                             <Search className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-black transition-colors" />
                             <Bell className="w-5 h-5 text-[#6B6B6B] cursor-pointer hover:text-black transition-colors" />
@@ -132,11 +132,11 @@ export default function BrandDashboard() {
                     {/* STAT CARDS ROW */}
                     <div className="grid grid-cols-3 gap-4 mb-8 stat-cards-grid">
                         {/* Card 1 */}
-                        <div className={`bg-[#141414] rounded-[14px] p-5 relative stat-card ${user?.plan === 'free' ? 'border border-[#2A2A2A]' : 'border border-[#1F1F1F]'
+                        <div className={`bg-white rounded-[14px] p-5 relative stat-card shadow-sm ${user?.plan === 'free' ? 'border border-[#E5E5E5]' : 'border border-[#E5E5E5] hover:border-[#4A46FF] transition-colors'
                             }`}>
-                            <TrendingUp className="absolute top-5 right-5 w-5 h-5 text-[#3D3D3D]" />
-                            <p className="text-[10px] uppercase text-[#6B6B6B] font-angelo tracking-widest">TOTAL SPEND</p>
-                            <p className="text-[30px] text-white font-angelo mt-2">
+                            <TrendingUp className="absolute top-5 right-5 w-5 h-5 text-gray-400" />
+                            <p className="text-[10px] uppercase text-[#6B6B6B] font-bold tracking-widest">TOTAL SPEND</p>
+                            <p className="text-[30px] text-black font-bold mt-2">
                                 {user?.plan === 'free' ? '—' : '₹1,24,500'}
                             </p>
                             <p className="text-xs text-[#6B6B6B] mt-1">
@@ -145,11 +145,11 @@ export default function BrandDashboard() {
                         </div>
 
                         {/* Card 2 */}
-                        <div className={`bg-[#141414] rounded-[14px] p-5 relative stat-card ${user?.plan === 'free' ? 'border border-[#2A2A2A]' : 'border border-[#1F1F1F]'
+                        <div className={`bg-white rounded-[14px] p-5 relative stat-card shadow-sm ${user?.plan === 'free' ? 'border border-[#E5E5E5]' : 'border border-[#E5E5E5] hover:border-[#4A46FF] transition-colors'
                             }`}>
-                            <Users className="absolute top-5 right-5 w-5 h-5 text-[#3D3D3D]" />
-                            <p className="text-[10px] uppercase text-[#6B6B6B] font-angelo tracking-widest">CREATORS HIRED</p>
-                            <p className="text-[30px] text-white font-angelo mt-2">
+                            <Users className="absolute top-5 right-5 w-5 h-5 text-gray-400" />
+                            <p className="text-[10px] uppercase text-[#6B6B6B] font-bold tracking-widest">CREATORS HIRED</p>
+                            <p className="text-[30px] text-black font-bold mt-2">
                                 {user?.plan === 'free' ? '0' : '8'}
                             </p>
                             <p className="text-xs text-[#6B6B6B] mt-1">
@@ -158,11 +158,11 @@ export default function BrandDashboard() {
                         </div>
 
                         {/* Card 3 */}
-                        <div className={`bg-[#141414] rounded-[14px] p-5 relative stat-card ${user?.plan === 'free' ? 'border border-[#2A2A2A]' : 'border border-[#1F1F1F]'
+                        <div className={`bg-white rounded-[14px] p-5 relative stat-card shadow-sm ${user?.plan === 'free' ? 'border border-[#E5E5E5]' : 'border border-[#E5E5E5] hover:border-[#4A46FF] transition-colors'
                             }`}>
-                            <Clock className="absolute top-5 right-5 w-5 h-5 text-[#3D3D3D]" />
-                            <p className="text-[10px] uppercase text-[#6B6B6B] font-angelo tracking-widest">PENDING</p>
-                            <p className="text-[30px] text-white font-angelo mt-2">
+                            <Clock className="absolute top-5 right-5 w-5 h-5 text-gray-400" />
+                            <p className="text-[10px] uppercase text-[#6B6B6B] font-bold tracking-widest">PENDING</p>
+                            <p className="text-[30px] text-black font-bold mt-2">
                                 {user?.plan === 'free' ? '0' : '3'}
                             </p>
                             <p className="text-xs text-[#6B6B6B] mt-1">
@@ -175,15 +175,15 @@ export default function BrandDashboard() {
                     <div>
                         {/* Section Header with Filters */}
                         <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-xl font-bold text-[#0A0A0A] font-milker">Creators</h2>
+                            <h2 className="text-xl font-bold text-black">Creators</h2>
                             <div className="flex gap-2 filter-pills">
                                 {FILTER_NICHES.map(niche => (
                                     <button
                                         key={niche}
                                         onClick={() => setSelectedFilter(niche)}
-                                        className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors border ${selectedFilter === niche
-                                            ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
-                                            : "bg-white text-[#0A0A0A] border-[#E5E5E5] hover:bg-[#F0F0F0]"
+                                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors border ${selectedFilter === niche
+                                            ? "bg-black text-white border-black"
+                                            : "bg-white text-black border-[#E5E5E5] hover:bg-gray-50"
                                             }`}
                                     >
                                         {niche}
@@ -203,11 +203,11 @@ export default function BrandDashboard() {
 
                         {/* Upgrade CTA for Free users only */}
                         {user?.plan === 'free' && (
-                            <div className="text-center py-6 mt-6 bg-[#141414] border border-[#1F1F1F] rounded-[14px]">
-                                <p className="text-sm text-white mb-3">Upgrade to Basic to see all creators</p>
+                            <div className="text-center py-6 mt-6 bg-white border border-[#E5E5E5] rounded-[14px] shadow-sm">
+                                <p className="text-sm text-black font-semibold mb-3">Upgrade to Basic to see all creators</p>
                                 <button
                                     onClick={() => router.push('/pricing')}
-                                    className="px-6 py-2 bg-white text-black rounded-full font-angelo text-[13px] font-semibold hover:opacity-85 transition-opacity"
+                                    className="px-6 py-2 bg-black text-white rounded-full font-bold text-[13px] hover:bg-gray-800 transition-colors"
                                 >
                                     Upgrade Now →
                                 </button>

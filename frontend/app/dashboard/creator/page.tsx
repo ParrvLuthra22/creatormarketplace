@@ -63,7 +63,7 @@ export default function CreatorDashboard() {
 
     return (
         <RouteGuard allowedRole="creator">
-            <div className="min-h-screen bg-[#0A0A0A] text-[#F5F1E8] font-sf-pro selection:bg-[#F5F1E8] selection:text-[#0A0A0A]">
+            <div className="min-h-screen bg-[#F4EFE6] text-black">
 
                 {/* Fixed Header */}
                 <DashboardHeader
@@ -91,10 +91,10 @@ export default function CreatorDashboard() {
 
                         {/* Welcome Heading */}
                         <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                            <h1 className="text-4xl md:text-5xl font-bold font-sans text-[#F5F1E8] mb-2 tracking-[-1px] lowercase">
+                            <h1 className="text-4xl md:text-5xl font-bold text-black mb-2 tracking-[-1px] lowercase">
                                 hello, {user?.fullName?.split(' ')[0] || "creator"}
                             </h1>
-                            <p className="text-[#6B6B6B] text-lg font-sf-pro lowercase">
+                            <p className="text-[#6B6B6B] text-lg lowercase">
                                 here's what's happening with your collaborations today.
                             </p>
                         </div>
@@ -114,10 +114,10 @@ export default function CreatorDashboard() {
                         {/* Recent Proposals Section */}
                         <section className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
                             <div className="flex items-center justify-between mb-8 px-2">
-                                <h2 className="text-2xl font-bold font-sans text-[#F5F1E8] lowercase">
+                                <h2 className="text-2xl font-bold text-black lowercase">
                                     new proposals <span className="text-[#6B6B6B] text-lg font-normal ml-2">({activeProposals.length})</span>
                                 </h2>
-                                <button className="text-sm font-sans font-bold tracking-widest text-[#F5F1E8] hover:text-[#C5C5C5] transition-colors lowercase">
+                                <button className="text-sm font-bold tracking-widest text-[#6B6B6B] hover:text-black transition-colors lowercase">
                                     view all
                                 </button>
                             </div>
@@ -133,7 +133,7 @@ export default function CreatorDashboard() {
                         {acceptedProposals.length > 0 && (
                             <section className="mt-16 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
                                 <div className="flex items-center justify-between mb-8 px-2">
-                                    <h2 className="text-2xl font-bold font-sans text-[#F5F1E8] lowercase">
+                                    <h2 className="text-2xl font-bold text-black lowercase">
                                         active collaborations
                                     </h2>
                                 </div>

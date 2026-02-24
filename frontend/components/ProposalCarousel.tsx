@@ -46,9 +46,9 @@ export function ProposalCarousel({
 
     if (proposals.length === 0) {
         return (
-            <div className="text-center py-16 bg-[#141414] border border-[#1F1F1F] rounded-[20px] max-w-4xl mx-auto">
-                <p className="text-[#F5F1E8] text-lg font-milker mb-2">No active proposals</p>
-                <p className="text-[#6B6B6B] text-sm font-sf-pro">Check back later for new opportunities from top brands.</p>
+            <div className="text-center py-16 bg-white border border-[#E5E5E5] shadow-sm rounded-[20px] max-w-4xl mx-auto">
+                <p className="text-black text-lg font-bold mb-2">No active proposals</p>
+                <p className="text-[#6B6B6B] text-sm">Check back later for new opportunities from top brands.</p>
             </div>
         );
     }
@@ -60,8 +60,8 @@ export function ProposalCarousel({
                 <button
                     onClick={handlePrev}
                     disabled={!canGoPrev}
-                    className={`absolute -left-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#2A2A2A] bg-[#141414] text-[#F5F1E8] flex items-center justify-center transition-all duration-300 z-10 ${canGoPrev
-                        ? "opacity-100 hover:bg-[#F5F1E8] hover:text-[#0A0A0A] cursor-pointer hover:scale-110"
+                    className={`absolute -left-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#E5E5E5] bg-white text-black shadow-sm flex items-center justify-center transition-all duration-300 z-10 ${canGoPrev
+                        ? "opacity-100 hover:bg-gray-50 hover:border-black cursor-pointer hover:scale-110"
                         : "opacity-0 cursor-default"
                         }`}
                     aria-label="Previous proposals"
@@ -85,8 +85,8 @@ export function ProposalCarousel({
                 <button
                     onClick={handleNext}
                     disabled={!canGoNext}
-                    className={`absolute -right-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#2A2A2A] bg-[#141414] text-[#F5F1E8] flex items-center justify-center transition-all duration-300 z-10 ${canGoNext
-                        ? "opacity-100 hover:bg-[#F5F1E8] hover:text-[#0A0A0A] cursor-pointer hover:scale-110"
+                    className={`absolute -right-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#E5E5E5] bg-white text-black shadow-sm flex items-center justify-center transition-all duration-300 z-10 ${canGoNext
+                        ? "opacity-100 hover:bg-gray-50 hover:border-black cursor-pointer hover:scale-110"
                         : "opacity-0 cursor-default"
                         }`}
                     aria-label="Next proposals"
@@ -100,7 +100,7 @@ export function ProposalCarousel({
                 <div className="mt-8 text-center">
                     <a
                         href={showMoreLink}
-                        className="inline-flex items-center gap-2 text-[13px] font-angelo font-bold text-[#F5F1E8] uppercase tracking-widest hover:gap-4 transition-all duration-300"
+                        className="inline-flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest hover:gap-4 transition-all duration-300"
                     >
                         View All Proposals <span className="text-lg">→</span>
                     </a>

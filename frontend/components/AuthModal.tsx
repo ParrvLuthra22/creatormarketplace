@@ -252,22 +252,22 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
                 onClick={handleClose}
             />
 
             {/* Modal Content */}
-            <div className="relative bg-[#141414] border border-[#1F1F1F] rounded-3xl w-full max-w-md shadow-2xl p-8 transform transition-all animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-[#FFFFFF] border border-[#E5E5E5] rounded-3xl w-full max-w-md shadow-2xl p-8 transform transition-all animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
                 <button
                     onClick={handleClose}
                     disabled={loading}
-                    className="absolute top-4 right-4 text-[#6B6B6B] hover:text-white p-2 rounded-full hover:bg-[#1F1F1F] transition-colors disabled:opacity-50"
+                    className="absolute top-4 right-4 text-[#6B6B6B] hover:text-black p-2 rounded-full hover:bg-[#F4EFE6] transition-colors disabled:opacity-50"
                 >
                     <X className="w-5 h-5" />
                 </button>
 
                 <div className="text-center mb-8">
-                    <h2 className="text-2xl font-bold text-white mb-2 font-milker">
+                    <h2 className="text-2xl font-bold text-black mb-2">
                         {activeTab === "login"
                             ? "Welcome Back"
                             : signupStep === 1
@@ -290,7 +290,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                 </div>
 
                 {/* Tabs */}
-                <div className="relative flex p-1 bg-[#0F0F0F] rounded-full mb-8">
+                <div className="relative flex p-1 bg-[#F4EFE6] rounded-full mb-8">
                     <button
                         onClick={() => {
                             setActiveTab("login");
@@ -298,9 +298,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             setSuccessMessage(null);
                         }}
                         disabled={loading}
-                        className={`flex-1 py-2.5 text-sm font-semibold rounded-full transition-all relative z-10 font-angelo ${activeTab === "login"
+                        className={`flex-1 py-2.5 text-sm font-semibold rounded-full transition-all relative z-10 ${activeTab === "login"
                             ? "text-black"
-                            : "text-[#6B6B6B] hover:text-white"
+                            : "text-[#6B6B6B] hover:text-black"
                             }`}
                     >
                         Login
@@ -314,9 +314,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             setSuccessMessage(null);
                         }}
                         disabled={loading}
-                        className={`flex-1 py-2.5 text-sm font-semibold rounded-full transition-all relative z-10 font-angelo ${activeTab === "signup"
+                        className={`flex-1 py-2.5 text-sm font-semibold rounded-full transition-all relative z-10 ${activeTab === "signup"
                             ? "text-black"
-                            : "text-[#6B6B6B] hover:text-white"
+                            : "text-[#6B6B6B] hover:text-black"
                             }`}
                     >
                         Create Account
@@ -355,11 +355,11 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 onBlur={handleLoginEmailBlur}
                                 required
                                 disabled={loading}
-                                className={`w-full px-4 py-3 rounded-xl border ${loginEmailError ? "border-red-600/50" : "border-[#2A2A2A]"
-                                    } focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50`}
+                                className={`w-full px-4 py-3 rounded-xl border ${loginEmailError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                    } focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                             />
                             {loginEmailError && (
-                                <p className="mt-1 text-xs text-red-400">{loginEmailError}</p>
+                                <p className="mt-1 text-xs text-red-500">{loginEmailError}</p>
                             )}
                         </div>
                         <div>
@@ -371,12 +371,12 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     onChange={(e) => setLoginPassword(e.target.value)}
                                     required
                                     disabled={loading}
-                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-[#2A2A2A] focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50"
+                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-[#E5E5E5] focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowLoginPassword(!showLoginPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-black transition-colors"
                                 >
                                     {showLoginPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
@@ -385,7 +385,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
 
                         <Button
                             type="submit"
-                            className="w-full bg-white text-black hover:bg-[#E5E5E5] py-6 text-lg mt-4 font-angelo"
+                            className="w-full bg-black text-white hover:bg-gray-800 py-6 text-lg mt-4 font-semibold rounded-full"
                             disabled={loading}
                         >
                             {loading ? "Signing in..." : "Sign In"}
@@ -399,7 +399,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     setActiveTab("signup");
                                     setSignupStep(1);
                                 }}
-                                className="text-white hover:text-[#E5E5E5] font-semibold transition-colors font-angelo"
+                                className="text-black hover:text-gray-700 font-bold transition-colors"
                             >
                                 Create account
                             </button>
@@ -415,16 +415,16 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             onClick={() => setAccountType("Brand")}
                             disabled={loading}
                             className={`w-full p-6 border rounded-2xl transition-all text-left disabled:opacity-50 ${accountType === "Brand"
-                                ? "border-white bg-[#1A1A1A]"
-                                : "border-[#2A2A2A] hover:border-[#6B6B6B] hover:bg-[#1A1A1A]/50"
+                                ? "border-black bg-[#F4EFE6]"
+                                : "border-[#E5E5E5] hover:border-black hover:bg-gray-50"
                                 }`}
                         >
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#1F1F1F] flex items-center justify-center">
-                                    <Briefcase className="w-6 h-6 text-white" />
+                                <div className="w-12 h-12 rounded-xl bg-[#E5FA4A] flex items-center justify-center">
+                                    <Briefcase className="w-6 h-6 text-black" />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-white mb-1 font-angelo">Brand</h3>
+                                    <h3 className="text-lg font-bold text-black mb-1">Brand</h3>
                                     <p className="text-sm text-[#6B6B6B]">Discover & hire creators</p>
                                 </div>
                             </div>
@@ -435,16 +435,16 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             onClick={() => setAccountType("Creator")}
                             disabled={loading}
                             className={`w-full p-6 border rounded-2xl transition-all text-left disabled:opacity-50 ${accountType === "Creator"
-                                ? "border-white bg-[#1A1A1A]"
-                                : "border-[#2A2A2A] hover:border-[#6B6B6B] hover:bg-[#1A1A1A]/50"
+                                ? "border-black bg-[#F4EFE6]"
+                                : "border-[#E5E5E5] hover:border-black hover:bg-gray-50"
                                 }`}
                         >
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#1F1F1F] flex items-center justify-center">
-                                    <Star className="w-6 h-6 text-white" />
+                                <div className="w-12 h-12 rounded-xl bg-[#E5FA4A] flex items-center justify-center">
+                                    <Star className="w-6 h-6 text-black" />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-white mb-1 font-angelo">Creator</h3>
+                                    <h3 className="text-lg font-bold text-black mb-1">Creator</h3>
                                     <p className="text-sm text-[#6B6B6B]">Get discovered by brands</p>
                                 </div>
                             </div>
@@ -454,7 +454,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                         {accountType && (
                             <Button
                                 onClick={() => setSignupStep(2)}
-                                className="w-full bg-white text-black hover:bg-[#E5E5E5] py-6 text-lg mt-2 font-angelo flex items-center justify-center gap-2"
+                                className="w-full bg-black text-white hover:bg-gray-800 py-6 text-lg mt-2 font-semibold flex items-center justify-center gap-2 rounded-full"
                             >
                                 Continue <ArrowRight className="w-5 h-5" />
                             </Button>
@@ -469,7 +469,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                         <button
                             type="button"
                             onClick={() => setSignupStep(1)}
-                            className="text-sm text-[#6B6B6B] hover:text-white mb-2 font-angelo flex items-center gap-1"
+                            className="text-sm text-[#6B6B6B] hover:text-black mb-2 font-semibold flex items-center gap-1"
                         >
                             ← Back
                         </button>
@@ -486,11 +486,11 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 onBlur={handleSignupNameBlur}
                                 required
                                 disabled={loading}
-                                className={`w-full px-4 py-3 rounded-xl border ${signupNameError ? "border-red-600/50" : "border-[#2A2A2A]"
-                                    } focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50`}
+                                className={`w-full px-4 py-3 rounded-xl border ${signupNameError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                    } focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                             />
                             {signupNameError && (
-                                <p className="mt-1 text-xs text-red-400">{signupNameError}</p>
+                                <p className="mt-1 text-xs text-red-500">{signupNameError}</p>
                             )}
                         </div>
 
@@ -506,11 +506,11 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 onBlur={handleSignupEmailBlur}
                                 required
                                 disabled={loading}
-                                className={`w-full px-4 py-3 rounded-xl border ${signupEmailError ? "border-red-600/50" : "border-[#2A2A2A]"
-                                    } focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50`}
+                                className={`w-full px-4 py-3 rounded-xl border ${signupEmailError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                    } focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                             />
                             {signupEmailError && (
-                                <p className="mt-1 text-xs text-red-400">{signupEmailError}</p>
+                                <p className="mt-1 text-xs text-red-500">{signupEmailError}</p>
                             )}
                         </div>
 
@@ -523,7 +523,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     value={companyName}
                                     onChange={(e) => setCompanyName(e.target.value)}
                                     disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50"
+                                    className="w-full px-4 py-3 rounded-xl border border-[#E5E5E5] focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50"
                                 />
                             </div>
                         )}
@@ -541,11 +541,11 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     }}
                                     required
                                     disabled={loading}
-                                    className={`w-full px-4 py-3 rounded-xl border ${instagramHandleError ? "border-red-600/50" : "border-[#2A2A2A]"
-                                        } focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${instagramHandleError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                        } focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                                 />
                                 {instagramHandleError && (
-                                    <p className="mt-1 text-xs text-red-400">{instagramHandleError}</p>
+                                    <p className="mt-1 text-xs text-red-500">{instagramHandleError}</p>
                                 )}
                             </div>
                         )}
@@ -564,25 +564,25 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     required
                                     minLength={8}
                                     disabled={loading}
-                                    className={`w-full px-4 py-3 pr-12 rounded-xl border ${signupPasswordError ? "border-red-600/50" : "border-[#2A2A2A]"
-                                        } focus:outline-none focus:border-white transition-all bg-[#0F0F0F] text-white placeholder-[#6B6B6B] disabled:opacity-50`}
+                                    className={`w-full px-4 py-3 pr-12 rounded-xl border ${signupPasswordError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                        } focus:outline-none focus:border-black transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowSignupPassword(!showSignupPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-black transition-colors"
                                 >
                                     {showSignupPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
                             </div>
                             {signupPasswordError && (
-                                <p className="mt-1 text-xs text-red-400">{signupPasswordError}</p>
+                                <p className="mt-1 text-xs text-red-500">{signupPasswordError}</p>
                             )}
                         </div>
 
                         <Button
                             type="submit"
-                            className="w-full bg-white text-black hover:bg-[#E5E5E5] py-6 text-lg mt-4 font-angelo"
+                            className="w-full bg-black text-white hover:bg-gray-800 py-6 text-lg mt-4 font-semibold rounded-full"
                             disabled={loading}
                         >
                             {loading
@@ -600,7 +600,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     setActiveTab("login");
                                     setSignupStep(1);
                                 }}
-                                className="text-white hover:text-[#E5E5E5] font-semibold transition-colors font-angelo"
+                                className="text-black hover:text-gray-700 font-bold transition-colors"
                             >
                                 Sign in →
                             </button>
@@ -615,7 +615,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                         <button
                             type="button"
                             onClick={() => setSignupStep(2)}
-                            className="text-sm text-[#6B6B6B] hover:text-white mb-2 font-angelo flex items-center gap-1"
+                            className="text-sm text-[#6B6B6B] hover:text-black mb-2 font-semibold flex items-center gap-1"
                             disabled={loading}
                         >
                             ← Back
@@ -623,7 +623,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
 
                         {/* Section Heading */}
                         <div className="text-center mb-6">
-                            <h3 className="font-milker text-[24px] text-white mb-2">Choose Your Plan</h3>
+                            <h3 className="text-2xl font-bold text-black mb-2">Choose Your Plan</h3>
                             <p className="text-[14px] text-[#6B6B6B]">You can upgrade or downgrade anytime</p>
                         </div>
 
@@ -634,44 +634,44 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 type="button"
                                 onClick={() => setSelectedPlan('free')}
                                 disabled={loading}
-                                className={`relative text-left bg-[#141414] border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'free'
-                                    ? 'border-white border-2 bg-[#1A1A1A]'
-                                    : 'border-[#1F1F1F] hover:border-[#2A2A2A]'
+                                className={`relative text-left bg-white border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'free'
+                                    ? 'border-black border-2 bg-[#F4EFE6]'
+                                    : 'border-[#E5E5E5] hover:border-[#6B6B6B]'
                                     }`}
                             >
                                 {selectedPlan === 'free' && (
-                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#E5FA4A] flex items-center justify-center">
                                         <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
                                 )}
                                 <div className="mb-3">
-                                    <p className="font-milker text-[22px] text-white mb-1">Free</p>
+                                    <p className="font-bold text-[22px] text-black mb-1">Free</p>
                                     <div className="flex items-baseline gap-1">
-                                        <span className="font-milker text-[36px] text-white">₹0</span>
+                                        <span className="font-bold text-[36px] text-black">₹0</span>
                                         <span className="text-[14px] text-[#6B6B6B]">/month</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-2 mb-4">
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>5 active proposals per month</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Basic creator search</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Email support</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>10% platform commission</span>
                                     </li>
                                 </ul>
-                                <p className="text-[12px] text-[#6B6B6B] italic">Perfect to get started</p>
+                                <p className="text-[12px] text-[#A1A1AA] italic">Perfect to get started</p>
                             </button>
 
                             {/* STARTER PLAN */}
@@ -679,44 +679,44 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 type="button"
                                 onClick={() => setSelectedPlan('basic')}
                                 disabled={loading}
-                                className={`relative text-left bg-[#141414] border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'basic'
-                                    ? 'border-white border-2 bg-[#1A1A1A]'
-                                    : 'border-[#1F1F1F] hover:border-[#2A2A2A]'
+                                className={`relative text-left bg-white border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'basic'
+                                    ? 'border-black border-2 bg-[#F4EFE6]'
+                                    : 'border-[#E5E5E5] hover:border-[#6B6B6B]'
                                     }`}
                             >
                                 {selectedPlan === 'basic' && (
-                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#E5FA4A] flex items-center justify-center">
                                         <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
                                 )}
                                 <div className="mb-3">
-                                    <p className="font-milker text-[22px] text-white mb-1">Starter</p>
+                                    <p className="font-bold text-[22px] text-black mb-1">Starter</p>
                                     <div className="flex items-baseline gap-1">
-                                        <span className="font-milker text-[36px] text-white">₹999</span>
+                                        <span className="font-bold text-[36px] text-black">₹999</span>
                                         <span className="text-[14px] text-[#6B6B6B]">/month</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-2 mb-4">
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Up to 10 active proposals</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Basic analytics</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Email support</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>5% platform commission</span>
                                     </li>
                                 </ul>
-                                <p className="text-[12px] text-[#6B6B6B] italic">Great for small teams</p>
+                                <p className="text-[12px] text-[#A1A1AA] italic">Great for small teams</p>
                             </button>
 
                             {/* PRO PLAN */}
@@ -724,59 +724,59 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 type="button"
                                 onClick={() => setSelectedPlan('pro')}
                                 disabled={loading}
-                                className={`relative text-left bg-[#141414] border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'pro'
-                                    ? 'border-white border-2 bg-[#1A1A1A]'
-                                    : 'border-[#1F1F1F] hover:border-[#2A2A2A]'
+                                className={`relative text-left bg-white border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'pro'
+                                    ? 'border-black border-2 bg-[#F4EFE6]'
+                                    : 'border-[#E5E5E5] hover:border-[#6B6B6B]'
                                     }`}
                             >
                                 {/* Most Popular Badge */}
-                                <div className="absolute -top-3 right-5 bg-white text-black text-[11px] font-angelo uppercase tracking-wider px-3 py-1.5 rounded-full">
+                                <div className="absolute -top-3 right-5 bg-black text-[#E5FA4A] text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
                                     Most Popular
                                 </div>
                                 {selectedPlan === 'pro' && (
-                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#E5FA4A] flex items-center justify-center">
                                         <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
                                 )}
                                 <div className="mb-3">
-                                    <p className="font-milker text-[22px] text-white mb-1">Pro</p>
+                                    <p className="font-bold text-[22px] text-black mb-1">Pro</p>
                                     <div className="flex items-baseline gap-1">
-                                        <span className="font-milker text-[36px] text-white">₹2,999</span>
+                                        <span className="font-bold text-[36px] text-black">₹2,999</span>
                                         <span className="text-[14px] text-[#6B6B6B]">/month</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-2 mb-4">
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Unlimited proposals</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Advanced analytics</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Priority support</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>3% platform commission</span>
                                     </li>
-                                    <li className="flex items-start gap-2 text-[13px] text-[#AAAAAA]">
-                                        <span className="text-white mt-0.5">✓</span>
+                                    <li className="flex items-start gap-2 text-[13px] text-[#6B6B6B]">
+                                        <span className="text-black mt-0.5">✓</span>
                                         <span>Featured brand badge</span>
                                     </li>
                                 </ul>
-                                <p className="text-[12px] text-[#6B6B6B] italic">Most popular choice</p>
+                                <p className="text-[12px] text-[#A1A1AA] italic">Most popular choice</p>
                             </button>
                         </div>
 
                         {/* Continue Button */}
                         <Button
                             onClick={handlePlanSelectionSubmit}
-                            className="w-full bg-white text-black hover:bg-[#E5E5E5] text-[14px] h-[48px] mt-4 font-angelo uppercase"
+                            className="w-full bg-black text-white hover:bg-gray-800 text-[14px] h-[48px] mt-4 font-bold uppercase rounded-full"
                             disabled={loading}
                         >
                             {loading ? "Creating Account..." : "Create Account & Continue"}
