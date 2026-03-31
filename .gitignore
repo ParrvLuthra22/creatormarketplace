@@ -4,3 +4,16 @@ node_modules
 # env files
 .env
 .env.*
+
+# Build outputs
+.next/
+dist/
+build/
+
+# Uploads
+backend/uploads/
+uploads/
+
+# Debug files
+*.txt
+*.log
