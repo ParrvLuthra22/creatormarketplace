@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // CORS configuration
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',');
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',').map(s => s.trim());
 app.use(
     cors({
         origin: (origin, callback) => {
@@ -58,9 +58,17 @@ app.use(
                 return callback(null, true);
             }
 
-            callback(new Error('Not allowed by CORS'));
+            // Allow Railway deployments
+            if (origin.endsWith('.up.railway.app')) {
+                return callback(null, true);
+            }
+
+            console.warn(`CORS blocked origin: ${origin}`);
+            callback(null, false);
         },
         credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     })
 );
 
