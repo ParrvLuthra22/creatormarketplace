@@ -83,6 +83,15 @@ app.use('/api/proposals', proposalRoutes);
 // Serve uploaded files (local dev)
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
+// Root route
+app.get('/', (req: Request, res: Response) => {
+    res.status(200).json({
+        name: 'Creator Marketplace API',
+        status: 'running',
+        version: '1.0.0',
+    });
+});
+
 // Health check
 app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({
