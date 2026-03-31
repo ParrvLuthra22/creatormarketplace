@@ -25,11 +25,11 @@ export function ProposalDetailModal({ proposal, onClose }: ProposalDetailModalPr
 
             {/* Modal */}
             <div className="relative min-h-screen flex items-center justify-center p-4">
-                <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="relative bg-[#FF4D00] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                     {/* Header */}
-                    <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between rounded-t-2xl">
+                    <div className="sticky top-0 bg-[#FF4D00] border-b border-gray-200 px-8 py-6 flex items-center justify-between rounded-t-2xl">
                         <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-xl">
+                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-black font-bold text-xl">
                                 {proposal.brandLogo}
                             </div>
                             <div>
@@ -100,7 +100,7 @@ export function ProposalDetailModal({ proposal, onClose }: ProposalDetailModalPr
 
                     {/* Footer Actions */}
                     {proposal.status === 'new' && (
-                        <div className="sticky bottom-0 bg-white border-t border-gray-200 px-8 py-6 flex gap-4 rounded-b-2xl">
+                        <div className="sticky bottom-0 bg-[#FF4D00] border-t border-gray-200 px-8 py-6 flex gap-4 rounded-b-2xl">
                             <Button
                                 variant="primary"
                                 className="flex-1 bg-[#FF6B9D] hover:bg-[#FF5A8D] py-3"
@@ -109,7 +109,7 @@ export function ProposalDetailModal({ proposal, onClose }: ProposalDetailModalPr
                             </Button>
                             <Button
                                 variant="ghost"
-                                className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 py-3"
+                                className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-[#F4EFE6] py-3"
                             >
                                 Decline
                             </Button>

@@ -1,17 +1,28 @@
 import './config/env';
 import express, { Application, Request, Response, NextFunction } from 'express';
+import { createServer } from 'http';
+import { initSocket } from './socket';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import connectDB from './config/db';
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
+import uploadsRoutes from './routes/uploads';
+import chatRoutes from './routes/chat';
+import proposalRoutes from './routes/proposals';
+import path from 'path';
 // import paymentsRoutes from './routes/payments';
 
 // Load environment variables
 // dotenv.config();
 
 const app: Application = express();
+const httpServer = createServer(app);
+
+// Initialize Socket.io
+initSocket(httpServer);
+
 const PORT = process.env.PORT || 5001;
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -56,7 +67,13 @@ app.use(
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/uploads', uploadsRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/proposals', proposalRoutes);
 // app.use('/api/payments', paymentsRoutes);
+
+// Serve uploaded files (local dev)
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {
@@ -98,7 +115,7 @@ process.on('SIGINT', () => {
 });
 
 // Start server
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔒 Security headers: ${isProduction ? 'enabled' : 'development mode'}`);

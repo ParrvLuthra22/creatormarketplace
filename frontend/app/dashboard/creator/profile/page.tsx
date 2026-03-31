@@ -1,99 +1,146 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
-import { CreatorSidebar } from "@/components/CreatorSidebar";
+import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { Plus, Check } from "lucide-react";
-import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
+import { Plus, Check, Camera, Loader2 } from "lucide-react";
+import { uploadProfilePhoto, showToast } from "@/lib/api";
 
 const AVAILABLE_NICHES = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Comedy", "Finance", "Education"];
 
 export default function CreatorProfile() {
-    const { user, profile } = useAuth();
+    const { user, profile, refreshProfile } = useAuth();
+    const router = useRouter();
     const creatorProfile = profile as any;
     const [selectedNiches, setSelectedNiches] = useState<string[]>(["Fashion", "Lifestyle"]);
     const [availability, setAvailability] = useState("Available");
+    const [uploading, setUploading] = useState(false);
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            showToast("File is too large (max 5MB)", "error");
+            return;
+        }
+
+        try {
+            setUploading(true);
+            const res = await uploadProfilePhoto(file);
+            if (res.success) {
+                showToast("Profile photo updated!", "success");
+                // Sync the profile context to update the header instantly
+                await refreshProfile();
+                router.refresh();
+            }
+        } catch (err: any) {
+            showToast(err.message || "Upload failed", "error");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const toggleNiche = (niche: string) => {
         if (selectedNiches.includes(niche)) {
-            setSelectedNiches(selectedNiches.filter(n => n !== niche));
+            setSelectedNiches((prev) => prev.filter((n: string) => n !== niche));
         } else {
-            setSelectedNiches([...selectedNiches, niche]);
+            setSelectedNiches((prev) => [...prev, niche]);
         }
     };
 
     return (
         <RouteGuard allowedRole="creator">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden text-[#F5F1E8]">
-                <div className="hidden md:block">
-                    <CreatorSidebar
-                        userName={user?.fullName || "Creator User"}
-                        userAvatar={user?.fullName?.charAt(0).toUpperCase()}
-                    />
-                </div>
-
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px] transition-all duration-300">
-                    <h1 className="text-[28px] font-bold text-[#F5F1E8] font-milker mb-8">My Profile</h1>
+            <CreatorDashboardLayout variant="white">
+                <main className="max-w-4xl mx-auto py-8">
+                    <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10 lowercase">my profile</h1>
 
                     {/* CARD 1 - Creator Info */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-[#F5F1E8] font-milker mb-5">Profile</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
+                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10 lowercase">profile details</h2>
 
                         {/* Photo Upload */}
-                        <div className="flex flex-col items-center mb-6">
-                            <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#2A2A2A] flex items-center justify-center cursor-pointer hover:border-[#00D084] hover:text-[#00D084] transition-colors bg-[#0F0F0F]">
-                                <Plus className="w-8 h-8 text-[#6B6B6B]" />
-                            </div>
-                            <p className="text-xs text-[#6B6B6B] font-angelo mt-2">Upload photo</p>
+                        <div className="flex flex-col items-center mb-12 group">
+                            <label className="relative w-32 h-32 rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-[#FF4D00] hover:bg-orange-50 transition-all shadow-sm group-hover:scale-105 group-hover:shadow-lg overflow-hidden">
+                                {uploading ? (
+                                    <Loader2 className="w-8 h-8 animate-spin" />
+                                ) : creatorProfile?.profilePhoto ? (
+                                    <>
+                                        <img 
+                                            src={creatorProfile.profilePhoto.startsWith('/') ? `http://localhost:5001${creatorProfile.profilePhoto}` : creatorProfile.profilePhoto} 
+                                            alt="Profile" 
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Camera className="w-6 h-6 text-white" />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <Plus className="w-8 h-8 font-bold" />
+                                )}
+                                <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    disabled={uploading}
+                                />
+                            </label>
+                            <p className="text-xs text-[#6B6B6B] font-angelo mt-2 group-hover:text-black transition-colors">
+                                {uploading ? "Uploading..." : creatorProfile?.profilePhoto ? "Change Photo" : "Upload photo"}
+                            </p>
                         </div>
 
                         <div className="space-y-4">
                             {/* Full Name */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Full Name</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Full Name</label>
                                 <input
                                     type="text"
                                     defaultValue={user?.fullName || ""}
-                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors"
+                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner lowercase"
                                 />
                             </div>
 
                             {/* Instagram Handle */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Instagram Handle</label>
-                                <input
-                                    type="text"
-                                    defaultValue={creatorProfile?.instagramHandle || "@creator"}
-                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors"
-                                />
-                                <p className="text-[11px] text-[#00D084] font-angelo mt-1 flex items-center gap-1">
-                                    <Check className="w-3 h-3" /> Connected
-                                </p>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Instagram Handle</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        defaultValue={creatorProfile?.instagramHandle || "@creator"}
+                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                    />
+                                    <p className="text-[11px] text-[#4A46FF] font-bold mt-3 flex items-center gap-1 lowercase">
+                                        <Check className="w-3 h-3" /> account connected
+                                    </p>
+                                </div>
                             </div>
 
                             {/* Bio */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Bio</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Creator Bio</label>
                                 <textarea
-                                    rows={3}
-                                    placeholder="Tell brands about yourself..."
-                                    className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors resize-none placeholder:text-[#3D3D3D]"
+                                    rows={4}
+                                    placeholder="Tell brands about your unique style..."
+                                    className="w-full px-8 py-5 bg-zinc-50 border border-zinc-100 rounded-[24px] text-zinc-900 text-[15px] font-medium focus:outline-none focus:border-[#FF4D00] transition-colors resize-none leading-relaxed shadow-inner"
                                 />
                             </div>
 
                             {/* Niches */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Niches</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Content Niches</label>
                                 <div className="flex flex-wrap gap-2">
                                     {AVAILABLE_NICHES.map(niche => (
                                         <button
                                             key={niche}
                                             onClick={() => toggleNiche(niche)}
-                                            className={`px-3 py-1.5 rounded-xl text-xs font-angelo transition-colors border ${selectedNiches.includes(niche)
-                                                ? "bg-[#F5F1E8] text-[#0A0A0A] border-[#F5F1E8]"
-                                                : "bg-[#0F0F0F] text-[#6B6B6B] border-[#2A2A2A] hover:border-[#6B6B6B]"
+                                            className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase transition-all border ${selectedNiches.includes(niche)
+                                                ? "bg-[#FF4D00] text-white border-[#FF4D00] shadow-md scale-105"
+                                                : "text-zinc-400 border-zinc-100 bg-zinc-50 hover:border-[#FF4D00] hover:text-[#FF4D00]"
                                                 }`}
                                         >
                                             {niche}
@@ -105,18 +152,18 @@ export default function CreatorProfile() {
                     </div>
 
                     {/* CARD 2 - Pricing */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-[#F5F1E8] font-milker mb-5">Pricing</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
+                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10 lowercase">rate card</h2>
 
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Price per Reel</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B] text-sm">₹</span>
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 font-black text-sm">₹</span>
                                     <input
                                         type="number"
                                         placeholder="5000"
-                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors placeholder:text-[#3D3D3D]"
+                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                 </div>
                             </div>
@@ -124,11 +171,11 @@ export default function CreatorProfile() {
                             <div>
                                 <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Price per Story</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B] text-sm">₹</span>
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 font-black text-sm">₹</span>
                                     <input
                                         type="number"
                                         placeholder="1500"
-                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors placeholder:text-[#3D3D3D]"
+                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                 </div>
                             </div>
@@ -136,56 +183,59 @@ export default function CreatorProfile() {
                             <div>
                                 <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Price per Post</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B] text-sm">₹</span>
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 font-black text-sm">₹</span>
                                     <input
                                         type="number"
                                         placeholder="3000"
-                                        className="w-full h-11 pl-8 pr-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors placeholder:text-[#3D3D3D]"
+                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex justify-between items-center py-3 border-t border-[#1F1F1F] mt-2">
+                            <div className="flex justify-between items-center py-3 border-t border-[#E5E5E5] mt-2">
                                 <div>
-                                    <p className="text-sm text-[#F5F1E8]">Custom packages</p>
-                                    <p className="text-xs text-[#6B6B6B]">Allow brands to request custom pricing</p>
+                                    <p className="text-sm text-zinc-900 font-bold lowercase">custom strategy packages</p>
+                                    <p className="text-xs text-zinc-400 lowercase">allow brands to request bespoke campaign pricing</p>
                                 </div>
-                                <button className="w-12 h-6 rounded-full bg-[#2A2A2A]">
-                                    <div className="w-5 h-5 rounded-full bg-[#6B6B6B] translate-x-1 shadow-sm" />
+                                <button className="w-13 h-7.5 rounded-full bg-[#4CAF50] transition-colors flex items-center px-1">
+                                    <div className="w-5.5 h-5.5 rounded-full bg-white shadow-sm translate-x-5.5" />
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* CARD 3 - Availability */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-[#F5F1E8] font-milker mb-5">Availability</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
+                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10 lowercase">availability status</h2>
 
-                        <div>
-                            <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Status</label>
-                            <select
-                                value={availability}
-                                onChange={(e) => setAvailability(e.target.value)}
-                                className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-[#F5F1E8] text-sm focus:outline-none focus:border-[#00D084] transition-colors"
-                            >
-                                <option>🟢 Available</option>
-                                <option>🟡 Limited</option>
-                                <option>🔴 Unavailable</option>
-                            </select>
+                        <div className="space-y-8">
+                            <div>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Current Status</label>
+                                <div className="relative">
+                                    <select
+                                        value={availability}
+                                        onChange={(e) => setAvailability(e.target.value)}
+                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-8 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-all appearance-none cursor-pointer shadow-inner"
+                                    >
+                                        <option>🟢 Available for work</option>
+                                        <option>🟡 Limited slots</option>
+                                        <option>🔴 Currently booked</option>
+                                    </select>
+                                    <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
+                                        <Plus className="w-4 h-4 rotate-45" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-6">
+                                <button className="h-15 px-14 bg-[#FF4D00] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
+                                    Save Profile
+                                </button>
+                            </div>
                         </div>
-
-                        <button className="mt-6 px-6 h-11 bg-[#F5F1E8] text-[#0A0A0A] rounded-[10px] font-angelo text-sm font-semibold hover:bg-[#00D084] hover:text-white transition-all shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_16px_rgba(0,208,132,0.4)]">
-                            Save Profile
-                        </button>
                     </div>
                 </main>
-
-                <div className="hidden xl:block">
-                    <CreatorRightSidebar />
-                </div>
-
-                <MobileBottomNav role="creator" />
-            </div>
+            </CreatorDashboardLayout>
         </RouteGuard>
     );
 }

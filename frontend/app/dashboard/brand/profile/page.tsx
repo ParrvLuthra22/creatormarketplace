@@ -1,123 +1,174 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { BrandRightSidebar } from "@/components/BrandRightSidebar";
-import { Plus } from "lucide-react";
+import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
+import { Plus, Camera, Loader2 } from "lucide-react";
+import { uploadProfilePhoto, showToast } from "@/lib/api";
 
 export default function BrandProfile() {
-    const { user, profile } = useAuth();
+    const { user, profile, refreshProfile } = useAuth();
+    const router = useRouter();
     const brandProfile = profile as any;
+    const [uploading, setUploading] = useState(false);
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Basic validation
+        if (file.size > 5 * 1024 * 1024) {
+            showToast("File is too large (max 5MB)", "error");
+            return;
+        }
+
+        try {
+            setUploading(true);
+            const res = await uploadProfilePhoto(file);
+            if (res.success) {
+                showToast("Logo updated successfully!", "success");
+                // Sync the profile context to update the header instantly
+                await refreshProfile();
+                // Refresh the page to show the new logo
+                router.refresh();
+            }
+        } catch (err: any) {
+            showToast(err.message || "Upload failed", "error");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
-                <div className="hidden md:block">
-                    <DashboardSidebar
-                        userName={user?.fullName || "Brand User"}
-                        userAvatar={user?.fullName?.charAt(0).toUpperCase()}
-                    />
-                </div>
-
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
-                    <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker mb-8">Profile</h1>
+            <BrandDashboardLayout variant="white">
+                <div className="py-8">
+                    <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10">Brand Profile</h1>
 
                     {/* CARD 1 - Brand Info */}
-                    <div className="bg-white border border-[#E5E5E5] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-[#0A0A0A] font-milker mb-5">Brand Information</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm">
+                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10">Brand Information</h2>
 
                         {/* Logo Upload */}
-                        <div className="flex flex-col items-center mb-6">
-                            <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#E5E5E5] flex items-center justify-center cursor-pointer hover:border-[#0A0A0A] transition-colors">
-                                <Plus className="w-8 h-8 text-[#6B6B6B]" />
-                            </div>
-                            <p className="text-xs text-[#6B6B6B] font-angelo mt-2">Upload logo</p>
+                        <div className="flex flex-col items-center mb-12 group">
+                            <label className="relative w-32 h-32 rounded-[40px] border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-[#FF4D00] hover:bg-orange-50 transition-all shadow-sm group-hover:scale-105 group-hover:shadow-lg overflow-hidden">
+                                {uploading ? (
+                                    <Loader2 className="w-10 h-10 text-[#FF4D00] animate-spin" />
+                                ) : brandProfile?.logoUrl ? (
+                                    <>
+                                        <img 
+                                            src={brandProfile.logoUrl.startsWith('/') ? `http://localhost:5001${brandProfile.logoUrl}` : brandProfile.logoUrl} 
+                                            alt="Brand Logo" 
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Camera className="w-8 h-8 text-white" />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <Plus className="w-10 h-10 text-zinc-300 group-hover:text-[#FF4D00] transition-colors" />
+                                )}
+                                <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    disabled={uploading}
+                                />
+                            </label>
+                            <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mt-6 group-hover:text-zinc-600 transition-colors">
+                                {uploading ? "Uploading..." : brandProfile?.logoUrl ? "Change Brand Identity" : "Update Brand Identity"}
+                            </p>
                         </div>
 
-                        <div className="space-y-4">
-                            {/* Company Name */}
-                            <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Company Name</label>
-                                <input
-                                    type="text"
-                                    defaultValue={brandProfile?.companyName || ""}
-                                    placeholder="Your Company"
-                                    className="w-full h-11 px-4 bg-white border border-[#E5E5E5] rounded-[10px] text-[#0A0A0A] text-sm focus:outline-none focus:border-[#0A0A0A] transition-colors"
-                                />
-                            </div>
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                {/* Company Name */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Company Name</label>
+                                    <input
+                                        type="text"
+                                        defaultValue={brandProfile?.companyName || ""}
+                                        placeholder="Enter company name"
+                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                    />
+                                </div>
 
-                            {/* Industry */}
-                            <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Industry</label>
-                                <select className="w-full h-11 px-4 bg-white border border-[#E5E5E5] rounded-[10px] text-[#0A0A0A] text-sm focus:outline-none focus:border-[#0A0A0A] transition-colors">
-                                    <option>Fashion</option>
-                                    <option>Tech</option>
-                                    <option>Food</option>
-                                    <option>Beauty</option>
-                                    <option>Fitness</option>
-                                    <option>Finance</option>
-                                    <option>Other</option>
-                                </select>
+                                {/* Industry */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Industry</label>
+                                    <div className="relative">
+                                        <select className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-all appearance-none cursor-pointer shadow-inner">
+                                            <option>Fashion & Lifestyle</option>
+                                            <option>Technology & SaaS</option>
+                                            <option>Food & Beverage</option>
+                                            <option>Health & Beauty</option>
+                                            <option>Fitness & Wellness</option>
+                                            <option>Fintech & Finance</option>
+                                            <option>Other Industry</option>
+                                        </select>
+                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
+                                            <Plus className="w-4 h-4 rotate-45" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Website */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Website</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Official Website</label>
                                 <input
                                     type="url"
-                                    placeholder="https://yourwebsite.com"
-                                    className="w-full h-11 px-4 bg-white border border-[#E5E5E5] rounded-[10px] text-[#0A0A0A] text-sm focus:outline-none focus:border-[#0A0A0A] transition-colors"
+                                    placeholder="https://yourbrand.com"
+                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                 />
                             </div>
 
                             {/* Description */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Description</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Brand Story</label>
                                 <textarea
-                                    rows={3}
-                                    placeholder="About your brand..."
-                                    className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-[10px] text-[#0A0A0A] text-sm focus:outline-none focus:border-[#0A0A0A] transition-colors resize-none"
+                                    rows={4}
+                                    placeholder="Tell creators what your brand is about..."
+                                    className="w-full px-8 py-5 bg-zinc-50 border border-zinc-100 rounded-[24px] text-zinc-900 text-[15px] font-medium focus:outline-none focus:border-[#FF4D00] transition-colors resize-none leading-relaxed shadow-inner"
                                 />
                             </div>
 
-                            <button className="px-6 h-11 bg-[#0A0A0A] text-white rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity">
-                                Save
-                            </button>
+                            <div className="pt-6">
+                                <button className="h-15 px-14 bg-[#FF4D00] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
+                                    Save Profile
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     {/* CARD 2 - Collaboration Stats */}
-                    <div className="bg-white border border-[#E5E5E5] rounded-[14px] p-7">
-                        <h2 className="text-lg font-bold text-[#0A0A0A] font-milker mb-5">Stats</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 shadow-sm">
+                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10">Performance Snapshot</h2>
 
-                        <div>
-                            <div className="flex justify-between items-center py-3 border-b border-[#E5E5E5]">
-                                <p className="text-sm text-[#0A0A0A]">Total Spend</p>
-                                <p className="text-base text-[#0A0A0A] font-angelo">₹1,24,500</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-[24px] flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
+                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Total Campaign Spend</p>
+                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">₹1,24,500</p>
                             </div>
-                            <div className="flex justify-between items-center py-3 border-b border-[#E5E5E5]">
-                                <p className="text-sm text-[#0A0A0A]">Creators Hired</p>
-                                <p className="text-base text-[#0A0A0A] font-angelo">8</p>
+                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-[24px] flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
+                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Creator Partnerships</p>
+                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">8</p>
                             </div>
-                            <div className="flex justify-between items-center py-3 border-b border-[#E5E5E5]">
-                                <p className="text-sm text-[#0A0A0A]">Active Campaigns</p>
-                                <p className="text-base text-[#0A0A0A] font-angelo">3</p>
+                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-[24px] flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
+                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Active Collaborations</p>
+                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">3</p>
                             </div>
-                            <div className="flex justify-between items-center py-3">
-                                <p className="text-sm text-[#0A0A0A]">Avg. Response Time</p>
-                                <p className="text-base text-[#0A0A0A] font-angelo">4.2 hrs</p>
+                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-[24px] flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
+                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Avg. Response Time</p>
+                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">4.2 h</p>
                             </div>
                         </div>
                     </div>
-                </main>
-
-                <BrandRightSidebar />
-
-                <MobileBottomNav role="brand" />
-            </div>
+                </div>
+            </BrandDashboardLayout>
         </RouteGuard>
     );
 }

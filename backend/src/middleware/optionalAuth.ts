@@ -8,15 +8,17 @@ export interface OptionalAuthRequest extends Request {
 
 export const optionalAuth = (req: OptionalAuthRequest, res: Response, next: NextFunction): void => {
     try {
+        // Support both Bearer token and cookie token (our frontend uses cookie sessions)
         const authHeader = req.headers.authorization;
+        const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+        const cookieToken = (req as any).cookies?.token;
+        const token = bearerToken || cookieToken;
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        if (!token) {
             req.user = null;
             req.userId = undefined;
             return next();
         }
-
-        const token = authHeader.substring(7);
 
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET || '') as any;

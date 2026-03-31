@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default function BrandProfilePage() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
 
     return (
         <RouteGuard allowedRole="brand">
@@ -27,7 +27,7 @@ export default function BrandProfilePage() {
                                 <span className="text-xl font-bold text-[#1A1A1A]">Profile Settings</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FF6B35] to-[#FF8F5D] flex items-center justify-center text-white font-semibold text-sm">
+                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-[#FF6B35] to-[#FF8F5D] flex items-center justify-center text-white font-semibold text-sm">
                                     {user?.fullName?.charAt(0).toUpperCase()}
                                 </div>
                             </div>

@@ -1,0 +1,238 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { RouteGuard } from "@/components/RouteGuard";
+import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
+import { useAuth } from "@/contexts/AuthContext";
+import { getPublicCreatorStats, PublicCreatorStatsResponse } from "@/lib/api";
+import { ArrowLeft, Check, Instagram, Play, Globe } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { SendProposalModal } from "@/components/SendProposalModal";
+import "./CreatorProfile.css";
+
+export default function BrandCreatorProfilePage() {
+    const { user } = useAuth();
+    const router = useRouter();
+    const params = useParams();
+    const id = params.id as string;
+
+    const [data, setData] = useState<PublicCreatorStatsResponse | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        if (searchParams.get('action') === 'proposal') {
+            setIsProposalModalOpen(true);
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const run = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await getPublicCreatorStats(id);
+                if (!cancelled) setData(res);
+            } catch (e: unknown) {
+                const message = e instanceof Error ? e.message : "Failed to load creator";
+                if (!cancelled) setError(message);
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+
+        if (id) run();
+        return () => {
+            cancelled = true;
+        };
+    }, [id]);
+
+    const creator = data?.creator;
+
+    // Mock data for UI replication
+    const pastWork = [
+        {
+            brand: "Nike",
+            logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
+            image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
+            stats: ["1.2M Views", "8% Engagement", "+15% Sales Uplift"]
+        },
+        {
+            brand: "Zara",
+            logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
+            image: "https://images.unsplash.com/photo-1445205170230-053b830c6050?q=80&w=2071&auto=format&fit=crop",
+            stats: ["850K Views", "10% Engagement", "+12% Sales Uplift"]
+        },
+        {
+            brand: "Tesla",
+            logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
+            image: "https://images.unsplash.com/photo-1536700503339-1e4b06520771?q=80&w=2070&auto=format&fit=crop",
+            stats: ["2M Views", "6% Engagement", "+20% Brand Awareness"]
+        },
+        {
+            brand: "Amazon",
+            logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+            image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop",
+            stats: ["950K Views", "9% Engagement", "+18% Conversion"]
+        }
+    ];
+
+    if (loading) {
+        return (
+            <RouteGuard allowedRole="brand">
+                <BrandDashboardLayout variant="white">
+                    <div className="flex items-center justify-center min-h-[60vh]">
+                        <p className="text-zinc-500 font-bold animate-pulse">Loading Creator Profile...</p>
+                    </div>
+                </BrandDashboardLayout>
+            </RouteGuard>
+        );
+    }
+
+    if (error || !creator) {
+        return (
+            <RouteGuard allowedRole="brand">
+                <BrandDashboardLayout variant="white">
+                    <div className="p-10 text-center">
+                        <p className="text-red-500 font-bold">{error || "Creator not found"}</p>
+                        <button onClick={() => router.back()} className="mt-4 text-[#FF4D00] font-black underline">Go Back</button>
+                    </div>
+                </BrandDashboardLayout>
+            </RouteGuard>
+        );
+    }
+
+    return (
+        <RouteGuard allowedRole="brand">
+            <BrandDashboardLayout variant="white">
+                <div className="creator-profile-container">
+                    {/* Hero Section */}
+                    <div className="profile-hero">
+                        <img 
+                            src={creator.profilePicture || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"} 
+                            alt={creator.name} 
+                            className="profile-hero-img" 
+                        />
+                        <div className="profile-hero-overlay">
+                            <button 
+                                onClick={() => router.back()}
+                                className="absolute top-10 left-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all"
+                            >
+                                <ArrowLeft className="w-6 h-6 text-white" />
+                            </button>
+
+                            <p className="premium-label">Premium Creator Profile</p>
+                            <h1 className="creator-name">
+                                {creator.name} 
+                                <span className="verified-badge">
+                                    <Check className="w-4 h-4 text-[#4e96f8]" /> Verified
+                                </span>
+                            </h1>
+                            
+                            <div className="mt-4">
+                                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/50 mb-4">Curated Niche Tags</p>
+                                <div className="niche-tags">
+                                    {(creator.niches?.length ? creator.niches : ["Fashion", "Lifestyle", "Travel", "Sustainability"]).map(niche => (
+                                        <span key={niche} className="niche-tag">{niche}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="profile-content-grid">
+                        {/* Left Column: Brand Work */}
+                        <div className="brand-work-section">
+                            <h2 className="section-title">Past Brand Work</h2>
+                            
+                            <div className="brand-work-grid">
+                                {pastWork.map((work, idx) => (
+                                    <div key={idx} className="brand-work-card group cursor-pointer">
+                                        <img src={work.image} alt={work.brand} className="brand-work-img" />
+                                        <div className="brand-logo-container transition-transform group-hover:scale-110">
+                                            <img src={work.logo} alt={work.brand} />
+                                        </div>
+                                        <div className="brand-work-info">
+                                            <div className="flex justify-between items-center mb-4">
+                                                <h3 className="brand-work-title">{work.brand}</h3>
+                                                <Play className="w-4 h-4 text-white/40 group-hover:text-white" />
+                                            </div>
+                                            <div className="brand-work-stats">
+                                                {work.stats.map((stat, sIdx) => (
+                                                    <p key={sIdx} className="brand-work-stat">
+                                                        <span>•</span> {stat}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button className="view-all-work">View All Work</button>
+                        </div>
+
+                        {/* Right Column: Collaboration Info */}
+                        <aside className="collaboration-sidebar">
+                            <h2 className="sidebar-title">Collaboration Info</h2>
+
+                            <div className="sidebar-section">
+                                <h3 className="sidebar-label">Services Offered:</h3>
+                                <p className="sidebar-content">
+                                    Sponsored Posts, Brand Ambassadorship, Content Creation, Event Appearances
+                                </p>
+                            </div>
+
+                            <div className="sidebar-section">
+                                <h3 className="sidebar-label">Pricing Tiers:</h3>
+                                <div className="pricing-list">
+                                    <p className="pricing-item"><span>Basic ($5K - 1 Post, 1 Story)</span></p>
+                                    <p className="pricing-item"><span>Premium ($12K - 3 Posts, 3 Stories, Reel)</span></p>
+                                    <p className="pricing-item"><span>Exclusive ($25K+ - Long-term Partnership)</span></p>
+                                </div>
+                            </div>
+
+                            <div className="sidebar-section">
+                                <h3 className="sidebar-label">Availability:</h3>
+                                <p className="sidebar-content font-black text-emerald-600">
+                                    Open for Q3/Q4 Campaigns
+                                </p>
+                            </div>
+
+                            <button 
+                                onClick={() => setIsProposalModalOpen(true)}
+                                className="send-proposal-btn"
+                            >
+                                Send Proposal
+                            </button>
+                        </aside>
+                    </div>
+
+                    <SendProposalModal
+                        creatorId={id}
+                        creatorName={creator.name || creator.instagramHandle || 'Creator'}
+                        isOpen={isProposalModalOpen}
+                        onClose={() => setIsProposalModalOpen(false)}
+                        onSent={() => setIsProposalModalOpen(false)}
+                    />
+
+                    {/* Footer Banner */}
+                    <div className="bg-black py-16 px-10 text-center mt-20">
+                        <p className="text-white text-xl font-bold mb-8 flex items-center justify-center gap-4">
+                            Partner with CreatorSync to accelerate your growth 
+                            <button className="bg-white text-black px-6 py-2 rounded-lg font-black text-sm uppercase tracking-widest hover:scale-105 transition-transform">
+                                Get Started
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </BrandDashboardLayout>
+        </RouteGuard>
+    );
+}

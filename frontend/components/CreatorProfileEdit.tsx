@@ -1,8 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "./ui/Button";
 import { Upload, Check } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { updateCreatorProfile, uploadProfilePhoto } from "@/lib/api";
+
+type Availability = "available" | "limited" | "unavailable";
+
+type CreatorProfileShape = {
+    instagramHandle?: string;
+    profilePhoto?: string;
+    niches?: string[];
+    bio?: string;
+    followers?: string;
+    engagement?: string;
+    location?: string;
+    availability?: Availability;
+    pricing?: {
+        reel?: string;
+        story?: string;
+    };
+};
 
 interface CreatorProfileEditProps {
     totalEarnings: number;
@@ -11,18 +30,70 @@ interface CreatorProfileEditProps {
 }
 
 export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileViews }: CreatorProfileEditProps) {
-    const [profileData, setProfileData] = useState({
-        fullName: "Creator Test User",
-        instagramHandle: "@creatortest",
-        niches: ["Fashion", "Lifestyle"],
-        bio: "Fashion and lifestyle content creator passionate about authentic storytelling.",
-        pricePerReel: 12000,
-        pricePerStory: 3000,
-        customPackages: false,
-        availability: "available" as "available" | "limited" | "unavailable",
-    });
+    const { profile, user } = useAuth();
 
+    const initialProfileData = useMemo(() => {
+        const creatorProfile: CreatorProfileShape = (profile ?? {}) as CreatorProfileShape;
+        const pricing = creatorProfile.pricing || {};
+
+        return {
+            fullName: user?.fullName || "",
+            instagramHandle: creatorProfile.instagramHandle || "",
+            profilePhoto: creatorProfile.profilePhoto || "",
+            niches: Array.isArray(creatorProfile.niches) ? creatorProfile.niches : [],
+            bio: creatorProfile.bio || "",
+            followers: creatorProfile.followers || "",
+            engagement: creatorProfile.engagement || "",
+            location: creatorProfile.location || "",
+            pricePerReel: Number(pricing.reel ?? 0),
+            pricePerStory: Number(pricing.story ?? 0),
+            availability: (creatorProfile.availability || "available") as "available" | "limited" | "unavailable",
+        };
+    }, [profile, user?.fullName]);
+
+    const [profileData, setProfileData] = useState(initialProfileData);
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+
+    const handlePhotoUpload = async () => {
+        try {
+            setSaveError(null);
+            setSaveSuccess(null);
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            input.onchange = async () => {
+                const file = input.files?.[0];
+                if (!file) return;
+
+                setIsUploading(true);
+                try {
+                    const res = await uploadProfilePhoto(file);
+                    setProfileData((prev) => ({ ...prev, profilePhoto: res.url }));
+                    setSaveSuccess('Photo uploaded. Click “Save Profile” to update your profile.');
+                } catch (e: unknown) {
+                    const message = e instanceof Error ? e.message : 'Failed to upload photo';
+                    setSaveError(message);
+                } finally {
+                    setIsUploading(false);
+                }
+            };
+
+            input.click();
+        } catch {
+            setSaveError('Failed to open file picker');
+        }
+    };
+
+    useEffect(() => {
+        // Keep in sync when profile loads/changes, but don't clobber while editing.
+        if (!isEditing) setProfileData(initialProfileData);
+    }, [initialProfileData, isEditing]);
 
     const availableNiches = [
         "Fashion", "Lifestyle", "Beauty", "Fitness", "Tech", "Food",
@@ -33,7 +104,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
         if (profileData.niches.includes(niche)) {
             setProfileData({
                 ...profileData,
-                niches: profileData.niches.filter(n => n !== niche)
+                niches: profileData.niches.filter((n: string) => n !== niche)
             });
         } else {
             setProfileData({
@@ -43,10 +114,35 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
         }
     };
 
-    const handleSave = () => {
-        // TODO: Save to backend
-        setIsEditing(false);
-        console.log("Saving profile:", profileData);
+    const handleSave = async () => {
+        try {
+            setSaveError(null);
+            setSaveSuccess(null);
+            setIsSaving(true);
+
+            await updateCreatorProfile({
+                bio: profileData.bio,
+                instagramHandle: profileData.instagramHandle.replace(/^@+/, ""),
+                profilePhoto: profileData.profilePhoto,
+                niches: profileData.niches,
+                followers: profileData.followers,
+                engagement: profileData.engagement,
+                location: profileData.location,
+                availability: profileData.availability,
+                pricing: {
+                    reel: String(profileData.pricePerReel || ""),
+                    story: String(profileData.pricePerStory || ""),
+                },
+            });
+
+            setSaveSuccess("Profile updated");
+            setIsEditing(false);
+        } catch (e: unknown) {
+            const message = e instanceof Error ? e.message : "Failed to update profile";
+            setSaveError(message);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const formatCurrency = (amount: number) => {
@@ -93,25 +189,47 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                 </div>
 
                 <div className="space-y-6">
+                    {(saveError || saveSuccess) && (
+                        <div
+                            className={`rounded-lg border px-4 py-3 text-sm ${saveError
+                                    ? "border-red-200 bg-red-50 text-red-700"
+                                    : "border-green-200 bg-green-50 text-green-700"
+                                }`}
+                        >
+                            {saveError || saveSuccess}
+                        </div>
+                    )}
+
                     {/* Profile Photo */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Profile Photo
                         </label>
                         <div className="flex items-center gap-4">
-                            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-3xl">
-                                C
+                            <div className="w-24 h-24 rounded-full bg-linear-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
+                                {profileData.profilePhoto ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={profileData.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span>{(profileData.fullName || "C").slice(0, 1).toUpperCase()}</span>
+                                )}
                             </div>
                             {isEditing && (
-                                <Button variant="ghost" size="sm" className="text-[#FF6B9D]">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-[#FF6B9D]"
+                                    onClick={handlePhotoUpload}
+                                    disabled={isUploading}
+                                >
                                     <Upload className="w-4 h-4 mr-2" />
-                                    Upload Photo
+                                    {isUploading ? 'Uploading...' : 'Upload Photo'}
                                 </Button>
                             )}
                         </div>
                     </div>
 
-                    {/* Full Name */}
+                    {/* Full Name (updated via account settings/signup; not edited here) */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Full Name
@@ -120,10 +238,27 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                             type="text"
                             value={profileData.fullName}
                             onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
-                            disabled={!isEditing}
+                            disabled
                             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         />
                     </div>
+
+                    {/* Profile Photo URL */}
+                    {isEditing && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Profile Photo URL
+                            </label>
+                            <input
+                                type="url"
+                                value={profileData.profilePhoto}
+                                onChange={(e) => setProfileData({ ...profileData, profilePhoto: e.target.value })}
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent"
+                                placeholder="https://..."
+                            />
+                            <p className="text-xs text-gray-500 mt-1">(Upload wiring can be added later; for now paste a URL.)</p>
+                        </div>
+                    )}
 
                     {/* Instagram Handle */}
                     <div>
@@ -218,7 +353,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                         </label>
                         <select
                             value={profileData.availability}
-                            onChange={(e) => setProfileData({ ...profileData, availability: e.target.value as any })}
+                            onChange={(e) => setProfileData({ ...profileData, availability: e.target.value as Availability })}
                             disabled={!isEditing}
                             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         >
@@ -235,12 +370,19 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                                 variant="primary"
                                 onClick={handleSave}
                                 className="bg-[#FF6B9D] hover:bg-[#FF5A8D]"
+                                disabled={isSaving}
                             >
-                                Save Profile
+                                {isSaving ? "Saving..." : "Save Profile"}
                             </Button>
                             <Button
                                 variant="ghost"
-                                onClick={() => setIsEditing(false)}
+                                onClick={() => {
+                                    setSaveError(null);
+                                    setSaveSuccess(null);
+                                    setProfileData(initialProfileData);
+                                    setIsEditing(false);
+                                }}
+                                disabled={isSaving}
                             >
                                 Cancel
                             </Button>

@@ -10,6 +10,7 @@ interface AuthContextType {
     user: User | null;
     profile: BrandProfile | CreatorProfile | null;
     loading: boolean;
+    authToken: string | null;
     login: (data: LoginData) => Promise<void>;
     signup: (data: SignupData) => Promise<void>;
     logout: () => Promise<void>;
@@ -18,6 +19,7 @@ interface AuthContextType {
     isCreator: boolean;
     modalState: ModalState;
     setModalState: (state: ModalState) => void;
+    refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<BrandProfile | CreatorProfile | null>(null);
     const [loading, setLoading] = useState(true);
+    const [authToken, setAuthToken] = useState<string | null>(null);
     const [modalState, setModalState] = useState<ModalState>(null);
     const router = useRouter();
     const pathname = usePathname();
@@ -40,13 +43,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const isCreator = useMemo(() => user?.accountType === 'Creator', [user]);
     const isAuthenticated = useMemo(() => !!user, [user]);
 
+    const refreshProfile = async () => {
+        try {
+            const response = await getCurrentUser();
+            setUser(response.user);
+            setProfile(response.profile);
+        } catch (error) {
+            console.error('Refresh profile error:', error);
+        }
+    };
+
     // Check if user is authenticated on mount
     useEffect(() => {
         const checkAuth = async () => {
             try {
+                setLoading(true);
                 const response = await getCurrentUser();
                 setUser(response.user);
                 setProfile(response.profile);
+                
+                // Fetch token for socket auth
+                try {
+                    const tokenRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/auth/token`, {
+                        credentials: 'include',
+                    });
+                    if (tokenRes.ok) {
+                        const tokenData = await tokenRes.json();
+                        if (tokenData.token) setAuthToken(tokenData.token);
+                    }
+                } catch (e) {
+                    // Not critical, socket will try cookies
+                }
             } catch (error) {
                 // User not authenticated
                 setUser(null);
@@ -91,6 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const response = await apiLogin(data);
             setUser(response.user);
             setProfile(response.profile);
+            if (response.token) setAuthToken(response.token);
             setModalState(null); // Close modal
 
             // Redirect to role-specific dashboard
@@ -110,6 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const response = await apiSignup(data);
             setUser(response.user);
             setProfile(response.profile);
+            if (response.token) setAuthToken(response.token);
             setModalState(null); // Close modal
 
             // Check if payment is required (for paid plans)
@@ -136,12 +165,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             await apiLogout();
             setUser(null);
             setProfile(null);
+            setAuthToken(null);
             router.push('/');
         } catch (error) {
             console.error('Logout error:', error);
             // Still clear state even if API call fails
             setUser(null);
             setProfile(null);
+            setAuthToken(null);
             router.push('/');
         }
     };
@@ -152,6 +183,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 user,
                 profile,
                 loading,
+                authToken,
                 login,
                 signup,
                 logout,
@@ -160,6 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 isCreator,
                 modalState,
                 setModalState,
+                refreshProfile,
             }}
         >
             {children}

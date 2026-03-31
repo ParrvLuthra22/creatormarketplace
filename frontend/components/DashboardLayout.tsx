@@ -17,18 +17,11 @@ export function DashboardLayout({ userName, userAvatar, children, rightSidebar }
             <DashboardSidebar userName={userName} userAvatar={userAvatar} />
 
             {/* Main Content Area */}
-            <div className="ml-[220px] mr-[300px] min-h-screen transition-colors duration-300">
-                <main className="p-8">
+            <div className="ml-[252px] mr-4 min-h-screen transition-colors duration-300">
+                <main className="p-[32px] px-[40px]">
                     {children}
                 </main>
             </div>
-
-            {/* Right Sidebar */}
-            {rightSidebar && (
-                <aside className="w-[300px] h-screen fixed right-0 top-0 p-8 overflow-y-auto z-50 bg-white border-l border-[#E5E5E5] text-black">
-                    {rightSidebar}
-                </aside>
-            )}
         </div>
     );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "./ui/Button";
 import { Upload } from "lucide-react";
+import { uploadProfilePhoto } from "@/lib/api";
 
 interface BrandProfileData {
     companyName: string;
@@ -25,6 +26,9 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
     });
 
     const [isEditing, setIsEditing] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
     const industries = [
         "Fashion & Lifestyle",
@@ -43,6 +47,38 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
         // TODO: Save to backend
         setIsEditing(false);
         console.log("Saving profile:", profileData);
+    };
+
+    const handleLogoUpload = async () => {
+        try {
+            setSaveError(null);
+            setSaveSuccess(null);
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            input.onchange = async () => {
+                const file = input.files?.[0];
+                if (!file) return;
+
+                setIsUploading(true);
+                try {
+                    const res = await uploadProfilePhoto(file);
+                    setProfileData((prev) => ({ ...prev, logo: res.url }));
+                    setSaveSuccess('Logo uploaded.');
+                } catch (e: unknown) {
+                    const message = e instanceof Error ? e.message : 'Failed to upload logo';
+                    setSaveError(message);
+                } finally {
+                    setIsUploading(false);
+                }
+            };
+
+            input.click();
+        } catch {
+            setSaveError('Failed to open file picker');
+        }
     };
 
     const formatCurrency = (amount: number) => {
@@ -89,19 +125,41 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
                 </div>
 
                 <div className="space-y-6">
+                    {(saveError || saveSuccess) && (
+                        <div
+                            className={`rounded-lg border px-4 py-3 text-sm ${saveError
+                                    ? "border-red-200 bg-red-50 text-red-700"
+                                    : "border-green-200 bg-green-50 text-green-700"
+                                }`}
+                        >
+                            {saveError || saveSuccess}
+                        </div>
+                    )}
+
                     {/* Logo Upload */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Company Logo
                         </label>
                         <div className="flex items-center gap-4">
-                            <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-2xl">
-                                {profileData.companyName.charAt(0).toUpperCase()}
+                            <div className="w-20 h-20 rounded-lg bg-linear-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-2xl overflow-hidden">
+                                {profileData.logo ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={profileData.logo} alt="Company logo" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span>{profileData.companyName.charAt(0).toUpperCase()}</span>
+                                )}
                             </div>
                             {isEditing && (
-                                <Button variant="ghost" size="sm" className="text-[#FF6B35]">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-[#FF6B35]"
+                                    onClick={handleLogoUpload}
+                                    disabled={isUploading}
+                                >
                                     <Upload className="w-4 h-4 mr-2" />
-                                    Upload Logo
+                                    {isUploading ? 'Uploading...' : 'Upload Logo'}
                                 </Button>
                             )}
                         </div>

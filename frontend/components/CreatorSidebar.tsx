@@ -1,39 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Home, Mail, MessageCircle, User, BarChart3, Settings, LogOut, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
+import { getChatSummary, getProposalsSummary } from "@/lib/api";
 
 interface NavItem {
     name: string;
     href: string;
     icon: typeof Home;
-    badge?: number;
 }
 
 const navItems: NavItem[] = [
     { name: "home", href: "/dashboard/creator", icon: Home },
-    { name: "proposals", href: "/dashboard/creator/proposals", icon: Mail, badge: 4 },
-    { name: "messages", href: "/dashboard/creator/messages", icon: MessageCircle, badge: 2 },
+    { name: "proposals", href: "/dashboard/creator/proposals", icon: Mail },
+    { name: "messages", href: "/dashboard/creator/messages", icon: MessageCircle },
     { name: "my profile", href: "/dashboard/creator/profile", icon: User },
     { name: "analytics", href: "/dashboard/creator/analytics", icon: BarChart3 },
 ];
 
 interface CreatorSidebarProps {
-    userName: string;
-    userAvatar?: string;
     isOpen?: boolean;
     onClose?: () => void;
 }
 
-export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }: CreatorSidebarProps) {
+export function CreatorSidebar({ isOpen = false, onClose }: CreatorSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
     const { logout } = useAuth();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [pendingProposals, setPendingProposals] = useState(0);
+    const [unreadMessages, setUnreadMessages] = useState(0);
+
+    const badgeByItemName = useMemo(() => {
+        return {
+            proposals: pendingProposals,
+            messages: unreadMessages,
+        } as Record<string, number>;
+    }, [pendingProposals, unreadMessages]);
+
+    useEffect(() => {
+        const loadCounts = async () => {
+            try {
+                const [p, c] = await Promise.all([getProposalsSummary(), getChatSummary()]);
+                setPendingProposals(Number(p?.pendingProposals || 0));
+                setUnreadMessages(Number(c?.unreadMessages || 0));
+            } catch {
+                setPendingProposals(0);
+                setUnreadMessages(0);
+            }
+        };
+
+        loadCounts();
+        const id = window.setInterval(loadCounts, 15000);
+        return () => window.clearInterval(id);
+    }, []);
 
     const handleActualLogout = async () => {
         setShowLogoutConfirm(false);
@@ -55,10 +79,10 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                 />
             )}
 
-            <aside className={`w-[240px] h-screen bg-white border-r border-[#E5E5E5] flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside className={`w-60 h-[calc(100vh-32px)] bg-[#FF4D00] border border-[#E5E5E5] shadow-xl rounded-2xl flex flex-col fixed left-4 top-4 z-100 text-black transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo */}
-                <div className="p-8 pb-6 border-b border-[#E5E5E5] flex-shrink-0 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-black font-sans tracking-[-0.5px]">CreatorSync</h1>
+                <div className="p-6 border-b border-[#E5E5E5] shrink-0 flex justify-between items-center">
+                    <h1 className="text-[24px] font-bold text-black tracking-tight">CreatorSync</h1>
                     {/* Close button for mobile */}
                     <button onClick={onClose} className="md:hidden text-[#6B6B6B] hover:text-black">
                         <X size={20} />
@@ -70,23 +94,24 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;
+                        const badgeCount = badgeByItemName[item.name] || 0;
 
                         return (
                             <Link
                                 key={item.name}
                                 href={item.href}
                                 onClick={onClose} // Close sidebar on nav click
-                                className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-[0.2px] transition-all duration-200 relative lowercase ${isActive
-                                    ? "bg-[#F4EFE6] text-black font-bold pl-3.5 border-l-[3px] border-[#4A46FF]"
-                                    : "text-[#6B6B6B] hover:bg-gray-50 hover:text-black"
+                                className={`group flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-bold transition-all duration-200 relative mb-2 mx-2 ${isActive
+                                    ? "bg-black text-white shadow-md border border-[#E5E5E5] border-l-4 border-l-[#FF4D00]"
+                                    : "text-[#6B6B6B] hover:bg-[#FF9500] hover:text-black"
                                     }`}
                             >
-                                <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive ? 'text-black' : 'text-[#6B6B6B] group-hover:text-black'}`} />
+                                <Icon className={`w-5 h-5 shrink-0 transition-colors ${isActive ? 'text-black' : 'text-[#6B6B6B] group-hover:text-black'}`} />
                                 <span className="flex-1">{item.name}</span>
 
-                                {item.badge && (
-                                    <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#E5FA4A] text-black text-[11px] font-bold shadow-sm">
-                                        {item.badge}
+                                {badgeCount > 0 && (
+                                    <span className="absolute right-4 bg-[#FF4D00] text-white font-bold px-2 py-0.5 rounded-xl text-[10px] min-w-6 text-center shadow-sm">
+                                        {badgeCount}
                                     </span>
                                 )}
                             </Link>
@@ -95,21 +120,21 @@ export function CreatorSidebar({ userName, userAvatar, isOpen = false, onClose }
                 </nav>
 
                 {/* Bottom Actions */}
-                <div className="flex-shrink-0 p-4 border-t border-[#E5E5E5] bg-white">
+                <div className="mt-4 border-t border-[#E5E5E5] pt-4 px-4 pb-4">
                     <Link
                         href="/dashboard/creator/settings"
                         onClick={onClose}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold mb-3 transition-colors lowercase ${pathname === "/dashboard/creator/settings"
-                            ? "bg-[#F4EFE6] text-black"
-                            : "text-[#6B6B6B] hover:bg-gray-50 hover:text-black"
+                        className={`group flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-bold mb-2 transition-all duration-200 mx-2 ${pathname === "/dashboard/creator/settings"
+                            ? "bg-black text-white shadow-md border border-[#E5E5E5] border-l-4 border-l-[#FF4D00]"
+                            : "text-[#6B6B6B] hover:bg-[#FF9500] hover:text-black"
                             }`}
                     >
-                        <Settings className="w-5 h-5" />
-                        <span>settings</span>
+                        <Settings className={`w-5 h-5 shrink-0 transition-colors ${pathname === "/dashboard/creator/settings" ? 'text-black' : 'text-[#6B6B6B] group-hover:text-black'}`} />
+                        <span className="flex-1">settings</span>
                     </Link>
 
                     <div
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-[#6B6B6B] hover:bg-red-50 hover:text-red-500 cursor-pointer transition-colors lowercase"
+                        className="group flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-bold hover:bg-[#FEE2E2] hover:text-[#EF4444] text-[#6B6B6B] cursor-pointer transition-all duration-200 mx-2"
                         onClick={() => setShowLogoutConfirm(true)}
                     >
                         <LogOut className="w-5 h-5" />

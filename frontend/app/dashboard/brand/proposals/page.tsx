@@ -1,135 +1,193 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { useRouter } from "next/navigation";
+import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { RouteGuard } from "@/components/RouteGuard";
-import { BrandRightSidebar } from "@/components/BrandRightSidebar";
-import { ArrowRight, Plus } from "lucide-react";
+import { ViewProposalModal } from "@/components/ViewProposalModal";
+import { ArrowRight, Plus, MessageCircle } from "lucide-react";
+import { getProposals, Proposal, createConversation } from "@/lib/api";
 
-const PROPOSALS = [
-    { creator: "Priya Sharma", campaign: "Skincare Campaign", budget: "₹15,000", dateSent: "Jan 28, 2026", status: "Accepted", avatar: "PS" },
-    { creator: "Arjun Mehta", campaign: "Fitness App Promo", budget: "₹8,000", dateSent: "Jan 27, 2026", status: "Sent", avatar: "AM" },
-    { creator: "Zara Khan", campaign: "Beauty Launch", budget: "₹12,000", dateSent: "Jan 26, 2026", status: "Sent", avatar: "ZK" },
-    { creator: "Rahul Verma", campaign: "Tech Review", budget: "₹10,000", dateSent: "Jan 25, 2026", status: "Accepted", avatar: "RV" },
-    { creator: "Anjali Desai", campaign: "Food Campaign", budget: "₹7,500", dateSent: "Jan 24, 2026", status: "Sent", avatar: "AD" },
-    { creator: "Kabir Singh", campaign: "Comedy Collab", budget: "₹9,000", dateSent: "Jan 23, 2026", status: "Declined", avatar: "KS" },
-    { creator: "Meera Patel", campaign: "Finance Tips", budget: "₹6,000", dateSent: "Jan 22, 2026", status: "Sent", avatar: "MP" },
-    { creator: "Vikram Rao", campaign: "Travel Vlog", budget: "₹11,000", dateSent: "Jan 21, 2026", status: "Accepted", avatar: "VR" },
-];
-
-const FILTER_TABS = ["All", "Sent", "Accepted", "Declined"];
+const FILTER_TABS = ["All", "Pending", "Accepted", "Declined"];
 
 export default function BrandProposals() {
     const { user } = useAuth();
+    const router = useRouter();
     const [selectedFilter, setSelectedFilter] = useState("All");
+    const [proposals, setProposals] = useState<Proposal[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
+
+    useEffect(() => {
+        fetchProposals();
+    }, []);
+
+    const fetchProposals = async () => {
+        try {
+            const res = await getProposals();
+            if (res.success) {
+                setProposals(res.proposals);
+            }
+        } catch (err) {
+            console.error("Failed to fetch proposals:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredProposals = selectedFilter === "All"
-        ? PROPOSALS
-        : PROPOSALS.filter(p => p.status === selectedFilter);
+        ? proposals
+        : proposals.filter(p => p.status === selectedFilter.toLowerCase());
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "Accepted": return "bg-[#1A2A1A]";
-            case "Declined": return "bg-[#2A1A1A]";
-            default: return "bg-[#1F1F1F]";
+            case "accepted": return "bg-green-50 text-green-600 border border-green-100";
+            case "declined": return "bg-red-50 text-red-600 border border-red-100";
+            default: return "bg-orange-50 text-orange-600 border border-orange-100";
         }
+    };
+
+    const handleMessage = async (e: React.MouseEvent, proposal: Proposal) => {
+        e.stopPropagation();
+        try {
+            const creatorId = (proposal.creatorId as any)?._id;
+            if (!creatorId) return;
+            await createConversation(creatorId);
+            router.push('/dashboard/brand/messages');
+        } catch (err) {
+            console.error("Failed to create conversation:", err);
+        }
+    };
+
+    const handleStatusChange = (updatedProposal: Proposal) => {
+        setProposals(prev => prev.map(p => p._id === updatedProposal._id ? updatedProposal : p));
     };
 
     return (
         <RouteGuard allowedRole="brand">
-            <div className="flex h-screen bg-[#F8F8F8] overflow-hidden">
-                <div className="hidden md:block">
-                    <DashboardSidebar
-                        userName={user?.fullName || "Brand User"}
-                        userAvatar={user?.fullName?.charAt(0).toUpperCase()}
-                    />
+            <BrandDashboardLayout variant="white">
+                <div className="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-3">Campaign Proposals</h1>
+                        <p className="text-zinc-500 font-medium text-lg">Manage and track your collaboration requests</p>
+                    </div>
+                    <button
+                        onClick={() => router.push('/dashboard/brand')}
+                        className="px-8 h-12 bg-[#FF4D00] text-white rounded-2xl font-bold text-sm hover:bg-[#FF4D00]/90 transition-all flex items-center gap-2 shadow-lg shadow-orange-500/10"
+                    >
+                        <Plus className="w-4 h-4" />
+                        Send New Proposal
+                    </button>
                 </div>
 
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
-                    {/* Page Header */}
-                    <div className="flex justify-between items-center mb-8">
-                        <h1 className="text-[28px] font-bold text-[#0A0A0A] font-milker">Proposals</h1>
-                        <button className="px-5 h-11 bg-[#0A0A0A] text-white rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity flex items-center gap-2">
-                            <Plus className="w-4 h-4" />
-                            New Proposal
+                {/* Filter Pills */}
+                <div className="flex gap-2 mb-10 overflow-x-auto pb-2 scrollbar-hide">
+                    {FILTER_TABS.map(tab => (
+                        <button
+                            key={tab}
+                            onClick={() => setSelectedFilter(tab)}
+                            className={`px-6 py-3 rounded-full text-xs font-bold transition-all border whitespace-nowrap ${selectedFilter === tab
+                                ? "bg-zinc-900 text-white border-zinc-900 shadow-xl"
+                                : "bg-white text-zinc-500 border-zinc-200 hover:border-zinc-300 hover:text-zinc-900"
+                                }`}
+                        >
+                            {tab} {tab !== "All" && `(${proposals.filter(p => p.status === tab.toLowerCase()).length})`}
                         </button>
+                    ))}
+                </div>
+
+                {/* Proposals List */}
+                <div className="bg-white rounded-[32px] overflow-hidden border border-zinc-100 shadow-sm">
+                    {/* Column Headers */}
+                    <div className="hidden md:grid md:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center px-10 py-6 border-b border-zinc-50 bg-zinc-50/50 text-zinc-400">
+                        <div className="text-[10px] uppercase font-black tracking-widest leading-none">CREATOR</div>
+                        <div className="text-[10px] uppercase font-black tracking-widest leading-none">CAMPAIGN</div>
+                        <div className="text-[10px] uppercase font-black tracking-widest leading-none">BUDGET</div>
+                        <div className="text-[10px] uppercase font-black tracking-widest leading-none">STATUS</div>
+                        <div className="text-[10px] uppercase font-black tracking-widest leading-none">DATE</div>
+                        <div className="text-[10px] uppercase font-black tracking-widest leading-none text-right">ACTION</div>
                     </div>
 
-                    {/* Filter Pills */}
-                    <div className="flex gap-2 mb-4">
-                        {FILTER_TABS.map(tab => (
-                            <button
-                                key={tab}
-                                onClick={() => setSelectedFilter(tab)}
-                                className={`px-3.5 py-1.5 rounded-full text-xs font-angelo transition-colors ${selectedFilter === tab
-                                    ? "bg-[#0A0A0A] text-white"
-                                    : "bg-white text-[#0A0A0A] border border-[#E5E5E5] hover:bg-[#F0F0F0]"
-                                    }`}
-                            >
-                                {tab}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Proposals List */}
-                    <div className="bg-white border border-[#E5E5E5] rounded-[14px] overflow-hidden">
-                        {/* Column Headers */}
-                        <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3 border-b border-[#E5E5E5]">
-                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">CREATOR</div>
-                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">CAMPAIGN</div>
-                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">BUDGET</div>
-                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">DATE SENT</div>
-                            <div className="text-[10px] uppercase text-[#6B6B6B] tracking-widest">STATUS</div>
-                            <div></div>
+                    {loading ? (
+                        <div className="text-center py-32">
+                            <div className="w-8 h-8 border-4 border-zinc-200 border-t-[#FF4D00] rounded-full animate-spin mx-auto mb-4" />
+                            <p className="text-zinc-400 font-medium">Loading proposals...</p>
                         </div>
-
-                        {/* Proposal Rows */}
-                        {filteredProposals.map((proposal, index) => (
+                    ) : filteredProposals.length === 0 ? (
+                        <div className="text-center py-32 bg-zinc-50/30">
+                            <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center">
+                                <Plus className="w-10 h-10 text-zinc-300" strokeWidth={1} />
+                            </div>
+                            <h3 className="text-xl font-bold text-zinc-900">No proposals yet</h3>
+                            <p className="text-zinc-500 mt-2">Start collaborating with amazing creators</p>
+                        </div>
+                    ) : (
+                        filteredProposals.map((proposal) => (
                             <div
-                                key={index}
-                                className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_40px] items-center px-5 py-3.5 border-b border-[#E5E5E5] last:border-b-0 h-16 cursor-pointer hover:bg-[#F8F8F8] transition-colors"
+                                key={proposal._id}
+                                className="grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center px-10 py-8 border-b border-zinc-50 last:border-b-0 cursor-pointer hover:bg-zinc-50/80 transition-all group"
+                                onClick={() => setSelectedProposal(proposal)}
                             >
                                 {/* Creator */}
-                                <div className="flex items-center gap-3">
-                                    <div className="w-[38px] h-[38px] rounded-full bg-[#E5E5E5] flex items-center justify-center text-[#0A0A0A] text-sm font-semibold flex-shrink-0">
-                                        {proposal.avatar}
+                                <div className="flex items-center gap-5 mb-4 md:mb-0">
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-[#FF4D00] bg-orange-50 border border-orange-100 text-sm font-black shrink-0 shadow-sm">
+                                        {(proposal.creatorId?.fullName || 'C').substring(0, 2).toUpperCase()}
                                     </div>
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-semibold text-[#0A0A0A] truncate">{proposal.creator}</p>
+                                    <div>
+                                        <p className="text-sm font-black text-zinc-900 group-hover:text-[#FF4D00] transition-colors">{proposal.creatorId?.fullName || 'Creator'}</p>
+                                        <p className="text-[10px] font-bold text-zinc-400 tracking-wider">TOP RATED</p>
                                     </div>
                                 </div>
 
                                 {/* Campaign */}
-                                <div className="text-sm text-[#0A0A0A] truncate">{proposal.campaign}</div>
+                                <div className="text-sm text-zinc-600 font-semibold truncate mb-2 md:mb-0">{proposal.title}</div>
 
                                 {/* Budget */}
-                                <div className="text-sm text-[#0A0A0A] font-angelo">{proposal.budget}</div>
-
-                                {/* Date Sent */}
-                                <div className="text-[13px] text-[#6B6B6B]">{proposal.dateSent}</div>
+                                <div className="text-sm text-zinc-900 font-black mb-2 md:mb-0">₹{proposal.budget?.toLocaleString()}</div>
 
                                 {/* Status */}
-                                <div>
-                                    <span className={`inline-block px-2.5 py-1 rounded-lg text-[10px] text-white font-angelo ${getStatusColor(proposal.status)}`}>
+                                <div className="mb-2 md:mb-0">
+                                    <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider ${getStatusColor(proposal.status)}`}>
                                         {proposal.status}
                                     </span>
                                 </div>
 
-                                {/* Arrow */}
-                                <div className="flex items-center justify-center">
-                                    <ArrowRight className="w-[18px] h-[18px] text-[#0A0A0A]" />
+                                {/* Date */}
+                                <div className="text-xs text-zinc-400 font-bold mb-4 md:mb-0">
+                                    {new Date(proposal.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                </div>
+
+                                {/* Action */}
+                                <div className="flex items-center justify-end gap-3 translate-x-1 group-hover:translate-x-0 transition-all">
+                                    {proposal.status === 'accepted' && (
+                                        <button
+                                            onClick={(e) => handleMessage(e, proposal)}
+                                            className="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-all"
+                                            title="Message Creator"
+                                        >
+                                            <MessageCircle className="w-5 h-5 text-white" />
+                                        </button>
+                                    )}
+                                    <div className="w-11 h-11 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:bg-[#FF4D00] group-hover:border-[#FF4D00] group-hover:text-white transition-all shadow-sm">
+                                        <ArrowRight className="w-5 h-5" />
+                                    </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </main>
+                        ))
+                    )}
+                </div>
+            </BrandDashboardLayout>
 
-                <BrandRightSidebar />
-
-                <MobileBottomNav role="brand" />
-            </div>
+            {selectedProposal && (
+                <ViewProposalModal
+                    proposal={selectedProposal}
+                    isOpen={true}
+                    onClose={() => setSelectedProposal(null)}
+                    userRole="brand"
+                    onStatusChange={handleStatusChange}
+                />
+            )}
         </RouteGuard>
     );
 }

@@ -15,6 +15,7 @@ interface Proposal {
     status: 'new' | 'accepted' | 'declined';
     startDate?: string;
     isCreatorOwner?: boolean; // Added to handle ownership if needed
+    onMessageClick?: () => void;
 }
 
 interface ProposalCardProps {
@@ -112,10 +113,22 @@ export function ProposalCard({ proposal, onClick }: ProposalCardProps) {
                 </div>
 
                 {/* Footer Button */}
-                <div className="proposal-footer">
-                    <button className="view-proposal-btn">
+                <div className="proposal-footer" style={{ display: 'flex', gap: '8px' }}>
+                    <button className="view-proposal-btn" style={{ flex: 1 }}>
                         VIEW PROPOSAL
                     </button>
+                    {proposal.status === 'accepted' && (
+                        <button 
+                            className="view-proposal-btn" 
+                            style={{ flex: 1, backgroundColor: 'white', color: 'black', border: '1px solid black' }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (proposal.onMessageClick) proposal.onMessageClick();
+                            }}
+                        >
+                            MESSAGE USER
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

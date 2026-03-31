@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Lock, User } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Check, Lock, User, Instagram, Star } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import "./CreatorCard.css";
 
@@ -19,6 +20,9 @@ interface Creator {
     isActive?: boolean;
     openToWork?: boolean;
     category?: string;
+    engagementRate?: string;
+    pastBrands?: string[];
+    isNew?: boolean;
 }
 
 interface CreatorCardProps {
@@ -27,7 +31,8 @@ interface CreatorCardProps {
     onAuthGate?: () => void;
     showCTA?: boolean;
     ctaText?: string;
-    onCtaClick?: (creator: any) => void;
+    onCtaClick?: (creator: Creator) => void;
+    onProposalClick?: (creator: Creator) => void;
 }
 
 export function CreatorCard({
@@ -36,16 +41,19 @@ export function CreatorCard({
     onAuthGate,
     showCTA = true,
     ctaText = "View Profile",
-    onCtaClick
+    onCtaClick,
+    onProposalClick
 }: CreatorCardProps) {
     const router = useRouter();
+    const pathname = usePathname();
     const [imgError, setImgError] = useState(false);
 
     const handleClick = () => {
         if (!isAuthenticated && onAuthGate) {
             onAuthGate();
         } else {
-            router.push(`/creator/${creator.id}`);
+            const isBrandDashboard = pathname?.startsWith('/dashboard/brand');
+            router.push(isBrandDashboard ? `/dashboard/brand/creators/${creator.id}` : `/creator/${creator.id}`);
         }
     };
 
@@ -58,112 +66,112 @@ export function CreatorCard({
         }
     };
 
+    const handleProposalClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (onProposalClick) {
+            onProposalClick(creator);
+        } else {
+            // Default behavior if no prop: maybe navigates to a proposal flow or just clicks profile for now
+            // But usually this will be handled by the parent
+            const isBrandDashboard = pathname?.startsWith('/dashboard/brand');
+            if (isBrandDashboard) {
+                router.push(`/dashboard/brand/creators/${creator.id}?action=proposal`);
+            } else {
+                router.push(`/creator/${creator.id}`);
+            }
+        }
+    };
+
     // Determine if we should show placeholder
     const showPlaceholder = !creator.profilePicture ||
         creator.profilePicture === '/api/placeholder/140/140' ||
         creator.profilePicture === '' ||
         imgError;
 
+    const normalizedHandle = (creator.instagramHandle || '').replace(/^@+/, '');
+    const handleLabel = normalizedHandle ? `@${normalizedHandle}` : '';
+
     return (
-        <div className="creator-card" onClick={handleClick}>
-            <div className="creator-card-inner">
-                {/* Featured/Verified Badge */}
-                {(creator.featured || creator.verified) && (
-                    <div className="creator-badge">
-                        {creator.featured ? 'FEATURED' : 'VERIFIED'}
-                    </div>
-                )}
+        <div className="creator-card group" onClick={handleClick}>
+            {/* Background Image */}
+            {!showPlaceholder ? (
+                <img
+                    src={creator.profilePicture}
+                    alt={creator.name}
+                    className="creator-card-bg"
+                    onError={() => setImgError(true)}
+                />
+            ) : (
+                <div className="creator-card-bg-placeholder">
+                    <User className="w-12 h-12 text-zinc-300" />
+                </div>
+            )}
 
-                {/* Profile Picture Section */}
-                <div className="creator-card-header">
-                    <div className={`profile-picture-container ${!isAuthenticated ? 'blur-[8px]' : ''}`}>
-                        {!showPlaceholder ? (
-                            <img
-                                src={creator.profilePicture}
-                                alt={creator.name || creator.instagramHandle}
-                                className="profile-picture"
-                                onError={() => setImgError(true)}
-                            />
-                        ) : (
-                            <div className="profile-picture-placeholder">
-                                <User className="w-10 h-10 opacity-40 text-white" strokeWidth={1.5} />
-                            </div>
-                        )}
-                    </div>
-
-                    {creator.verified && (
-                        <div className="verified-checkmark">
-                            <Check size={16} strokeWidth={3} />
-                        </div>
-                    )}
-
-                    {/* Lock Overlay - Now centered over the blurred image */}
-                    {!isAuthenticated && (
-                        <div className="absolute inset-0 flex items-center justify-center z-20">
-                            <div className="bg-black/40 backdrop-blur-sm p-3 rounded-full border border-white/10">
-                                <Lock className="w-6 h-6 text-white" />
-                            </div>
-                        </div>
+            {/* Top Badge */}
+            {(creator.featured || creator.isNew) && (
+                <div className="creator-card-badge">
+                    {creator.featured ? (
+                        <span className="flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-orange-500 text-orange-500" /> Top Rated
+                        </span>
+                    ) : (
+                        "New"
                     )}
                 </div>
+            )}
 
-                {/* Content Section */}
-                <div className="creator-card-content">
-                    {/* Name and Handle - ALWAYS VISIBLE */}
-                    <div className="mb-4">
-                        <h3 className="creator-name" style={{
-                            display: 'block',
-                            visibility: 'visible',
-                            opacity: 1,
-                            color: '#FFFFFF',
-                            fontSize: '22px',
-                            fontWeight: 700,
-                            margin: '0 0 4px 0',
-                            position: 'relative',
-                            zIndex: 100
-                        }}>
-                            {creator.name || 'Unknown Creator'}
-                        </h3>
-                        <p className="creator-handle">@{creator.instagramHandle || 'unknown'}</p>
+            {/* Main Info Overlay (Visible by default) */}
+            <div className="creator-card-overlay">
+                <div className="flex justify-between items-end w-full">
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-0.5">{creator.name || 'Unknown'}</h3>
+                        <p className="text-xs text-white/80 font-medium">{creator.category || 'Creator'}</p>
                     </div>
-
-                    {/* Bio - Blurred if not authenticated */}
-                    <div className={`${!isAuthenticated ? 'blur-sm opacity-50 select-none' : ''}`}>
-                        {creator.bio && (
-                            <p className="creator-bio">{creator.bio}</p>
-                        )}
-
-                        {/* Stats Row */}
-                        <div className="creator-stats">
-                            <div className="stat">
-                                <span className="stat-number">{formatNumber(Number(creator.followers) || 0)}</span>
-                                <span className="stat-label">FOLLOWERS</span>
-                            </div>
-                            <div className="stat">
-                                <span className="stat-number">{formatNumber(Number(creator.following) || 0)}</span>
-                                <span className="stat-label">FOLLOWING</span>
-                            </div>
-                        </div>
-
-                        {/* Status Badges */}
-                        <div className="creator-badges-row">
-                            {creator.category && <span className="status-badge">{creator.category.toUpperCase()}</span>}
-                            {creator.isActive && <span className="status-badge">LIVE</span>}
-                            {creator.openToWork && <span className="status-badge">V1.0</span>}
-                        </div>
-                    </div>
+                    <Instagram className="w-5 h-5 text-white/90" />
                 </div>
-
-                {/* CTA Button */}
-                {showCTA && (
-                    <button
-                        className={`creator-card-cta ${!isAuthenticated ? 'always-visible' : ''}`}
-                        onClick={handleCtaClick}
-                    >
-                        {ctaText || (isAuthenticated ? 'Get Started' : 'Sign In to View')}
-                    </button>
-                )}
             </div>
+
+            {/* Hover Expansion Content */}
+            <div className="creator-card-expansion">
+                <div className="p-6 pt-0">
+                    <div className="h-px bg-white/10 mb-5" />
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Engagement Rate:</p>
+                            <p className="text-sm font-bold text-white">{creator.engagementRate || '12.5%'}</p>
+                        </div>
+                    </div>
+                    <div className="mb-6">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Past Brands:</p>
+                        <p className="text-sm font-bold text-white leading-relaxed">
+                            {creator.pastBrands?.join(', ') || 'Nike, Google, Apple'}
+                        </p>
+                    </div>
+                    <div className="flex flex-col gap-2.5">
+                        <button 
+                            onClick={handleCtaClick}
+                            className="w-full h-11 bg-[#FF4D00] hover:bg-[#FF6A20] text-white rounded-xl font-bold text-sm transition-all shadow-lg active:scale-95"
+                        >
+                            {ctaText}
+                        </button>
+                        <button 
+                            onClick={handleProposalClick}
+                            className="w-full h-11 bg-white border border-[#FF4D00] text-[#FF4D00] hover:bg-zinc-50 rounded-xl font-bold text-sm transition-all active:scale-95"
+                        >
+                            Send Proposal
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Lock for non-authenticated */}
+            {!isAuthenticated && (
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 rounded-[28px]">
+                    <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center border border-white/20">
+                        <Lock className="w-6 h-6 text-white" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
