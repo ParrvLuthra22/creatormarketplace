@@ -204,6 +204,42 @@ export const logout = async (): Promise<void> => {
     });
 };
 
+export const uploadProfilePhoto = async (file: File): Promise<{ success: boolean; url: string }> => {
+    const url = `${API_BASE_URL}/api/uploads/profile-photo`;
+    const form = new FormData();
+    form.append('file', file);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        body: form,
+        credentials: 'include',
+    });
+
+    if (response.status === 401) {
+        if (logoutHandler) logoutHandler();
+        throw new Error('Session expired. Please login again.');
+    }
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Upload failed with status ${response.status}`);
+    }
+
+    return response.json();
+};
+
+export const getProposalsSummary = async (): Promise<{ success: boolean; pendingProposals: number }> => {
+    return apiFetch<{ success: boolean; pendingProposals: number }>(`/api/proposals/summary`, {
+        method: 'GET',
+    });
+};
+
+export const getChatSummary = async (): Promise<{ success: boolean; unreadMessages: number }> => {
+    return apiFetch<{ success: boolean; unreadMessages: number }>(`/api/chat/summary`, {
+        method: 'GET',
+    });
+};
+
 // Public Creators API
 export interface PublicCreator {
     id: string;
@@ -225,6 +261,221 @@ export interface PublicCreatorsResponse {
 export const getPublicCreators = async (): Promise<PublicCreatorsResponse> => {
     return apiFetch<PublicCreatorsResponse>('/api/profile/creators/public', {
         method: 'GET',
+    });
+};
+
+export interface PublicCreatorStatsResponse {
+    success: boolean;
+    creator: {
+        id: string;
+        name: string;
+        instagramHandle: string;
+        profilePicture: string;
+        niches: string[];
+        followers: string;
+        engagement: string | null;
+        availability: 'available' | 'limited' | 'unavailable';
+        pricing: {
+            starting: number;
+            per: string;
+        } | null;
+        brandWork: Array<{
+            title: string;
+            type: 'image' | 'video';
+            url: string;
+            instagramUrl?: string;
+        }>;
+    };
+    stats: {
+        followers: string;
+        engagement: string | null;
+        avgReach: number | null;
+        pastBrandCollaborations: number;
+    };
+    authenticated: boolean;
+}
+
+export const getPublicCreatorStats = async (userId: string): Promise<PublicCreatorStatsResponse> => {
+    return apiFetch<PublicCreatorStatsResponse>(`/api/profile/creators/${userId}/public`, {
+        method: 'GET',
+    });
+};
+
+export type UpdateCreatorProfileInput = Partial<{
+    bio: string;
+    instagramHandle: string;
+    profilePhoto: string;
+    niches: string[];
+    followers: string;
+    engagement: string;
+    location: string;
+    availability: string;
+    pricing: {
+        sponsoredPost?: string;
+        reel?: string;
+        story?: string;
+    };
+    brandWork: Array<{
+        brandName?: string;
+        campaignTitle?: string;
+        date?: string;
+        description?: string;
+        mediaUrl?: string;
+    }>;
+}>;
+
+export async function updateCreatorProfile(input: UpdateCreatorProfileInput) {
+    return apiFetch<{ success: boolean; profile: unknown }>(`/api/profile/creator`, {
+        method: "PUT",
+        body: JSON.stringify(input),
+    });
+}
+
+// Chat API
+export interface Conversation {
+    _id: string;
+    participants: {
+        _id: string;
+        fullName: string;
+        accountType: 'Brand' | 'Creator';
+    }[];
+    lastMessage?: string;
+    lastMessageAt?: string;
+    createdAt: string;
+}
+
+export interface ChatMessage {
+    _id: string;
+    conversationId: string;
+    senderId: string;
+    text: string;
+    read: boolean;
+    edited?: boolean;
+    deleted?: boolean;
+    createdAt: string;
+}
+
+export const getConversations = async (): Promise<{ conversations: Conversation[] }> => {
+    return apiFetch<{ conversations: Conversation[] }>('/api/chat/conversations', {
+        method: 'GET',
+    });
+};
+
+export const getMessages = async (conversationId: string): Promise<{ messages: ChatMessage[] }> => {
+    return apiFetch<{ messages: ChatMessage[] }>(`/api/chat/${conversationId}`, {
+        method: 'GET',
+    });
+};
+
+export const createConversation = async (participantId: string): Promise<{ conversation: Conversation }> => {
+    return apiFetch<{ conversation: Conversation }>('/api/chat/conversations', {
+        method: 'POST',
+        body: JSON.stringify({ participantId }),
+    });
+};
+
+// Public Brands API (Dashboard Display)
+export interface PublicBrand {
+    id: string;
+    name: string;
+    companyName?: string;
+    industry?: string;
+}
+
+export interface PublicBrandsResponse {
+    success: boolean;
+    brands: PublicBrand[];
+    authenticated: boolean;
+}
+
+export const getPublicBrands = async (): Promise<PublicBrandsResponse> => {
+    return apiFetch<PublicBrandsResponse>('/api/profile/brands/public', {
+        method: 'GET',
+    });
+};
+
+// Proposal API
+export interface ProposalData {
+    creatorId: string;
+    title: string;
+    description: string;
+    budget: number;
+    deliverables: string;
+    deadline: string;
+}
+
+export interface Proposal {
+    _id: string;
+    brandId: { _id: string; fullName: string; email: string };
+    creatorId: { _id: string; fullName: string; email: string };
+    brandProfile?: {
+        companyName?: string;
+        logoUrl?: string;
+    } | null;
+    title: string;
+    description: string;
+    budget: number;
+    deliverables: string;
+    deadline: string;
+    status: 'pending' | 'accepted' | 'declined';
+    createdAt: string;
+}
+
+export const createProposal = async (data: ProposalData): Promise<{ success: boolean; proposal: Proposal }> => {
+    return apiFetch<{ success: boolean; proposal: Proposal }>('/api/proposals', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+};
+
+export const getProposals = async (status?: string): Promise<{ success: boolean; proposals: Proposal[] }> => {
+    const url = status ? `/api/proposals?status=${status}` : '/api/proposals';
+    return apiFetch<{ success: boolean; proposals: Proposal[] }>(url, { method: 'GET' });
+};
+
+export const getProposal = async (id: string): Promise<{ success: boolean; proposal: Proposal }> => {
+    return apiFetch<{ success: boolean; proposal: Proposal }>(`/api/proposals/${id}`, { method: 'GET' });
+};
+
+export const getBrandDashboardSummary = async (): Promise<{
+    success: boolean;
+    totalSpend: number;
+    creatorsHired: number;
+    pendingProposals: number;
+}> => {
+    return apiFetch<{
+        success: boolean;
+        totalSpend: number;
+        creatorsHired: number;
+        pendingProposals: number;
+    }>('/api/proposals/dashboard-summary', { method: 'GET' });
+};
+
+export const acceptProposal = async (id: string): Promise<{ success: boolean; proposal: Proposal }> => {
+    return apiFetch<{ success: boolean; proposal: Proposal }>(`/api/proposals/${id}/accept`, { method: 'PUT' });
+};
+
+export const declineProposal = async (id: string): Promise<{ success: boolean; proposal: Proposal }> => {
+    return apiFetch<{ success: boolean; proposal: Proposal }>(`/api/proposals/${id}/decline`, { method: 'PUT' });
+};
+
+// Message Management
+export const editMessage = async (messageId: string, text: string): Promise<{ success: boolean; message: ChatMessage }> => {
+    return apiFetch<{ success: boolean; message: ChatMessage }>(`/api/chat/messages/${messageId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ text }),
+    });
+};
+
+export const deleteMessage = async (messageId: string): Promise<{ success: boolean; message: ChatMessage }> => {
+    return apiFetch<{ success: boolean; message: ChatMessage }>(`/api/chat/messages/${messageId}`, {
+        method: 'DELETE',
+    });
+};
+
+export const closeConversation = async (conversationId: string): Promise<{ success: boolean }> => {
+    return apiFetch<{ success: boolean }>(`/api/chat/conversations/${conversationId}/close`, {
+        method: 'PUT',
     });
 };
 

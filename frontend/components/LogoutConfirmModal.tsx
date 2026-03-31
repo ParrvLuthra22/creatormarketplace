@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { LogOut } from "lucide-react";
 
 interface LogoutConfirmModalProps {
@@ -10,6 +11,12 @@ interface LogoutConfirmModalProps {
 }
 
 export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfirmModalProps) {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     // Handle Escape key
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
@@ -27,9 +34,9 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
         };
     }, [isOpen, onCancel]);
 
-    if (!isOpen) return null;
+    if (!isOpen || !mounted) return null;
 
-    return (
+    return createPortal(
         <div
             className="fixed inset-0 z-[1000] flex items-center justify-center"
             style={{
@@ -40,7 +47,7 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
             onClick={onCancel}
         >
             <div
-                className="bg-[#141414] border border-[#1F1F1F] rounded-2xl w-[380px] max-w-[90vw] px-8 pt-9 pb-7"
+                className="bg-white border border-[#E5E5E5] rounded-2xl w-[380px] max-w-[90vw] px-8 pt-9 pb-7"
                 style={{
                     animation: "scaleIn 250ms ease-out",
                 }}
@@ -48,13 +55,13 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
             >
                 {/* Icon */}
                 <div className="flex justify-center mb-5">
-                    <div className="w-12 h-12 rounded-full bg-[#1F1F1F] flex items-center justify-center">
-                        <LogOut className="w-[22px] h-[22px] text-white" />
+                    <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center">
+                        <LogOut className="w-[22px] h-[22px] text-black" />
                     </div>
                 </div>
 
                 {/* Heading */}
-                <h2 className="text-[22px] font-milker text-white text-center mb-2">
+                <h2 className="text-[22px] font-milker text-black text-center mb-2">
                     Are you sure?
                 </h2>
 
@@ -76,7 +83,7 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
                     {/* Cancel Button */}
                     <button
                         onClick={onCancel}
-                        className="w-full h-[46px] bg-transparent text-white border border-[#2A2A2A] rounded-[10px] font-angelo text-[15px] font-semibold hover:border-[#3D3D3D] transition-colors"
+                        className="w-full h-[46px] bg-transparent text-black border border-[#2A2A2A] rounded-[10px] font-angelo text-[15px] font-semibold hover:border-[#3D3D3D] transition-colors"
                     >
                         Cancel
                     </button>
@@ -104,6 +111,7 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
                     }
                 }
             `}</style>
-        </div>
+        </div>,
+        document.body
     );
 }

@@ -4,149 +4,152 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
-import { CreatorSidebar } from "@/components/CreatorSidebar";
-import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { CreatorStatsCards } from "@/components/CreatorStatsCards";
 import { ProposalCarousel } from "@/components/ProposalCarousel";
+import { createConversation, getProposals } from "@/lib/api";
 
-// Dummy proposal data
-const PROPOSALS = [
-    { id: 1, brandName: "FitLife Nutrition", title: "Protein Shake Launch", brandLogo: "/images/brand-placeholder.png", budget: 15000, deliverables: "2 Reels, 3 Stories", deadline: "2026-02-15", status: "new" as const },
-    { id: 2, brandName: "Urban Threads", title: "Summer Collection", brandLogo: "/images/brand-placeholder.png", budget: 22000, deliverables: "1 Reel, 5 Posts", deadline: "2026-02-28", status: "new" as const },
-    { id: 3, brandName: "GlowUp Skincare", title: "Skincare Routine", brandLogo: "/images/brand-placeholder.png", budget: 8000, deliverables: "3 Reels", deadline: "2026-03-05", status: "new" as const },
-    { id: 4, brandName: "TechVerse", title: "Gadget Review", brandLogo: "/images/brand-placeholder.png", budget: 12000, deliverables: "1 Video, 2 Posts", deadline: "2026-02-20", status: "new" as const },
-    { id: 5, brandName: "NatureBite", title: "Organic Campaign", brandLogo: "/images/brand-placeholder.png", budget: 9500, deliverables: "4 Stories, 2 Posts", deadline: "2026-01-30", status: "accepted" as const },
-    { id: 6, brandName: "PixelArt Studio", title: "Design Tools", brandLogo: "/images/brand-placeholder.png", budget: 6000, deliverables: "2 Reels", deadline: "2026-01-22", status: "accepted" as const },
-    { id: 7, brandName: "QuickFit App", title: "App Promo", brandLogo: "/images/brand-placeholder.png", budget: 5000, deliverables: "1 Reel, 3 Stories", deadline: "2026-01-10", status: "declined" as const },
-];
+type DashboardProposalCard = {
+    id: number;
+    backendId: string;
+    brandName: string;
+    brandLogo: string;
+    title: string;
+    budget: number;
+    deliverables: string;
+    deadline: string;
+    status: 'new' | 'accepted' | 'declined';
+    startDate?: string;
+    onMessageClick?: () => void;
+};
 
 export default function CreatorDashboard() {
     const { user, logout } = useAuth();
     const router = useRouter();
     const [isActive, setIsActive] = useState(true);
-    const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    const [proposals, setProposals] = useState<DashboardProposalCard[]>([]);
 
-    const handleLogout = async () => {
+    const idToNumber = (id: string) => {
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) {
+            hash = (hash * 31 + id.charCodeAt(i)) | 0;
+        }
+        return Math.abs(hash);
+    };
+
+    useEffect(() => {
+        const fetchProposals = async () => {
+            try {
+                const res = await getProposals();
+                if (!res.success) return;
+
+                const mapped: DashboardProposalCard[] = res.proposals.map((p) => {
+                    const brandName =
+                        p.brandProfile?.companyName ||
+                        p.brandId?.fullName ||
+                        'Brand';
+
+                    const status: DashboardProposalCard['status'] =
+                        p.status === 'pending' ? 'new' : p.status;
+
+                    return {
+                        id: idToNumber(p._id),
+                        backendId: p._id,
+                        brandName,
+                        brandLogo: p.brandProfile?.logoUrl || "/images/brand-placeholder.png",
+                        title: p.title,
+                        budget: p.budget,
+                        deliverables: p.deliverables,
+                        deadline: p.deadline,
+                        status,
+                        startDate: p.createdAt,
+                    };
+                });
+
+                setProposals(mapped);
+            } catch (err) {
+                console.error("Failed to fetch proposals:", err);
+            }
+        };
+        fetchProposals();
+    }, []);
+
+    const handleMessageUser = async (proposal: DashboardProposalCard) => {
         try {
-            await logout();
-            router.push('/');
-        } catch (error) {
-            console.error("Logout failed:", error);
+            const res = await createConversation(proposal.brandName);
+            router.push(`/dashboard/creator/messages?conv=${res.conversation._id}`);
+        } catch (err) {
+            console.error("Failed to message user:", err);
         }
     };
 
-    // Close mobile nav when screen size increases
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth > 768) {
-                setMobileNavOpen(false);
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    // Prevent body scroll when nav open
-    useEffect(() => {
-        if (mobileNavOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-    }, [mobileNavOpen]);
-
     // Filter proposals logic
-    const activeProposals = PROPOSALS.filter(p => p.status === 'new');
-    const acceptedProposals = PROPOSALS.filter(p => p.status === 'accepted');
+    const activeProposals = proposals.filter(p => p.status === 'new');
+    const acceptedProposals = proposals.filter(p => p.status === 'accepted');
 
     return (
         <RouteGuard allowedRole="creator">
-            <div className="min-h-screen bg-[#F4EFE6] text-black">
+            <CreatorDashboardLayout variant="white">
+                <main className="max-w-6xl mx-auto py-8 transition-all duration-300">
+                    {/* Welcome Heading */}
+                    <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <h1 className="text-4xl md:text-5xl font-black text-zinc-900 mb-2 tracking-tight lowercase">
+                            hello, {user?.fullName?.split(' ')[0] || "creator"}
+                        </h1>
+                        <p className="text-zinc-500 text-lg lowercase font-medium">
+                            here is what is happening with your collaborations today.
+                        </p>
+                    </div>
 
-                {/* Fixed Header */}
-                <DashboardHeader
-                    user={user || { fullName: "Creator", accountType: "Creator", email: "", id: "", plan: "free", createdAt: new Date().toISOString() }}
-                    onLogout={handleLogout}
-                    onMenuClick={() => setMobileNavOpen(true)}
-                />
+                    {/* Stats Cards Row */}
+                    <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-100 mb-16">
+                        <CreatorStatsCards
+                            totalEarnings={45000}
+                            pendingProposals={activeProposals.length}
+                            isActive={isActive}
+                            onToggleStatus={() => setIsActive(!isActive)}
+                            onEarningsClick={() => router.push('/dashboard/creator/analytics?tab=earnings')}
+                            onProposalsClick={() => router.push('/dashboard/creator/proposals')}
+                        />
+                    </div>
 
-                {/* Sidebar (Desktop + Mobile Overlay) */}
-                <CreatorSidebar
-                    userName={user?.fullName || "Creator User"}
-                    userAvatar={user?.fullName?.charAt(0).toUpperCase()}
-                    isOpen={mobileNavOpen}
-                    onClose={() => setMobileNavOpen(false)}
-                />
-
-                {/* Right Sidebar - Fixed (Desktop Only) */}
-                <div className="hidden xl:block">
-                    <CreatorRightSidebar />
-                </div>
-
-                {/* Main Content Area */}
-                <main className="pt-24 pb-12 px-6 md:ml-[240px] xl:mr-[320px] min-h-screen transition-all duration-300">
-                    <div className="max-w-[1240px] mx-auto">
-
-                        {/* Welcome Heading */}
-                        <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                            <h1 className="text-4xl md:text-5xl font-bold text-black mb-2 tracking-[-1px] lowercase">
-                                hello, {user?.fullName?.split(' ')[0] || "creator"}
-                            </h1>
-                            <p className="text-[#6B6B6B] text-lg lowercase">
-                                here's what's happening with your collaborations today.
-                            </p>
+                    {/* Recent Proposals Section */}
+                    <section className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+                        <div className="flex items-center justify-between mb-8 px-2">
+                            <h2 className="text-2xl font-black text-zinc-900 tracking-tight lowercase">
+                                new proposals <span className="text-zinc-400 text-lg font-bold ml-2">({activeProposals.length})</span>
+                            </h2>
+                            <button className="text-sm font-black tracking-widest text-zinc-400 hover:text-[#FF4D00] transition-colors lowercase">
+                                view all
+                            </button>
                         </div>
 
-                        {/* Stats Cards Row */}
-                        <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-100 mb-16">
-                            <CreatorStatsCards
-                                totalEarnings={45000}
-                                pendingProposals={activeProposals.length}
-                                isActive={isActive}
-                                onToggleStatus={() => setIsActive(!isActive)}
-                                onEarningsClick={() => router.push('/dashboard/creator/analytics?tab=earnings')}
-                                onProposalsClick={() => router.push('/dashboard/creator/proposals')}
-                            />
-                        </div>
+                        <ProposalCarousel
+                            proposals={activeProposals}
+                            onProposalClick={(p) => console.log('Clicked proposal:', p)}
+                            showMoreLink="/dashboard/creator/proposals"
+                        />
+                    </section>
 
-                        {/* Recent Proposals Section */}
-                        <section className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+                    {/* Active Collaborations Section */}
+                    {acceptedProposals.length > 0 && (
+                        <section className="mt-20 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
                             <div className="flex items-center justify-between mb-8 px-2">
-                                <h2 className="text-2xl font-bold text-black lowercase">
-                                    new proposals <span className="text-[#6B6B6B] text-lg font-normal ml-2">({activeProposals.length})</span>
+                                <h2 className="text-2xl font-black text-zinc-900 tracking-tight lowercase">
+                                    active collaborations
                                 </h2>
-                                <button className="text-sm font-bold tracking-widest text-[#6B6B6B] hover:text-black transition-colors lowercase">
-                                    view all
-                                </button>
                             </div>
-
                             <ProposalCarousel
-                                proposals={activeProposals}
-                                onProposalClick={(p) => console.log('Clicked proposal:', p)}
-                                showMoreLink="/dashboard/creator/proposals"
+                                proposals={acceptedProposals.map(p => ({
+                                    ...p,
+                                    onMessageClick: () => handleMessageUser(p)
+                                }))}
+                                onProposalClick={(p) => console.log('Clicked active:', p)}
                             />
                         </section>
-
-                        {/* Active Collaborations Section (Optional/Next Step) */}
-                        {acceptedProposals.length > 0 && (
-                            <section className="mt-16 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-                                <div className="flex items-center justify-between mb-8 px-2">
-                                    <h2 className="text-2xl font-bold text-black lowercase">
-                                        active collaborations
-                                    </h2>
-                                </div>
-                                <ProposalCarousel
-                                    proposals={acceptedProposals}
-                                    onProposalClick={(p) => console.log('Clicked active:', p)}
-                                />
-                            </section>
-                        )}
-
-                    </div>
+                    )}
                 </main>
-            </div>
+            </CreatorDashboardLayout>
         </RouteGuard>
     );
 }

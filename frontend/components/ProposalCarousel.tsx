@@ -70,7 +70,7 @@ export function ProposalCarousel({
                 </button>
 
                 {/* Proposal Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 justify-items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {visibleProposals.map((proposal) => (
                         <div key={proposal.id} className="transition-all duration-500 animate-in fade-in slide-in-from-right-4">
                             <ProposalCard

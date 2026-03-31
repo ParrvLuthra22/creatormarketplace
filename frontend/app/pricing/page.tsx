@@ -140,161 +140,161 @@ export default function PricingPage() {
                 {/* Pricing Cards Grid */}
                 <div className="pricing-grid grid grid-cols-3 gap-5 items-start mb-16">
                     {/* FREE CARD */}
-                    <div className="pricing-card bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-7 py-9">
-                        <p className="plan-name font-angelo text-[14px] uppercase text-white tracking-[1.5px]">
+                    <div className="pricing-card bg-white border border-zinc-200 rounded-[20px] px-7 py-9 shadow-sm">
+                        <p className="plan-name text-[14px] uppercase text-zinc-500 font-semibold tracking-[1.5px]">
                             FREE
                         </p>
                         <div className="price-row flex items-baseline gap-1 mt-[18px]">
-                            <span className="price-number font-milker text-[48px] text-white">₹0</span>
-                            <span className="price-period text-[16px] text-[#6B6B6B]">/month</span>
+                            <span className="price-number font-bold text-[48px] text-zinc-900">₹0</span>
+                            <span className="price-period text-[16px] text-zinc-400">/month</span>
                         </div>
-                        <p className="plan-description text-[14px] text-[#6B6B6B] mt-3">
+                        <p className="plan-description text-[14px] text-zinc-500 mt-3">
                             Browse creators and explore the platform
                         </p>
 
-                        <div className="divider h-[1px] bg-[#1F1F1F] my-6"></div>
+                        <div className="divider h-[1px] bg-zinc-100 my-6"></div>
 
                         {/* Features */}
                         <div className="features space-y-2">
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Browse up to 10 creators</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Browse up to 10 creators</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">View creator names & handles</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">View creator names & handles</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#2A1A1A]">✗</span>
-                                <span className="text-[14px] text-[#6B6B6B]">See pricing & contact info</span>
+                                <span className="text-[14px] text-zinc-300">✗</span>
+                                <span className="text-[14px] text-zinc-400">See pricing & contact info</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#2A1A1A]">✗</span>
-                                <span className="text-[14px] text-[#6B6B6B]">Send proposals</span>
+                                <span className="text-[14px] text-zinc-300">✗</span>
+                                <span className="text-[14px] text-zinc-400">Send proposals</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#2A1A1A]">✗</span>
-                                <span className="text-[14px] text-[#6B6B6B]">In-app messaging</span>
+                                <span className="text-[14px] text-zinc-300">✗</span>
+                                <span className="text-[14px] text-zinc-400">In-app messaging</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#2A1A1A]">✗</span>
-                                <span className="text-[14px] text-[#6B6B6B]">Filter by niche & location</span>
+                                <span className="text-[14px] text-zinc-300">✗</span>
+                                <span className="text-[14px] text-zinc-400">Filter by niche & location</span>
                             </div>
                         </div>
 
                         {/* CTA Button */}
                         <button
                             onClick={handleAuthGate}
-                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-[#1F1F1F] text-white font-angelo text-[15px] rounded-xl cursor-pointer hover:bg-[#1A1A1A] transition-colors"
+                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-zinc-200 text-zinc-700 font-semibold text-[15px] rounded-xl cursor-pointer hover:bg-zinc-50 transition-colors"
                         >
                             Get Started — Free
                         </button>
                     </div>
 
                     {/* BASIC CARD */}
-                    <div className="pricing-card bg-[#141414] border border-[#1F1F1F] rounded-[20px] px-7 py-9">
-                        <p className="plan-name font-angelo text-[14px] uppercase text-white tracking-[1.5px]">
+                    <div className="pricing-card bg-white border border-zinc-200 rounded-[20px] px-7 py-9 shadow-sm">
+                        <p className="plan-name text-[14px] uppercase text-zinc-500 font-semibold tracking-[1.5px]">
                             BASIC
                         </p>
                         <div className="price-row flex items-baseline gap-1 mt-[18px]">
-                            <span className="price-number font-milker text-[48px] text-white">₹999</span>
-                            <span className="price-period text-[16px] text-[#6B6B6B]">/month</span>
+                            <span className="price-number font-bold text-[48px] text-zinc-900">₹999</span>
+                            <span className="price-period text-[16px] text-zinc-400">/month</span>
                         </div>
-                        <p className="plan-description text-[14px] text-[#6B6B6B] mt-3">
+                        <p className="plan-description text-[14px] text-zinc-500 mt-3">
                             Discover and research creators
                         </p>
 
-                        <div className="divider h-[1px] bg-[#1F1F1F] my-6"></div>
+                        <div className="divider h-[1px] bg-zinc-100 my-6"></div>
 
                         {/* Features */}
                         <div className="features space-y-2">
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Full creator list (50+ creators)</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Full creator list (50+ creators)</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">See pricing & contact info</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">See pricing & contact info</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Filter by niche, location, followers</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Filter by niche, location, followers</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">View creator profiles in detail</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">View creator profiles in detail</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#2A1A1A]">✗</span>
-                                <span className="text-[14px] text-[#6B6B6B]">Send proposals</span>
+                                <span className="text-[14px] text-zinc-300">✗</span>
+                                <span className="text-[14px] text-zinc-400">Send proposals</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#2A1A1A]">✗</span>
-                                <span className="text-[14px] text-[#6B6B6B]">In-app messaging</span>
+                                <span className="text-[14px] text-zinc-300">✗</span>
+                                <span className="text-[14px] text-zinc-400">In-app messaging</span>
                             </div>
                         </div>
 
                         {/* CTA Button */}
                         <button
                             onClick={() => handleSubscribe('basic')}
-                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-[#1F1F1F] text-white font-angelo text-[15px] rounded-xl cursor-pointer hover:bg-[#1A1A1A] transition-colors"
+                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-zinc-200 text-zinc-700 font-semibold text-[15px] rounded-xl cursor-pointer hover:bg-zinc-50 transition-colors"
                         >
                             Choose Basic
                         </button>
                     </div>
 
                     {/* PRO CARD (Most Popular) */}
-                    <div className="pricing-card relative bg-[#141414] border border-white rounded-[20px] px-7 py-9">
+                    <div className="pricing-card relative bg-[#FFF8F3] border-2 border-[#FF4D00] rounded-[20px] px-7 py-9 shadow-lg shadow-orange-500/10">
                         {/* Most Popular Badge */}
-                        <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 bg-white text-black font-angelo text-[11px] uppercase tracking-[1.5px] px-[18px] py-[5px] rounded-[20px]">
+                        <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 bg-[#FF4D00] text-white font-semibold text-[11px] uppercase tracking-[1.5px] px-[18px] py-[5px] rounded-[20px]">
                             MOST POPULAR
                         </div>
 
-                        <p className="plan-name font-angelo text-[14px] uppercase text-white tracking-[1.5px]">
+                        <p className="plan-name text-[14px] uppercase text-[#FF4D00] font-semibold tracking-[1.5px]">
                             PRO
                         </p>
                         <div className="price-row flex items-baseline gap-1 mt-[18px]">
-                            <span className="price-number font-milker text-[48px] text-white">₹2,999</span>
-                            <span className="price-period text-[16px] text-[#6B6B6B]">/month</span>
+                            <span className="price-number font-bold text-[48px] text-zinc-900">₹2,999</span>
+                            <span className="price-period text-[16px] text-zinc-400">/month</span>
                         </div>
-                        <p className="plan-description text-[14px] text-[#6B6B6B] mt-3">
+                        <p className="plan-description text-[14px] text-zinc-500 mt-3">
                             Full collaboration suite
                         </p>
 
-                        <div className="divider h-[1px] bg-[#1F1F1F] my-6"></div>
+                        <div className="divider h-[1px] bg-orange-100 my-6"></div>
 
                         {/* Features */}
                         <div className="features space-y-2">
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Everything in Basic</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Everything in Basic</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Send up to 10 proposals/month</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Send up to 10 proposals/month</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">In-app chat with creators</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">In-app chat with creators</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Proposal tracking (Sent → Viewed → Accepted)</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Proposal tracking (Sent → Viewed → Accepted)</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Creator availability signals</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Creator availability signals</span>
                             </div>
                             <div className="feature-row flex items-center gap-[10px] py-2">
-                                <span className="text-[14px] text-[#1A2A1A]">✓</span>
-                                <span className="text-[14px] text-white">Priority creator visibility</span>
+                                <span className="text-[14px] text-[#FF4D00]">✓</span>
+                                <span className="text-[14px] text-zinc-800">Priority creator visibility</span>
                             </div>
                         </div>
 
                         {/* CTA Button - Filled */}
                         <button
                             onClick={() => handleSubscribe('pro')}
-                            className="cta-button w-full h-[50px] mt-7 bg-white text-black font-angelo text-[15px] rounded-xl cursor-pointer hover:bg-[#E5E5E5] transition-colors"
+                            className="cta-button w-full h-[50px] mt-7 bg-[#FF4D00] text-white font-semibold text-[15px] rounded-xl cursor-pointer hover:bg-[#ff5e1a] transition-colors shadow-md shadow-orange-500/20"
                         >
                             Choose Pro
                         </button>
@@ -312,20 +312,20 @@ export default function PricingPage() {
 
                     {/* FAQ Cards */}
                     <div className="space-y-3">
-                        <div className="faq-card bg-[#141414] border border-[#1F1F1F] rounded-xl px-6 py-5 text-left">
-                            <p className="faq-question text-[15px] text-white font-semibold mb-[6px]">
+                        <div className="faq-card bg-white border border-zinc-200 rounded-xl px-6 py-5 text-left shadow-sm">
+                            <p className="faq-question text-[15px] text-zinc-900 font-semibold mb-[6px]">
                                 Do creators have to pay anything?
                             </p>
-                            <p className="faq-answer text-[14px] text-[#6B6B6B]">
+                            <p className="faq-answer text-[14px] text-zinc-500">
                                 No. Creators join and receive proposals completely free.
                             </p>
                         </div>
 
-                        <div className="faq-card bg-[#141414] border border-[#1F1F1F] rounded-xl px-6 py-5 text-left">
-                            <p className="faq-question text-[15px] text-white font-semibold mb-[6px]">
+                        <div className="faq-card bg-white border border-zinc-200 rounded-xl px-6 py-5 text-left shadow-sm">
+                            <p className="faq-question text-[15px] text-zinc-900 font-semibold mb-[6px]">
                                 Can I change my plan later?
                             </p>
-                            <p className="faq-answer text-[14px] text-[#6B6B6B]">
+                            <p className="faq-answer text-[14px] text-zinc-500">
                                 Yes. Upgrade or downgrade anytime from your dashboard settings.
                             </p>
                         </div>

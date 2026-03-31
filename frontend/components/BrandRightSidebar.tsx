@@ -30,9 +30,9 @@ export function BrandRightSidebar() {
     const [showProposalTooltip, setShowProposalTooltip] = useState(false);
 
     return (
-        <aside className="hidden lg:flex w-[280px] px-5 pl-4 py-8 flex-col gap-4 overflow-y-auto bg-white border-l border-[#E5E5E5] h-screen fixed right-0 top-0">
+        <aside className="hidden lg:flex w-[280px] px-5 py-6 flex-col gap-4 overflow-y-auto bg-[#FF4D00] rounded-2xl shadow-xl h-[calc(100vh-32px)] fixed right-4 top-4 z-50">
             {/* WIDGET 1 - Quick Actions */}
-            <div className="bg-[#F4EFE6] border border-[#E5E5E5] rounded-[14px] p-5">
+            <div className="bg-[#FF4D00] border border-[#E5E5E5] rounded-[14px] p-5">
                 <h3 className="text-base font-bold text-black mb-4">Quick Actions</h3>
                 <div className="flex flex-col gap-2.5">
                     <div className="relative">
@@ -47,7 +47,7 @@ export function BrandRightSidebar() {
                             }}
                             className={`w-full h-11 rounded-[10px] text-sm font-semibold transition-opacity flex items-center justify-center gap-2 ${user?.plan !== 'pro'
                                 ? 'bg-[#E5E5E5] text-[#6B6B6B] cursor-not-allowed'
-                                : 'bg-black text-white hover:bg-gray-800'
+                                : 'bg-[#FF4D00] hover:bg-[#FF4D00] text-white hover:bg-[#cc7700]'
                                 }`}
                             disabled={user?.plan !== 'pro'}
                         >
@@ -57,24 +57,24 @@ export function BrandRightSidebar() {
 
                         {/* Tooltip */}
                         {showProposalTooltip && (
-                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E5E5] shadow-lg rounded-lg p-3 text-left z-10">
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-[#FF4D00] border border-[#E5E5E5] shadow-lg rounded-lg p-3 text-left z-10">
                                 <p className="text-[13px] text-[#6B6B6B]">
                                     Available on Pro plan — Upgrade to send proposals
                                 </p>
-                                <a href="/pricing" className="text-[13px] font-bold text-black hover:text-[#4A46FF] inline-block mt-1">
+                                <a href="/pricing" className="text-[13px] font-bold text-black hover:text-black inline-block mt-1">
                                     Upgrade →
                                 </a>
                             </div>
                         )}
                     </div>
-                    <button className="w-full h-11 bg-white border border-[#E5E5E5] text-black rounded-[10px] text-sm font-semibold hover:bg-gray-50 transition-colors">
+                    <button className="w-full h-11 bg-[#FF4D00] border border-[#E5E5E5] text-black rounded-[10px] text-sm font-semibold hover:bg-[#FF4D00] transition-colors">
                         Browse Creators
                     </button>
                 </div>
             </div>
 
             {/* WIDGET 2 - Recent Proposals */}
-            <div className="bg-[#F4EFE6] border border-[#E5E5E5] rounded-[14px] p-5 mb-8">
+            <div className="bg-[#FF4D00] border border-[#E5E5E5] rounded-[14px] p-5 mb-8">
                 <h3 className="text-base font-bold text-black mb-4">Recent Proposals</h3>
                 <div>
                     {PROPOSALS.slice(0, 3).map((proposal, index) => (
@@ -82,7 +82,7 @@ export function BrandRightSidebar() {
                             key={index}
                             className="flex items-center gap-3 py-2.5 border-b border-[#E5E5E5] last:border-b-0"
                         >
-                            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black text-xs font-semibold flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-[#FF4D00] flex items-center justify-center text-black text-xs font-semibold flex-shrink-0">
                                 {proposal.avatar}
                             </div>
                             <div className="flex-1 min-w-0">

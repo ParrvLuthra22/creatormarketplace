@@ -4,12 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
-import { CreatorSidebar } from "@/components/CreatorSidebar";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { LegalModal } from "@/components/LegalModal";
 import { DeleteAccountModal } from "@/components/DeleteAccountModal";
-import { CreatorRightSidebar } from "@/components/CreatorRightSidebar";
 import { ArrowRight } from "lucide-react";
 
 export default function CreatorSettings() {
@@ -38,174 +36,164 @@ export default function CreatorSettings() {
 
     return (
         <RouteGuard allowedRole="creator">
-            <div className="flex h-screen bg-[#0A0A0A] overflow-hidden">
-                <div className="hidden md:block">
-                    <CreatorSidebar
-                        userName={user?.fullName || "Creator User"}
-                        userAvatar={user?.fullName?.charAt(0).toUpperCase()}
-                    />
-                </div>
-
-                <main className="flex-1 overflow-y-auto px-4 md:px-7 py-6 md:py-8 pb-24 md:pb-8 md:ml-[220px]">
-                    <h1 className="text-[28px] font-bold text-white font-milker mb-8">Settings</h1>
+            <CreatorDashboardLayout variant="white">
+                <main className="max-w-4xl mx-auto py-8 transition-all duration-300">
+                    <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10 lowercase">settings</h1>
 
                     {/* SECTION 1 - Account */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-white font-milker mb-5">Account</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mb-8 shadow-sm">
+                        <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">account</h2>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {/* Full Name */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Full Name</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-2 lowercase">full name</label>
                                 <input
                                     type="text"
                                     defaultValue={user?.fullName || ""}
-                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors"
+                                    className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] focus:outline-none focus:border-[#FF4D00] transition-all"
                                 />
                             </div>
 
                             {/* Email */}
                             <div>
-                                <label className="block text-xs uppercase text-[#6B6B6B] font-angelo mb-2">Email</label>
+                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-2 lowercase">email address</label>
                                 <input
                                     type="email"
                                     defaultValue={user?.email || ""}
                                     disabled
-                                    className="w-full h-11 px-4 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm opacity-60 cursor-not-allowed"
+                                    className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-400 text-[15px] opacity-60 cursor-not-allowed"
                                 />
-                                <p className="text-[11px] text-[#3D3D3D] font-angelo mt-1">Cannot be changed</p>
+                                <p className="text-[10px] text-zinc-400 font-bold lowercase mt-2 ml-1">this address cannot be changed</p>
                             </div>
 
                             {/* Password */}
                             <div>
                                 <div className="flex justify-between items-center mb-2">
-                                    <label className="text-xs uppercase text-[#6B6B6B] font-angelo">Password</label>
+                                    <label className="text-[10px] font-black uppercase text-zinc-400 tracking-widest lowercase">security</label>
                                     <button
                                         onClick={() => setShowChangePassword(true)}
-                                        className="text-xs text-white font-angelo hover:opacity-85 transition-opacity"
+                                        className="text-[10px] font-black text-[#FF4D00] uppercase tracking-widest hover:opacity-70 transition-opacity"
                                     >
-                                        Change password →
+                                        change password →
                                     </button>
                                 </div>
                             </div>
 
-                            <button className="mt-2 px-6 h-11 bg-white text-black rounded-[10px] font-angelo text-sm font-semibold hover:opacity-85 transition-opacity">
-                                Save Changes
+                            <button className="h-14 px-10 bg-zinc-900 text-white rounded-[20px] font-black text-[11px] uppercase tracking-widest hover:bg-[#FF4D00] transition-all duration-300 shadow-lg shadow-zinc-900/10">
+                                save changes
                             </button>
                         </div>
                     </div>
 
                     {/* SECTION 2 - Notifications */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7 mb-6">
-                        <h2 className="text-lg font-bold text-white font-milker mb-5">Notifications</h2>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mb-8 shadow-sm">
+                        <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">notifications</h2>
 
-                        <div>
+                        <div className="space-y-2">
                             {/* Toggle 1 */}
-                            <div className="flex justify-between items-center py-3.5 border-b border-[#1F1F1F]">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group">
                                 <div>
-                                    <p className="text-sm text-white">Email notifications</p>
-                                    <p className="text-xs text-[#6B6B6B]">Receive proposal emails</p>
+                                    <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">email notifications</p>
+                                    <p className="text-[10px] text-zinc-400 font-bold lowercase">receive proposal and session emails</p>
                                 </div>
                                 <button
                                     onClick={() => setEmailNotifications(!emailNotifications)}
-                                    className={`w-12 h-6 rounded-full transition-colors ${emailNotifications ? 'bg-white' : 'bg-[#2A2A2A]'}`}
+                                    className={`w-14 h-7 rounded-full transition-all relative ${emailNotifications ? 'bg-[#FF4D00]' : 'bg-zinc-200'}`}
                                 >
-                                    <div className={`w-5 h-5 rounded-full transition-transform ${emailNotifications ? 'bg-black translate-x-6' : 'bg-[#6B6B6B] translate-x-0.5'}`} />
+                                    <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm ${emailNotifications ? 'translate-x-7' : 'translate-x-0'}`} />
                                 </button>
                             </div>
 
                             {/* Toggle 2 */}
-                            <div className="flex justify-between items-center py-3.5 border-b border-[#1F1F1F]">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group">
                                 <div>
-                                    <p className="text-sm text-white">New proposals</p>
-                                    <p className="text-xs text-[#6B6B6B]">Get notified for new proposals</p>
+                                    <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">new proposals</p>
+                                    <p className="text-[10px] text-zinc-400 font-bold lowercase">get real-time alerts for opportunities</p>
                                 </div>
                                 <button
                                     onClick={() => setNewProposals(!newProposals)}
-                                    className={`w-12 h-6 rounded-full transition-colors ${newProposals ? 'bg-white' : 'bg-[#2A2A2A]'}`}
+                                    className={`w-14 h-7 rounded-full transition-all relative ${newProposals ? 'bg-[#FF4D00]' : 'bg-zinc-200'}`}
                                 >
-                                    <div className={`w-5 h-5 rounded-full transition-transform ${newProposals ? 'bg-black translate-x-6' : 'bg-[#6B6B6B] translate-x-0.5'}`} />
+                                    <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm ${newProposals ? 'translate-x-7' : 'translate-x-0'}`} />
                                 </button>
                             </div>
 
                             {/* Toggle 3 */}
-                            <div className="flex justify-between items-center py-3.5 border-b border-[#1F1F1F]">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group">
                                 <div>
-                                    <p className="text-sm text-white">Profile views</p>
-                                    <p className="text-xs text-[#6B6B6B]">Know who viewed your profile</p>
+                                    <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">profile views</p>
+                                    <p className="text-[10px] text-zinc-400 font-bold lowercase">know who's checking out your work</p>
                                 </div>
                                 <button
                                     onClick={() => setProfileViews(!profileViews)}
-                                    className={`w-12 h-6 rounded-full transition-colors ${profileViews ? 'bg-white' : 'bg-[#2A2A2A]'}`}
+                                    className={`w-14 h-7 rounded-full transition-all relative ${profileViews ? 'bg-[#FF4D00]' : 'bg-zinc-200'}`}
                                 >
-                                    <div className={`w-5 h-5 rounded-full transition-transform ${profileViews ? 'bg-black translate-x-6' : 'bg-[#6B6B6B] translate-x-0.5'}`} />
+                                    <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm ${profileViews ? 'translate-x-7' : 'translate-x-0'}`} />
                                 </button>
                             </div>
 
                             {/* Toggle 4 */}
-                            <div className="flex justify-between items-center py-3.5">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group border-t border-zinc-100">
                                 <div>
-                                    <p className="text-sm text-white">Marketing emails</p>
-                                    <p className="text-xs text-[#6B6B6B]">Tips and updates</p>
+                                    <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">marketing updates</p>
+                                    <p className="text-[10px] text-zinc-400 font-bold lowercase">tips to scale your creator journey</p>
                                 </div>
                                 <button
                                     onClick={() => setMarketingEmails(!marketingEmails)}
-                                    className={`w-12 h-6 rounded-full transition-colors ${marketingEmails ? 'bg-white' : 'bg-[#2A2A2A]'}`}
+                                    className={`w-14 h-7 rounded-full transition-all relative ${marketingEmails ? 'bg-[#FF4D00]' : 'bg-zinc-200'}`}
                                 >
-                                    <div className={`w-5 h-5 rounded-full transition-transform ${marketingEmails ? 'bg-black translate-x-6' : 'bg-[#6B6B6B] translate-x-0.5'}`} />
+                                    <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm ${marketingEmails ? 'translate-x-7' : 'translate-x-0'}`} />
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* SECTION 3 - Danger Zone */}
-                    <div className="bg-[#141414] border border-[#2A1A1A] rounded-[14px] p-7">
-                        <h2 className="text-lg font-bold text-white font-milker mb-5">Danger Zone</h2>
+                    <div className="bg-white border border-red-50 rounded-[32px] p-8 mb-8 shadow-sm">
+                        <h2 className="text-xl font-black text-red-600 tracking-tight lowercase mb-4">danger zone</h2>
+                        <p className="text-sm text-zinc-400 font-bold lowercase mb-8">once you delete your account, there is no going back. please be certain.</p>
                         <button
                             onClick={() => setShowDeleteModal(true)}
-                            className="px-6 h-11 bg-transparent border border-[#2A1A1A] text-white rounded-[10px] font-angelo text-[13px] hover:bg-[#2A1A1A]/20 transition-colors"
+                            className="px-10 h-14 bg-red-50 text-red-600 rounded-[20px] font-black text-[11px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all duration-300"
                         >
-                            Delete Account
+                            delete account
                         </button>
                     </div>
 
                     {/* SECTION 4 - Privacy Policy */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7">
-                        <h2 className="text-lg font-bold text-white font-milker mb-2">Privacy Policy</h2>
-                        <p className="text-[13px] text-[#6B6B6B] mb-4">How we collect, use, and protect your data</p>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mb-8 shadow-sm">
+                        <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-2">privacy policy</h2>
+                        <p className="text-sm text-zinc-400 font-bold lowercase mb-8">how we collect, use, and protect your data</p>
 
                         <div
                             onClick={() => router.push('/privacy-policy')}
-                            className="bg-[#0F0F0F] border border-[#1F1F1F] rounded-[10px] px-[18px] py-3.5 cursor-pointer hover:bg-[#1A1A1A] transition-colors flex items-center justify-between group"
+                            className="bg-zinc-50 border border-zinc-100/50 rounded-[24px] px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
                         >
-                            <span className="text-sm font-angelo text-white">Read Privacy Policy</span>
-                            <ArrowRight className="w-[18px] h-[18px] text-[#6B6B6B] group-hover:text-white transition-colors" />
+                            <span className="text-sm font-black text-zinc-900 lowercase tracking-tight">read privacy policy</span>
+                            <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-[#FF4D00] translate-x-0 group-hover:translate-x-1 transition-all" />
                         </div>
 
-                        <p className="text-[11px] text-[#3D3D3D] mt-2">Last updated: January 15, 2026</p>
+                        <p className="text-[10px] text-zinc-300 font-bold lowercase mt-6 ml-1 tracking-tight">last updated: march 15, 2026</p>
                     </div>
 
                     {/* SECTION 5 - Terms of Service */}
-                    <div className="bg-[#141414] border border-[#1F1F1F] rounded-[14px] p-7">
-                        <h2 className="text-lg font-bold text-white font-milker mb-2">Terms of Service</h2>
-                        <p className="text-[13px] text-[#6B6B6B] mb-4">Rules and conditions for using CreatorSync</p>
+                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
+                        <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-2">terms of service</h2>
+                        <p className="text-sm text-zinc-400 font-bold lowercase mb-8">rules and conditions for using creatorsync</p>
 
                         <div
                             onClick={() => router.push('/terms-and-conditions')}
-                            className="bg-[#0F0F0F] border border-[#1F1F1F] rounded-[10px] px-[18px] py-3.5 cursor-pointer hover:bg-[#1A1A1A] transition-colors flex items-center justify-between group"
+                            className="bg-zinc-50 border border-zinc-100/50 rounded-[24px] px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
                         >
-                            <span className="text-sm font-angelo text-white">Read Terms of Service</span>
-                            <ArrowRight className="w-[18px] h-[18px] text-[#6B6B6B] group-hover:text-white transition-colors" />
+                            <span className="text-sm font-black text-zinc-900 lowercase tracking-tight">read terms of service</span>
+                            <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-[#FF4D00] translate-x-0 group-hover:translate-x-1 transition-all" />
                         </div>
 
-                        <p className="text-[11px] text-[#3D3D3D] mt-2">Last updated: January 15, 2026</p>
+                        <p className="text-[10px] text-zinc-300 font-bold lowercase mt-6 ml-1 tracking-tight">last updated: march 15, 2026</p>
                     </div>
                 </main>
-
-                <CreatorRightSidebar />
-
-                <MobileBottomNav role="creator" />
-            </div>
+            </CreatorDashboardLayout>
 
             {/* Change Password Modal */}
             <ChangePasswordModal

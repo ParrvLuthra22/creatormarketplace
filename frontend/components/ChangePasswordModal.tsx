@@ -149,14 +149,14 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
             >
                 {/* Modal */}
                 <div
-                    className="bg-[#141414] border border-[#1F1F1F] rounded-2xl w-[420px] max-w-[90vw] px-8 pt-8 pb-7"
+                    className="bg-white border border-[#E5E5E5] rounded-2xl w-[420px] max-w-[90vw] px-8 pt-8 pb-7"
                     style={{
                         animation: "scaleIn 250ms ease-out",
                     }}
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Heading */}
-                    <h2 className="text-[22px] font-milker text-white text-center mb-2">
+                    <h2 className="text-[22px] font-milker text-black text-center mb-2">
                         Change Password
                     </h2>
 
@@ -179,13 +179,13 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     disabled={loading}
                                     placeholder="••••••••"
-                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowCurrent(!showCurrent)}
                                     disabled={loading}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-black transition-colors"
                                 >
                                     {showCurrent ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
@@ -204,13 +204,13 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     disabled={loading}
                                     placeholder="••••••••"
-                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowNew(!showNew)}
                                     disabled={loading}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-black transition-colors"
                                 >
                                     {showNew ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
@@ -219,7 +219,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                             {/* Strength Bar */}
                             {newPassword && (
                                 <div className="mt-2">
-                                    <div className="w-full h-[3px] bg-[#1F1F1F] rounded-[2px] overflow-hidden">
+                                    <div className="w-full h-[3px] bg-gray-50 rounded-[2px] overflow-hidden">
                                         <div
                                             className="h-full transition-all duration-300"
                                             style={{
@@ -250,13 +250,13 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     disabled={loading}
                                     placeholder="••••••••"
-                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-white text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirm(!showConfirm)}
                                     disabled={loading}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-black transition-colors"
                                 >
                                     {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
@@ -290,7 +290,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                         <div
                             className="mt-4 px-3.5 py-2.5 rounded-lg bg-[#2A1A1A] border border-[#3D1A1A]"
                         >
-                            <p className="text-[13px] text-white">{error}</p>
+                            <p className="text-[13px] text-black">{error}</p>
                         </div>
                     )}
 
@@ -313,7 +313,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                         <button
                             onClick={onClose}
                             disabled={loading}
-                            className="w-full h-[46px] bg-transparent text-white border border-white rounded-[10px] font-angelo text-[15px] font-semibold hover:opacity-85 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full h-[46px] bg-transparent text-black border border-white rounded-[10px] font-angelo text-[15px] font-semibold hover:opacity-85 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Cancel
                         </button>
@@ -324,12 +324,12 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
             {/* Success Toast */}
             {showSuccess && (
                 <div
-                    className="fixed top-6 right-6 z-[1001] bg-[#141414] border border-[#1A2A1A] px-5 py-3 rounded-lg shadow-lg"
+                    className="fixed top-6 right-6 z-[1001] bg-white border border-[#1A2A1A] px-5 py-3 rounded-lg shadow-lg"
                     style={{
                         animation: "slideInFromRight 300ms ease-out",
                     }}
                 >
-                    <p className="text-[13px] text-white">Password updated successfully</p>
+                    <p className="text-[13px] text-black">Password updated successfully</p>
                 </div>
             )}
 

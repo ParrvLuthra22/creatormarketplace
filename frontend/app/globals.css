@@ -20,47 +20,45 @@
   /* New Green Theme Color System */
 
   /* Primary Brand Colors */
-  --color-primary: #F5F1E8;
-  /* Off-White */
-  --color-accent: #00D084;
-  /* Green */
-  --color-accent-light: #00FFB0;
-  /* Light Green */
-  --color-accent-dark: #00A86B;
-  /* Dark Green */
+  --color-primary: #050505;
+  /* Deep Dark */
+  --color-accent: #FF4D00;
+  /* Neon Yellow/Green */
+  --color-accent-light: #FF4D00;
+  --color-accent-dark: #cc7700;
 
   /* Status Colors */
-  --color-success: #00D084;
+  --color-success: #ffec00;
   --color-warning: #FFB020;
   /* Amber */
   --color-error: #FF4757;
   /* Red */
-  --color-info: #2E86DE;
+  --color-info: #4A46FF;
   /* Blue */
 
   /* Dark Backgrounds */
-  --color-bg-page: #0A0A0A;
-  --color-bg-sidebar: #0F0F0F;
-  --color-bg-card: #141414;
+  --color-bg-page: #050505;
+  --color-bg-sidebar: #0A0A0A;
+  --color-bg-card: #111111;
   --color-bg-card-hover: #1A1A1A;
 
   /* Text Colors */
-  --color-text-primary: #F5F1E8;
-  --color-text-secondary: #C5C5C5;
-  --color-text-tertiary: #6B6B6B;
-  --color-text-muted: #3D3D3D;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A1A1AA;
+  --color-text-tertiary: #52525B;
+  --color-text-muted: #3F3F46;
 
   /* Borders */
-  --color-border-subtle: #1F1F1F;
-  --color-border-medium: #2A2A2A;
-  --color-border-accent: #F5F1E8;
+  --color-border-subtle: #18181B;
+  --color-border-medium: #27272A;
+  --color-border-accent: #FF4D00;
 
   /* Legacy mappings for compatibility */
-  --color-background: #0A0A0A;
-  --color-foreground: #F5F1E8;
-  --color-surface: #141414;
-  --color-border: #1F1F1F;
-  --color-input-bg: #0F0F0F;
+  --color-background: #050505;
+  --color-foreground: #FFFFFF;
+  --color-surface: #111111;
+  --color-border: #18181B;
+  --color-input-bg: #0A0A0A;
   --color-hover: #1A1A1A;
 
   /* Border Radius */

@@ -100,7 +100,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
         } else {
             profile = new CreatorProfile({
                 userId: user._id,
-                instagramHandle: instagramHandle.startsWith('@') ? instagramHandle : `@${instagramHandle}`,
+                instagramHandle: instagramHandle.replace(/^@+/, ''),
             });
         }
 
@@ -255,6 +255,16 @@ router.post('/logout', (req: Request, res: Response): void => {
     });
 
     res.status(200).json({ message: 'Logged out successfully' });
+});
+
+// GET /api/auth/token - Return raw token for socket auth
+router.get('/token', authMiddleware, (req: AuthRequest, res: Response): void => {
+    const token = req.cookies?.token;
+    if (token) {
+        res.status(200).json({ token });
+    } else {
+        res.status(401).json({ error: 'No token' });
+    }
 });
 
 // PUT /api/auth/password - Change user password

@@ -12,6 +12,7 @@
         "concurrently": "^8.2.2"
     },
     "dependencies": {
-        "mongodb": "^6.21.0"
+        "mongodb": "^6.21.0",
+        "motion": "^12.38.0"
     }
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { CreatorGrid } from "@/components/CreatorGrid";
+import { getPublicCreators } from "@/lib/api";
 
 interface Creator {
     id: string;
@@ -21,7 +21,6 @@ interface Creator {
 }
 
 export default function CreatorsPage() {
-    const router = useRouter();
     const [creators, setCreators] = useState<Creator[]>([]);
     const [filteredCreators, setFilteredCreators] = useState<Creator[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -35,25 +34,6 @@ export default function CreatorsPage() {
     }, []);
 
     useEffect(() => {
-        filterCreators();
-    }, [searchQuery, selectedNiche, creators]);
-
-    const fetchCreators = async () => {
-        try {
-            setIsLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/creators/public`);
-            if (response.ok) {
-                const data = await response.json();
-                setCreators(data);
-            }
-        } catch (error) {
-            console.error("Error fetching creators:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const filterCreators = () => {
         let filtered = creators;
 
         if (searchQuery) {
@@ -69,6 +49,18 @@ export default function CreatorsPage() {
         }
 
         setFilteredCreators(filtered);
+    }, [searchQuery, selectedNiche, creators]);
+
+    const fetchCreators = async () => {
+        try {
+            setIsLoading(true);
+            const response = await getPublicCreators();
+            setCreators(response.creators as Creator[]);
+        } catch (error) {
+            console.error("Error fetching creators:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
