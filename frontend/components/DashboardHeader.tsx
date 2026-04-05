@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HelpSupportModal } from "./HelpSupportModal";
-import { User } from "@/lib/api";
+import { User, getProfilePhotoUrl } from "@/lib/api";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Search, Bell, Menu, X, Check, Briefcase, User as UserIcon, Settings, BarChart3, LogOut, HelpCircle } from "lucide-react";
@@ -181,7 +181,7 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                         onClick={() => setProfileOpen(!profileOpen)}
                     >
                         {user.profilePicture ? (
-                            <Image src={user.profilePicture} alt={user.fullName} width={40} height={40} className="w-full h-full object-cover" />
+                            <Image src={getProfilePhotoUrl(user.profilePicture)} alt={user.fullName} width={40} height={40} className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full bg-linear-to-br from-[#1F1F1F] to-[#141414] flex items-center justify-center text-black font-bold text-sm">
                                 {getUserInitials()}
@@ -194,7 +194,7 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                             <div className="p-5 border-b border-[#E5E5E5] flex items-center gap-3">
                                 <div className="w-14 h-14 rounded-full border-2 border-[#FF4D00] overflow-hidden shrink-0">
                                     {user.profilePicture ? (
-                                        <Image src={user.profilePicture} alt={user.fullName} width={56} height={56} className="w-full h-full object-cover" />
+                                        <Image src={getProfilePhotoUrl(user.profilePicture)} alt={user.fullName} width={56} height={56} className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full bg-gray-50 flex items-center justify-center text-black font-bold text-lg">
                                             {getUserInitials()}

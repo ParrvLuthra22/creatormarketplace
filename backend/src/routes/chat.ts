@@ -3,6 +3,8 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import Conversation from '../models/Conversation';
 import Message from '../models/Message';
 import User from '../models/User';
+import CreatorProfile from '../models/CreatorProfile';
+import BrandProfile from '../models/BrandProfile';
 
 const router = Router();
 
@@ -42,7 +44,23 @@ router.get('/conversations', authMiddleware, async (req: AuthRequest, res: Respo
         .populate('participants', 'fullName accountType')
         .sort({ lastMessageAt: -1 });
 
-        res.status(200).json({ conversations });
+        // Enrich with profile photos
+        const enrichedConversations = await Promise.all(conversations.map(async (conv) => {
+            const convObj = conv.toObject();
+            convObj.participants = await Promise.all(convObj.participants.map(async (p: any) => {
+                if (p.accountType === 'Creator') {
+                    const profile = await CreatorProfile.findOne({ userId: p._id }).select('profilePhoto');
+                    if (profile?.profilePhoto) p.profilePhoto = profile.profilePhoto;
+                } else if (p.accountType === 'Brand') {
+                    const profile = await BrandProfile.findOne({ userId: p._id }).select('logoUrl');
+                    if (profile?.logoUrl) p.profilePhoto = profile.logoUrl;
+                }
+                return p;
+            }));
+            return convObj;
+        }));
+
+        res.status(200).json({ conversations: enrichedConversations });
     } catch (error: any) {
         console.error('Get conversations error:', error);
         res.status(500).json({ error: 'Server error' });
@@ -127,7 +145,19 @@ router.post('/conversations', authMiddleware, async (req: AuthRequest, res: Resp
             await conversation.populate('participants', 'fullName accountType');
         }
 
-        res.status(200).json({ conversation });
+        const convObj = conversation.toObject();
+        convObj.participants = await Promise.all(convObj.participants.map(async (p: any) => {
+            if (p.accountType === 'Creator') {
+                const profile = await CreatorProfile.findOne({ userId: p._id }).select('profilePhoto');
+                if (profile?.profilePhoto) p.profilePhoto = profile.profilePhoto;
+            } else if (p.accountType === 'Brand') {
+                const profile = await BrandProfile.findOne({ userId: p._id }).select('logoUrl');
+                if (profile?.logoUrl) p.profilePhoto = profile.logoUrl;
+            }
+            return p;
+        }));
+
+        res.status(200).json({ conversation: convObj });
     } catch (error: any) {
         console.error('Create conversation error:', error);
         res.status(500).json({ error: 'Server error' });

@@ -114,7 +114,14 @@ export function ProposalCard({ proposal, onClick }: ProposalCardProps) {
 
                 {/* Footer Button */}
                 <div className="proposal-footer" style={{ display: 'flex', gap: '8px' }}>
-                    <button className="view-proposal-btn" style={{ flex: 1 }}>
+                    <button 
+                        className="view-proposal-btn" 
+                        style={{ flex: 1 }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (onClick) onClick();
+                        }}
+                    >
                         VIEW PROPOSAL
                     </button>
                     {proposal.status === 'accepted' && (

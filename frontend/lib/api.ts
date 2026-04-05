@@ -228,6 +228,12 @@ export const uploadProfilePhoto = async (file: File): Promise<{ success: boolean
     return response.json();
 };
 
+export const getProfilePhotoUrl = (url?: string): string => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return url.startsWith('/') ? url : `/${url}`;
+};
+
 export const getProposalsSummary = async (): Promise<{ success: boolean; pendingProposals: number }> => {
     return apiFetch<{ success: boolean; pendingProposals: number }>(`/api/proposals/summary`, {
         method: 'GET',
@@ -338,6 +344,8 @@ export interface Conversation {
         _id: string;
         fullName: string;
         accountType: 'Brand' | 'Creator';
+        profilePicture?: string;
+        profilePhoto?: string;
     }[];
     lastMessage?: string;
     lastMessageAt?: string;
@@ -411,6 +419,9 @@ export interface Proposal {
     brandProfile?: {
         companyName?: string;
         logoUrl?: string;
+    } | null;
+    creatorProfile?: {
+        profilePhoto?: string;
     } | null;
     title: string;
     description: string;

@@ -21,7 +21,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
 import { HelpSupportModal } from "@/components/HelpSupportModal";
-import { getChatSummary, getProposalsSummary } from "@/lib/api";
+import { getChatSummary, getProposalsSummary, getProfilePhotoUrl } from "@/lib/api";
 
 interface NavItem {
     name: string;
@@ -185,13 +185,13 @@ export function BrandNavbar() {
                             <div className="w-6 h-6 rounded-full bg-[#FF4D00]/10 flex items-center justify-center text-[#FF4D00] font-bold text-xs shrink-0 overflow-hidden">
                                 {isBrand && brandProfile?.logoUrl ? (
                                     <img 
-                                        src={brandProfile.logoUrl.startsWith('/') ? `http://localhost:5001${brandProfile.logoUrl}` : brandProfile.logoUrl} 
+                                        src={getProfilePhotoUrl(brandProfile.logoUrl)} 
                                         alt="Profile" 
                                         className="w-full h-full object-cover"
                                     />
                                 ) : !isBrand && brandProfile?.profilePhoto ? (
                                     <img 
-                                        src={brandProfile.profilePhoto.startsWith('/') ? `http://localhost:5001${brandProfile.profilePhoto}` : brandProfile.profilePhoto} 
+                                        src={getProfilePhotoUrl(brandProfile.profilePhoto)} 
                                         alt="Profile" 
                                         className="w-full h-full object-cover"
                                     />

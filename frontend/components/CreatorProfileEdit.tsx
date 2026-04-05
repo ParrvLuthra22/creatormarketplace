@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "./ui/Button";
 import { Upload, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { updateCreatorProfile, uploadProfilePhoto } from "@/lib/api";
+import { updateCreatorProfile, uploadProfilePhoto, getProfilePhotoUrl } from "@/lib/api";
 
 type Availability = "available" | "limited" | "unavailable";
 
@@ -209,7 +209,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                             <div className="w-24 h-24 rounded-full bg-linear-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-3xl overflow-hidden">
                                 {profileData.profilePhoto ? (
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={profileData.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+                                    <img src={getProfilePhotoUrl(profileData.profilePhoto)} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
                                     <span>{(profileData.fullName || "C").slice(0, 1).toUpperCase()}</span>
                                 )}

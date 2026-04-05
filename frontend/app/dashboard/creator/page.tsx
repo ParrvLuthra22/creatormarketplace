@@ -8,6 +8,7 @@ import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { CreatorStatsCards } from "@/components/CreatorStatsCards";
 import { ProposalCarousel } from "@/components/ProposalCarousel";
 import { createConversation, getProposals } from "@/lib/api";
+import { ViewProposalModal } from "@/components/ViewProposalModal";
 
 type DashboardProposalCard = {
     id: number;
@@ -21,6 +22,7 @@ type DashboardProposalCard = {
     status: 'new' | 'accepted' | 'declined';
     startDate?: string;
     onMessageClick?: () => void;
+    rawProposal?: any;
 };
 
 export default function CreatorDashboard() {
@@ -28,6 +30,7 @@ export default function CreatorDashboard() {
     const router = useRouter();
     const [isActive, setIsActive] = useState(true);
     const [proposals, setProposals] = useState<DashboardProposalCard[]>([]);
+    const [selectedProposal, setSelectedProposal] = useState<any>(null);
 
     const idToNumber = (id: string) => {
         let hash = 0;
@@ -37,40 +40,42 @@ export default function CreatorDashboard() {
         return Math.abs(hash);
     };
 
+    const fetchProposals = async () => {
+        try {
+            const res = await getProposals();
+            if (!res.success) return;
+
+            const mapped: DashboardProposalCard[] = res.proposals.map((p) => {
+                const brandName =
+                    p.brandProfile?.companyName ||
+                    p.brandId?.fullName ||
+                    'Brand';
+
+                const status: DashboardProposalCard['status'] =
+                    p.status === 'pending' ? 'new' : p.status;
+
+                return {
+                    id: idToNumber(p._id),
+                    backendId: p._id,
+                    brandName,
+                    brandLogo: p.brandProfile?.logoUrl || "/images/brand-placeholder.png",
+                    title: p.title,
+                    budget: p.budget,
+                    deliverables: p.deliverables,
+                    deadline: p.deadline,
+                    status,
+                    startDate: p.createdAt,
+                    rawProposal: p,
+                };
+            });
+
+            setProposals(mapped);
+        } catch (err) {
+            console.error("Failed to fetch proposals:", err);
+        }
+    };
+
     useEffect(() => {
-        const fetchProposals = async () => {
-            try {
-                const res = await getProposals();
-                if (!res.success) return;
-
-                const mapped: DashboardProposalCard[] = res.proposals.map((p) => {
-                    const brandName =
-                        p.brandProfile?.companyName ||
-                        p.brandId?.fullName ||
-                        'Brand';
-
-                    const status: DashboardProposalCard['status'] =
-                        p.status === 'pending' ? 'new' : p.status;
-
-                    return {
-                        id: idToNumber(p._id),
-                        backendId: p._id,
-                        brandName,
-                        brandLogo: p.brandProfile?.logoUrl || "/images/brand-placeholder.png",
-                        title: p.title,
-                        budget: p.budget,
-                        deliverables: p.deliverables,
-                        deadline: p.deadline,
-                        status,
-                        startDate: p.createdAt,
-                    };
-                });
-
-                setProposals(mapped);
-            } catch (err) {
-                console.error("Failed to fetch proposals:", err);
-            }
-        };
         fetchProposals();
     }, []);
 
@@ -81,6 +86,10 @@ export default function CreatorDashboard() {
         } catch (err) {
             console.error("Failed to message user:", err);
         }
+    };
+
+    const handleStatusChange = () => {
+        fetchProposals();
     };
 
     // Filter proposals logic
@@ -126,7 +135,7 @@ export default function CreatorDashboard() {
 
                         <ProposalCarousel
                             proposals={activeProposals}
-                            onProposalClick={(p) => console.log('Clicked proposal:', p)}
+                            onProposalClick={(p: any) => setSelectedProposal(p.rawProposal)}
                             showMoreLink="/dashboard/creator/proposals"
                         />
                     </section>
@@ -144,11 +153,21 @@ export default function CreatorDashboard() {
                                     ...p,
                                     onMessageClick: () => handleMessageUser(p)
                                 }))}
-                                onProposalClick={(p) => console.log('Clicked active:', p)}
+                                onProposalClick={(p: any) => setSelectedProposal(p.rawProposal)}
                             />
                         </section>
                     )}
                 </main>
+
+                {selectedProposal && (
+                    <ViewProposalModal
+                        proposal={selectedProposal}
+                        isOpen={true}
+                        onClose={() => setSelectedProposal(null)}
+                        userRole="creator"
+                        onStatusChange={handleStatusChange}
+                    />
+                )}
             </CreatorDashboardLayout>
         </RouteGuard>
     );

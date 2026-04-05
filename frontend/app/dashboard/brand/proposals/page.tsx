@@ -7,7 +7,7 @@ import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { RouteGuard } from "@/components/RouteGuard";
 import { ViewProposalModal } from "@/components/ViewProposalModal";
 import { ArrowRight, Plus, MessageCircle } from "lucide-react";
-import { getProposals, Proposal, createConversation } from "@/lib/api";
+import { getProposals, Proposal, createConversation, getProfilePhotoUrl } from "@/lib/api";
 
 const FILTER_TABS = ["All", "Pending", "Accepted", "Declined"];
 
@@ -131,8 +131,12 @@ export default function BrandProposals() {
                             >
                                 {/* Creator */}
                                 <div className="flex items-center gap-5 mb-4 md:mb-0">
-                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-[#FF4D00] bg-orange-50 border border-orange-100 text-sm font-black shrink-0 shadow-sm">
-                                        {(proposal.creatorId?.fullName || 'C').substring(0, 2).toUpperCase()}
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-[#FF4D00] bg-orange-50 border border-orange-100 text-sm font-black shrink-0 shadow-sm overflow-hidden">
+                                        {proposal.creatorProfile?.profilePhoto ? (
+                                            <img src={getProfilePhotoUrl(proposal.creatorProfile.profilePhoto)} className="w-full h-full object-cover" alt="Creator Profile" />
+                                        ) : (
+                                            (proposal.creatorId?.fullName || 'C').substring(0, 2).toUpperCase()
+                                        )}
                                     </div>
                                     <div>
                                         <p className="text-sm font-black text-zinc-900 group-hover:text-[#FF4D00] transition-colors">{proposal.creatorId?.fullName || 'Creator'}</p>

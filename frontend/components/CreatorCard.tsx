@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { Check, Lock, User, Instagram, Star } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
+import { getProfilePhotoUrl } from "@/lib/api";
 import "./CreatorCard.css";
 
 interface Creator {
@@ -96,7 +97,7 @@ export function CreatorCard({
             {/* Background Image */}
             {!showPlaceholder ? (
                 <img
-                    src={creator.profilePicture}
+                    src={getProfilePhotoUrl(creator.profilePicture)}
                     alt={creator.name}
                     className="creator-card-bg"
                     onError={() => setImgError(true)}

@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { RouteGuard } from "@/components/RouteGuard";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { getPublicCreatorStats, PublicCreatorStatsResponse } from "@/lib/api";
+import { getPublicCreatorStats, PublicCreatorStatsResponse, getProfilePhotoUrl } from "@/lib/api";
 import { ArrowLeft, Check, Instagram, Play, Globe } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { SendProposalModal } from "@/components/SendProposalModal";
@@ -54,31 +54,18 @@ export default function BrandCreatorProfilePage() {
 
     const creator = data?.creator;
 
-    // Mock data for UI replication
-    const pastWork = [
+    // Fallback Mock data for UI replication if creator hasn't filled anything
+    const pastWork = creator?.brandWork?.length ? creator.brandWork.map(w => ({
+        brand: w.title || "Brand Partnership",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
+        image: w.url || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
+        stats: ["N/A"]
+    })) : [
         {
-            brand: "Nike",
+            brand: "Parrv's Showcase",
             logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
             image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
-            stats: ["1.2M Views", "8% Engagement", "+15% Sales Uplift"]
-        },
-        {
-            brand: "Zara",
-            logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
-            image: "https://images.unsplash.com/photo-1445205170230-053b830c6050?q=80&w=2071&auto=format&fit=crop",
-            stats: ["850K Views", "10% Engagement", "+12% Sales Uplift"]
-        },
-        {
-            brand: "Tesla",
-            logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
-            image: "https://images.unsplash.com/photo-1536700503339-1e4b06520771?q=80&w=2070&auto=format&fit=crop",
-            stats: ["2M Views", "6% Engagement", "+20% Brand Awareness"]
-        },
-        {
-            brand: "Amazon",
-            logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-            image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop",
-            stats: ["950K Views", "9% Engagement", "+18% Conversion"]
+            stats: ["No work added yet"]
         }
     ];
 
@@ -114,7 +101,7 @@ export default function BrandCreatorProfilePage() {
                     {/* Hero Section */}
                     <div className="profile-hero">
                         <img 
-                            src={creator.profilePicture || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"} 
+                            src={getProfilePhotoUrl(creator.profilePicture) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"} 
                             alt={creator.name} 
                             className="profile-hero-img" 
                         />
@@ -192,16 +179,18 @@ export default function BrandCreatorProfilePage() {
                             <div className="sidebar-section">
                                 <h3 className="sidebar-label">Pricing Tiers:</h3>
                                 <div className="pricing-list">
-                                    <p className="pricing-item"><span>Basic ($5K - 1 Post, 1 Story)</span></p>
-                                    <p className="pricing-item"><span>Premium ($12K - 3 Posts, 3 Stories, Reel)</span></p>
-                                    <p className="pricing-item"><span>Exclusive ($25K+ - Long-term Partnership)</span></p>
+                                    {creator?.pricing ? (
+                                        <p className="pricing-item"><span>Starting from ₹{creator.pricing.starting} per {creator.pricing.per || 'post'}</span></p>
+                                    ) : (
+                                        <p className="pricing-item"><span>Custom Pricing (Request Proposal)</span></p>
+                                    )}
                                 </div>
                             </div>
 
                             <div className="sidebar-section">
                                 <h3 className="sidebar-label">Availability:</h3>
-                                <p className="sidebar-content font-black text-emerald-600">
-                                    Open for Q3/Q4 Campaigns
+                                <p className={`sidebar-content font-black ${creator?.availability === 'unavailable' ? 'text-red-500' : 'text-emerald-600'}`}>
+                                    {creator?.availability ? creator.availability.toUpperCase() : "OPEN TO WORK"}
                                 </p>
                             </div>
 
