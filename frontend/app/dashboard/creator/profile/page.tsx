@@ -18,6 +18,7 @@ export default function CreatorProfile() {
     const [selectedNiches, setSelectedNiches] = useState<string[]>(["Fashion", "Lifestyle"]);
     const [availability, setAvailability] = useState("Available");
     const [uploading, setUploading] = useState(false);
+    const [imgError, setImgError] = useState(false);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -33,6 +34,7 @@ export default function CreatorProfile() {
             const res = await uploadProfilePhoto(file);
             if (res.success) {
                 showToast("Profile photo updated!", "success");
+                setImgError(false); // Reset error state on new upload
                 // Sync the profile context to update the header instantly
                 await refreshProfile();
                 router.refresh();
@@ -67,19 +69,20 @@ export default function CreatorProfile() {
                             <label className="relative w-32 h-32 rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-[#FF4D00] hover:bg-orange-50 transition-all shadow-sm group-hover:scale-105 group-hover:shadow-lg overflow-hidden">
                                 {uploading ? (
                                     <Loader2 className="w-8 h-8 animate-spin" />
-                                ) : creatorProfile?.profilePhoto ? (
+                                ) : creatorProfile?.profilePhoto && !imgError ? (
                                     <>
                                         <img 
-                                            src={creatorProfile.profilePhoto.startsWith('/') ? `http://localhost:5001${creatorProfile.profilePhoto}` : creatorProfile.profilePhoto} 
+                                            src={creatorProfile.profilePhoto.startsWith('http') ? creatorProfile.profilePhoto : (creatorProfile.profilePhoto.startsWith('/') ? creatorProfile.profilePhoto : `/${creatorProfile.profilePhoto}`)} 
                                             alt="Profile" 
                                             className="w-full h-full object-cover"
+                                            onError={() => setImgError(true)}
                                         />
                                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Camera className="w-6 h-6 text-white" />
                                         </div>
                                     </>
                                 ) : (
-                                    <Plus className="w-8 h-8 font-bold" />
+                                    <Plus className="w-8 h-8 font-bold text-zinc-400" />
                                 )}
                                 <input 
                                     type="file" 

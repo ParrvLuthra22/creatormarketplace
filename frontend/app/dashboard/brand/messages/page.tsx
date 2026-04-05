@@ -8,7 +8,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { BrandNavbar } from "@/components/BrandNavbar";
 import { Search, MoreVertical, Send, Paperclip, ArrowLeft, MessageCircle, Check, CheckCheck, Pencil, Trash2, X, XCircle } from "lucide-react";
 import { useSocket } from "@/hooks/useSocket";
-import { getConversations, getMessages, Conversation, ChatMessage, editMessage, deleteMessage, closeConversation } from "@/lib/api";
+import { getConversations, getMessages, Conversation, ChatMessage, editMessage, deleteMessage, closeConversation, getProfilePhotoUrl } from "@/lib/api";
 
 export default function BrandMessagesPage() {
     const { user, profile } = useAuth();
@@ -228,8 +228,8 @@ export default function BrandMessagesPage() {
                                 >
                                     {/* Avatar */}
                                     <div className="relative flex-shrink-0">
-                                        <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold border ${selectedConversation === conv._id ? 'bg-[#FF4D00]/10 border-[#FF4D00]/20' : 'bg-zinc-200 border-zinc-300'}`}>
-                                            {avatar}
+                                        <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold border overflow-hidden ${selectedConversation === conv._id ? 'bg-[#FF4D00]/10 border-[#FF4D00]/20' : 'bg-zinc-200 border-zinc-300'}`}>
+                                            {partner?.profilePicture || partner?.profilePhoto ? <img src={getProfilePhotoUrl(partner.profilePicture || partner.profilePhoto)} className="w-full h-full object-cover" /> : avatar}
                                         </div>
                                     </div>
 
@@ -266,8 +266,8 @@ export default function BrandMessagesPage() {
                                             <ArrowLeft className="w-6 h-6" />
                                         </button>
 
-                                        <div className="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-900 bg-zinc-100 text-sm font-bold">
-                                            {chatPartner.fullName?.charAt(0)}
+                                        <div className="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-900 bg-zinc-100 text-sm font-bold overflow-hidden">
+                                            {chatPartner.profilePicture || chatPartner.profilePhoto ? <img src={getProfilePhotoUrl(chatPartner.profilePicture || chatPartner.profilePhoto)} className="w-full h-full object-cover" /> : chatPartner.fullName?.charAt(0)}
                                         </div>
 
                                         <div>
@@ -289,9 +289,9 @@ export default function BrandMessagesPage() {
 
                                         {showMenu && (
                                             <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-zinc-200 rounded-2xl p-2 z-10 shadow-xl overflow-hidden">
-                                                <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50 rounded-xl transition-all">
+                                                <Link href={`/dashboard/brand/creators/${chatPartner._id}`} className="block w-full text-left px-4 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50 rounded-xl transition-all">
                                                     View Profile
-                                                </button>
+                                                </Link>
                                                 <button
                                                     onClick={handleCloseConversation}
                                                     className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-all flex items-center gap-2"

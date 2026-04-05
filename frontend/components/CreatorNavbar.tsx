@@ -22,7 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
 import { HelpSupportModal } from "@/components/HelpSupportModal";
-import { getChatSummary, getProposalsSummary } from "@/lib/api";
+import { getChatSummary, getProposalsSummary, getProfilePhotoUrl } from "@/lib/api";
 
 interface NavItem {
     name: string;
@@ -46,11 +46,14 @@ export function CreatorNavbar() {
     const [helpOpen, setHelpOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [bellOpen, setBellOpen] = useState(false);
+    const [imgError, setImgError] = useState(false);
     const [pendingProposals, setPendingProposals] = useState(0);
     const [unreadMessages, setUnreadMessages] = useState(0);
 
     const menuRef = useRef<HTMLDivElement>(null);
     const profileRef = useRef<HTMLDivElement>(null);
+    const bellRef = useRef<HTMLDivElement>(null);
 
     const badgeByItemName = useMemo(
         () =>
@@ -84,6 +87,9 @@ export function CreatorNavbar() {
             }
             if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
                 setProfileOpen(false);
+            }
+            if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+                setBellOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -159,10 +165,29 @@ export function CreatorNavbar() {
 
                 {/* Right side: Bell + Profile + Hamburger */}
                 <div className="flex items-center gap-3 shrink-0">
-                    {/* Bell */}
-                    <button className="w-9 h-9 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all">
-                        <Bell className="w-4 h-4" />
-                    </button>
+                    {/* Bell Dropdown */}
+                    <div className="relative" ref={bellRef}>
+                        <button 
+                            onClick={() => setBellOpen(!bellOpen)}
+                            className="w-9 h-9 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
+                        >
+                            <Bell className="w-4 h-4" />
+                        </button>
+
+                        {bellOpen && (
+                            <div className="absolute top-12 right-0 w-72 bg-white border border-zinc-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                                <div className="p-4 border-b border-zinc-100 flex justify-between items-center">
+                                    <h3 className="text-sm font-bold text-zinc-900 lowercase">notifications</h3>
+                                    <span className="text-[10px] text-[#FF4D00] font-bold cursor-pointer lowercase uppercase tracking-widest hover:underline">mark all as read</span>
+                                </div>
+                                <div className="p-8 text-center text-zinc-500">
+                                    <Bell className="w-8 h-8 mx-auto mb-3 text-zinc-200" />
+                                    <p className="text-sm font-bold text-zinc-900 lowercase">no new notifications</p>
+                                    <p className="text-xs mt-1 lowercase">we'll let you know when something happens</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     {/* Profile dropdown */}
                     <div className="relative" ref={profileRef}>
@@ -171,11 +196,12 @@ export function CreatorNavbar() {
                             className="flex items-center gap-2 h-9 px-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 transition-all"
                         >
                             <div className="w-6 h-6 rounded-full bg-[#FF4D00]/10 flex items-center justify-center text-[#FF4D00] font-bold text-xs shrink-0 overflow-hidden">
-                                {creatorProfile?.profilePhoto ? (
+                                {creatorProfile?.profilePhoto && !imgError ? (
                                     <img 
-                                        src={creatorProfile.profilePhoto.startsWith('/') ? `http://localhost:5001${creatorProfile.profilePhoto}` : creatorProfile.profilePhoto} 
+                                        src={getProfilePhotoUrl(creatorProfile.profilePhoto)} 
                                         alt="Profile" 
                                         className="w-full h-full object-cover"
+                                        onError={() => setImgError(true)}
                                     />
                                 ) : (
                                     getUserInitials()

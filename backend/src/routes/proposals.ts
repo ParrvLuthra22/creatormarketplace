@@ -4,6 +4,7 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import Proposal from '../models/Proposal';
 import User from '../models/User';
 import BrandProfile from '../models/BrandProfile';
+import CreatorProfile from '../models/CreatorProfile';
 import Payment from '../models/Payment';
 
 const router = Router();
@@ -181,9 +182,30 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
             brandProfiles.map((bp: any) => [bp.userId.toString(), bp])
         );
 
-        const proposalsWithBrandProfile = proposals.map((p: any) => {
+        // Also fetch creator profiles to supply their profile photo
+        const creatorIds = Array.from(
+            new Set(
+                proposals
+                    .map((p: any) => (p.creatorId && typeof p.creatorId === 'object' ? p.creatorId._id?.toString?.() : null))
+                    .filter(Boolean)
+            )
+        );
+
+        const creatorProfiles = await CreatorProfile.find({ userId: { $in: creatorIds } })
+            .select('userId profilePhoto')
+            .lean();
+
+        const creatorProfileByUserId = new Map<string, any>(
+            creatorProfiles.map((cp: any) => [cp.userId.toString(), cp])
+        );
+
+        const enrichedProposals = proposals.map((p: any) => {
             const brandUserId = p.brandId && typeof p.brandId === 'object' ? p.brandId._id?.toString?.() : undefined;
             const brandProfile = brandUserId ? brandProfileByUserId.get(brandUserId) : undefined;
+
+            const creatorUserId = p.creatorId && typeof p.creatorId === 'object' ? p.creatorId._id?.toString?.() : undefined;
+            const creatorProfile = creatorUserId ? creatorProfileByUserId.get(creatorUserId) : undefined;
+
             return {
                 ...p,
                 brandProfile: brandProfile
@@ -192,10 +214,15 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
                         logoUrl: brandProfile.logoUrl,
                     }
                     : null,
+                creatorProfile: creatorProfile
+                    ? {
+                        profilePhoto: creatorProfile.profilePhoto,
+                    }
+                    : null,
             };
         });
 
-        res.status(200).json({ success: true, proposals: proposalsWithBrandProfile });
+        res.status(200).json({ success: true, proposals: enrichedProposals });
     } catch (error: any) {
         console.error('Get proposals error:', error);
         res.status(500).json({ error: 'Server error' });

@@ -7,7 +7,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { Search, MoreVertical, Send, Paperclip, ArrowLeft, MessageCircle, Check, CheckCheck } from "lucide-react";
 import { useSocket } from "@/hooks/useSocket";
-import { getConversations, getMessages, Conversation, ChatMessage } from "@/lib/api";
+import { getConversations, getMessages, Conversation, ChatMessage, getProfilePhotoUrl } from "@/lib/api";
 
 export default function CreatorMessagesPage() {
     const { user, profile } = useAuth();
@@ -197,8 +197,8 @@ export default function CreatorMessagesPage() {
                                 >
                                     {/* Avatar */}
                                     <div className="relative flex-shrink-0">
-                                        <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold border ${selectedConversation === conv._id ? 'bg-[#FF4D00]/10 border-[#FF4D00]/20 text-[#FF4D00]' : 'bg-zinc-100 border-zinc-200'}`}>
-                                            {avatar}
+                                        <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold border overflow-hidden ${selectedConversation === conv._id ? 'bg-[#FF4D00]/10 border-[#FF4D00]/20 text-[#FF4D00]' : 'bg-zinc-100 border-zinc-200'}`}>
+                                            {partner?.profilePicture || partner?.profilePhoto ? <img src={getProfilePhotoUrl(partner.profilePicture || partner.profilePhoto)} className="w-full h-full object-cover" /> : avatar}
                                         </div>
                                     </div>
 
@@ -235,8 +235,8 @@ export default function CreatorMessagesPage() {
                                             <ArrowLeft className="w-6 h-6" />
                                         </button>
 
-                                        <div className="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-900 bg-zinc-50 text-sm font-bold">
-                                            {chatPartner.fullName?.charAt(0)}
+                                        <div className="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-900 bg-zinc-50 text-sm font-bold overflow-hidden">
+                                            {chatPartner.profilePicture || chatPartner.profilePhoto ? <img src={getProfilePhotoUrl(chatPartner.profilePicture || chatPartner.profilePhoto)} className="w-full h-full object-cover" /> : chatPartner.fullName?.charAt(0)}
                                         </div>
 
                                         <div>

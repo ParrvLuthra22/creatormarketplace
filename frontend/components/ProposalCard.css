@@ -224,7 +224,7 @@
 
 .view-proposal-btn {
     width: 100%;
-    background: #000000;
+    background: #FF4D00;
     color: #FFFFFF;
     font-size: 13px;
     text-transform: uppercase;
@@ -238,8 +238,8 @@
 }
 
 .proposal-card:hover .view-proposal-btn {
-    background: #FFFFFF;
-    color: #000000;
+    background: #E64500;
+    color: #FFFFFF;
     transform: translateY(-2px) scale(1.02);
 }
 
