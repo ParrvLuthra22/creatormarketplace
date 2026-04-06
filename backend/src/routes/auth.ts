@@ -116,7 +116,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             domain: process.env.COOKIE_DOMAIN,
         });
@@ -186,7 +186,7 @@ router.post('/login', authLimiter, async (req: Request, res: Response): Promise<
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             domain: process.env.COOKIE_DOMAIN,
         });
@@ -250,7 +250,7 @@ router.post('/logout', (req: Request, res: Response): void => {
     res.clearCookie('token', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         domain: process.env.COOKIE_DOMAIN,
     });
 
@@ -357,7 +357,7 @@ router.delete('/account', authMiddleware, async (req: AuthRequest, res: Response
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             domain: process.env.COOKIE_DOMAIN,
         });
 
