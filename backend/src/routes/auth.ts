@@ -118,7 +118,6 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            domain: process.env.COOKIE_DOMAIN,
         });
 
         // Return user data + profile (exclude password)
@@ -188,7 +187,6 @@ router.post('/login', authLimiter, async (req: Request, res: Response): Promise<
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            domain: process.env.COOKIE_DOMAIN,
         });
 
         // Return user data + profile (exclude password)
@@ -251,7 +249,6 @@ router.post('/logout', (req: Request, res: Response): void => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        domain: process.env.COOKIE_DOMAIN,
     });
 
     res.status(200).json({ message: 'Logged out successfully' });
@@ -358,7 +355,6 @@ router.delete('/account', authMiddleware, async (req: AuthRequest, res: Response
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.COOKIE_DOMAIN,
         });
 
         res.status(200).json({
