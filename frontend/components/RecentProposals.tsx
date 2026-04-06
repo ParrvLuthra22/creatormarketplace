@@ -29,7 +29,7 @@ export function RecentProposals({ proposals }: RecentProposalsProps) {
         <div className="mt-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Proposals</h2>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
@@ -128,7 +128,7 @@ export function RecentProposals({ proposals }: RecentProposalsProps) {
             </div>
 
             {proposals.length === 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+                <div className="bg-white rounded-md shadow-sm border border-gray-100 p-12 text-center">
                     <p className="text-gray-500">No proposals yet.</p>
                     <p className="text-sm text-gray-400 mt-2">Start discovering creators to send your first proposal!</p>
                 </div>

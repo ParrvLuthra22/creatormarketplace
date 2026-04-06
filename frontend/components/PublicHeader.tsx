@@ -20,13 +20,13 @@ export function PublicHeader() {
                 <div className="flex items-center gap-3">
                     <Link
                         href="/"
-                        className="px-4 py-2 text-sm font-angelo text-[#0A0A0A] border border-[#0A0A0A] bg-transparent rounded-lg hover:bg-[#E5E5E5] transition-colors"
+                        className="px-4 py-2 text-sm font-angelo text-[#0A0A0A] border border-[#0A0A0A] bg-transparent rounded-sm hover:bg-[#E5E5E5] transition-colors"
                     >
                         Sign In
                     </Link>
                     <Link
                         href="/"
-                        className="px-4 py-2 text-sm font-angelo text-white bg-[#0A0A0A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                        className="px-4 py-2 text-sm font-angelo text-white bg-[#0A0A0A] rounded-sm hover:bg-[#2A2A2A] transition-colors"
                     >
                         Get Started
                     </Link>

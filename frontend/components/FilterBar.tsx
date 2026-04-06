@@ -54,7 +54,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
     };
 
     return (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="bg-white rounded-md p-6 shadow-sm border border-gray-100 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Niche Filter */}
                 <div>
@@ -64,7 +64,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
                     <select
                         value={selectedNiche}
                         onChange={(e) => setSelectedNiche(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent"
                     >
                         {niches.map((niche) => (
                             <option key={niche} value={niche}>
@@ -103,7 +103,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
                     <select
                         value={followersRange}
                         onChange={(e) => setFollowersRange(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent"
                     >
                         {followersRanges.map((range) => (
                             <option key={range} value={range}>

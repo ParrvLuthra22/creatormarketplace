@@ -47,7 +47,7 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
             onClick={onCancel}
         >
             <div
-                className="bg-white border border-[#E5E5E5] rounded-2xl w-[380px] max-w-[90vw] px-8 pt-9 pb-7"
+                className="bg-white border border-[#E5E5E5] rounded-md w-[380px] max-w-[90vw] px-8 pt-9 pb-7"
                 style={{
                     animation: "scaleIn 250ms ease-out",
                 }}
@@ -75,7 +75,7 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
                     {/* Confirm Button */}
                     <button
                         onClick={onConfirm}
-                        className="w-full h-[46px] bg-white text-black rounded-[10px] font-angelo text-[15px] font-semibold hover:opacity-85 transition-opacity"
+                        className="w-full h-[46px] bg-white text-black rounded-sm font-angelo text-[15px] font-semibold hover:opacity-85 transition-opacity"
                     >
                         Yes, log out
                     </button>
@@ -83,7 +83,7 @@ export function LogoutConfirmModal({ isOpen, onConfirm, onCancel }: LogoutConfir
                     {/* Cancel Button */}
                     <button
                         onClick={onCancel}
-                        className="w-full h-[46px] bg-transparent text-black border border-[#2A2A2A] rounded-[10px] font-angelo text-[15px] font-semibold hover:border-[#3D3D3D] transition-colors"
+                        className="w-full h-[46px] bg-transparent text-black border border-[#2A2A2A] rounded-sm font-angelo text-[15px] font-semibold hover:border-[#3D3D3D] transition-colors"
                     >
                         Cancel
                     </button>

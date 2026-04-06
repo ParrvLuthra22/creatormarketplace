@@ -87,7 +87,7 @@ export default function CreatorsPage() {
                         placeholder="Search creators..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white border border-[#E5E5E5] rounded-xl pl-12 pr-4 py-3 text-[#0A0A0A] placeholder-[#6B6B6B] focus:outline-none focus:border-[#0A0A0A] transition-colors"
+                        className="w-full bg-white border border-[#E5E5E5] rounded-md pl-12 pr-4 py-3 text-[#0A0A0A] placeholder-[#6B6B6B] focus:outline-none focus:border-[#0A0A0A] transition-colors"
                     />
                 </div>
 

@@ -30,9 +30,9 @@ export function BrandRightSidebar() {
     const [showProposalTooltip, setShowProposalTooltip] = useState(false);
 
     return (
-        <aside className="hidden lg:flex w-[280px] px-5 py-6 flex-col gap-4 overflow-y-auto bg-[#FF4D00] rounded-2xl shadow-xl h-[calc(100vh-32px)] fixed right-4 top-4 z-50">
+        <aside className="hidden lg:flex w-[280px] px-5 py-6 flex-col gap-4 overflow-y-auto bg-[#FF4D00] rounded-md shadow-xl h-[calc(100vh-32px)] fixed right-4 top-4 z-50">
             {/* WIDGET 1 - Quick Actions */}
-            <div className="bg-[#FF4D00] border border-[#E5E5E5] rounded-[14px] p-5">
+            <div className="bg-[#FF4D00] border border-[#E5E5E5] rounded-md p-5">
                 <h3 className="text-base font-bold text-black mb-4">Quick Actions</h3>
                 <div className="flex flex-col gap-2.5">
                     <div className="relative">
@@ -45,7 +45,7 @@ export function BrandRightSidebar() {
                                     // Normal proposal logic would go here
                                 }
                             }}
-                            className={`w-full h-11 rounded-[10px] text-sm font-semibold transition-opacity flex items-center justify-center gap-2 ${user?.plan !== 'pro'
+                            className={`w-full h-11 rounded-sm text-sm font-semibold transition-opacity flex items-center justify-center gap-2 ${user?.plan !== 'pro'
                                 ? 'bg-[#E5E5E5] text-[#6B6B6B] cursor-not-allowed'
                                 : 'bg-[#FF4D00] hover:bg-[#FF4D00] text-white hover:bg-[#cc7700]'
                                 }`}
@@ -57,7 +57,7 @@ export function BrandRightSidebar() {
 
                         {/* Tooltip */}
                         {showProposalTooltip && (
-                            <div className="absolute top-full left-0 right-0 mt-2 bg-[#FF4D00] border border-[#E5E5E5] shadow-lg rounded-lg p-3 text-left z-10">
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-[#FF4D00] border border-[#E5E5E5] shadow-lg rounded-sm p-3 text-left z-10">
                                 <p className="text-[13px] text-[#6B6B6B]">
                                     Available on Pro plan — Upgrade to send proposals
                                 </p>
@@ -67,14 +67,14 @@ export function BrandRightSidebar() {
                             </div>
                         )}
                     </div>
-                    <button className="w-full h-11 bg-[#FF4D00] border border-[#E5E5E5] text-black rounded-[10px] text-sm font-semibold hover:bg-[#FF4D00] transition-colors">
+                    <button className="w-full h-11 bg-[#FF4D00] border border-[#E5E5E5] text-black rounded-sm text-sm font-semibold hover:bg-[#FF4D00] transition-colors">
                         Browse Creators
                     </button>
                 </div>
             </div>
 
             {/* WIDGET 2 - Recent Proposals */}
-            <div className="bg-[#FF4D00] border border-[#E5E5E5] rounded-[14px] p-5 mb-8">
+            <div className="bg-[#FF4D00] border border-[#E5E5E5] rounded-md p-5 mb-8">
                 <h3 className="text-base font-bold text-black mb-4">Recent Proposals</h3>
                 <div>
                     {PROPOSALS.slice(0, 3).map((proposal, index) => (
@@ -91,7 +91,7 @@ export function BrandRightSidebar() {
                             </div>
                             <div className="flex flex-col items-end gap-1 flex-shrink-0">
                                 <p className="text-[13px] text-black font-bold">{proposal.amount}</p>
-                                <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${getStatusColor(proposal.status)}`}>
+                                <span className={`px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider ${getStatusColor(proposal.status)}`}>
                                     {proposal.status}
                                 </span>
                             </div>

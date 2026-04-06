@@ -59,7 +59,7 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
             <div
-                className="bg-white rounded-2xl w-full max-w-lg shadow-xl"
+                className="bg-white rounded-md w-full max-w-lg shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -79,7 +79,7 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     {error && (
-                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">{error}</div>
+                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-sm">{error}</div>
                     )}
 
                     <div>
@@ -89,7 +89,7 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="e.g. Summer Collection Launch"
-                            className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-xl text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
+                            className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
                         />
                     </div>
 
@@ -100,7 +100,7 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Describe what you need from this collaboration..."
                             rows={3}
-                            className="w-full px-4 py-3 bg-[#F9F9F9] border border-[#E5E5E5] rounded-xl text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors resize-none"
+                            className="w-full px-4 py-3 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors resize-none"
                         />
                     </div>
 
@@ -112,7 +112,7 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
                                 value={budget}
                                 onChange={(e) => setBudget(e.target.value)}
                                 placeholder="15000"
-                                className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-xl text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
+                                className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
                             />
                         </div>
                         <div>
@@ -121,7 +121,7 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
                                 type="date"
                                 value={deadline}
                                 onChange={(e) => setDeadline(e.target.value)}
-                                className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-xl text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
+                                className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
                             />
                         </div>
                     </div>
@@ -133,14 +133,14 @@ export function SendProposalModal({ creatorId, creatorName, isOpen, onClose, onS
                             value={deliverables}
                             onChange={(e) => setDeliverables(e.target.value)}
                             placeholder="e.g. 2 Reels, 3 Stories, 1 Post"
-                            className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-xl text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
+                            className="w-full h-11 px-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-md text-sm text-black focus:outline-none focus:border-[#FF4D00] transition-colors"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-12 bg-[#FF4D00] text-white font-bold rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full h-12 bg-[#FF4D00] text-white font-bold rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                         <Send className="w-4 h-4" />
                         {loading ? "Sending..." : "Send Proposal"}

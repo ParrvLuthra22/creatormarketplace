@@ -90,18 +90,18 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Brand Profile</h2>
 
             {/* Stats Summary */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+            <div className="bg-white rounded-md p-6 shadow-sm border border-gray-100 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Summary</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <div className="text-center p-4 bg-orange-50 rounded-sm">
                         <p className="text-2xl font-bold text-[#FF6B35]">{formatCurrency(totalSpend)}</p>
                         <p className="text-sm text-gray-600 mt-1">Total Spent</p>
                     </div>
-                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <div className="text-center p-4 bg-orange-50 rounded-sm">
                         <p className="text-2xl font-bold text-[#FF6B35]">{creatorsHired}</p>
                         <p className="text-sm text-gray-600 mt-1">Creators Hired</p>
                     </div>
-                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <div className="text-center p-4 bg-orange-50 rounded-sm">
                         <p className="text-2xl font-bold text-[#FF6B35]">{pendingProposals}</p>
                         <p className="text-sm text-gray-600 mt-1">Pending Proposals</p>
                     </div>
@@ -109,7 +109,7 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
             </div>
 
             {/* Profile Information */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-md p-6 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-gray-900">Company Information</h3>
                     {!isEditing && (
@@ -127,7 +127,7 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
                 <div className="space-y-6">
                     {(saveError || saveSuccess) && (
                         <div
-                            className={`rounded-lg border px-4 py-3 text-sm ${saveError
+                            className={`rounded-sm border px-4 py-3 text-sm ${saveError
                                     ? "border-red-200 bg-red-50 text-red-700"
                                     : "border-green-200 bg-green-50 text-green-700"
                                 }`}
@@ -142,7 +142,7 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
                             Company Logo
                         </label>
                         <div className="flex items-center gap-4">
-                            <div className="w-20 h-20 rounded-lg bg-linear-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-2xl overflow-hidden">
+                            <div className="w-20 h-20 rounded-sm bg-linear-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center text-white font-bold text-2xl overflow-hidden">
                                 {profileData.logo ? (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img src={profileData.logo} alt="Company logo" className="w-full h-full object-cover" />
@@ -175,7 +175,7 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
                             value={profileData.companyName}
                             onChange={(e) => setProfileData({ ...profileData, companyName: e.target.value })}
                             disabled={!isEditing}
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         />
                     </div>
 
@@ -188,7 +188,7 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
                             value={profileData.industry}
                             onChange={(e) => setProfileData({ ...profileData, industry: e.target.value })}
                             disabled={!isEditing}
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         >
                             {industries.map((industry) => (
                                 <option key={industry} value={industry}>
@@ -209,7 +209,7 @@ export function BrandProfile({ totalSpend, creatorsHired, pendingProposals }: Br
                             onChange={(e) => setProfileData({ ...profileData, website: e.target.value })}
                             disabled={!isEditing}
                             placeholder="https://example.com"
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         />
                     </div>
 

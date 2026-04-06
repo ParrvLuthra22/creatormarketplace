@@ -149,7 +149,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
             >
                 {/* Modal */}
                 <div
-                    className="bg-white border border-[#E5E5E5] rounded-2xl w-[420px] max-w-[90vw] px-8 pt-8 pb-7"
+                    className="bg-white border border-[#E5E5E5] rounded-md w-[420px] max-w-[90vw] px-8 pt-8 pb-7"
                     style={{
                         animation: "scaleIn 250ms ease-out",
                     }}
@@ -179,7 +179,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     disabled={loading}
                                     placeholder="••••••••"
-                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-sm text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
@@ -204,7 +204,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     disabled={loading}
                                     placeholder="••••••••"
-                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-sm text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
@@ -250,7 +250,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     disabled={loading}
                                     placeholder="••••••••"
-                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-[10px] text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                                    className="w-full h-[44px] px-4 pr-12 bg-[#0F0F0F] border border-[#2A2A2A] rounded-sm text-black text-sm focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
@@ -288,7 +288,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                     {/* Error Display */}
                     {error && (
                         <div
-                            className="mt-4 px-3.5 py-2.5 rounded-lg bg-[#2A1A1A] border border-[#3D1A1A]"
+                            className="mt-4 px-3.5 py-2.5 rounded-sm bg-[#2A1A1A] border border-[#3D1A1A]"
                         >
                             <p className="text-[13px] text-black">{error}</p>
                         </div>
@@ -300,7 +300,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                         <button
                             onClick={handleSubmit}
                             disabled={!canSubmit}
-                            className={`w-full h-[46px] rounded-[10px] font-angelo text-[15px] font-semibold transition-opacity flex items-center justify-center gap-2 ${canSubmit
+                            className={`w-full h-[46px] rounded-sm font-angelo text-[15px] font-semibold transition-opacity flex items-center justify-center gap-2 ${canSubmit
                                     ? "bg-white text-black hover:opacity-85 cursor-pointer"
                                     : "bg-[#2A2A2A] text-[#6B6B6B] cursor-not-allowed"
                                 }`}
@@ -313,7 +313,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
                         <button
                             onClick={onClose}
                             disabled={loading}
-                            className="w-full h-[46px] bg-transparent text-black border border-white rounded-[10px] font-angelo text-[15px] font-semibold hover:opacity-85 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full h-[46px] bg-transparent text-black border border-white rounded-sm font-angelo text-[15px] font-semibold hover:opacity-85 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Cancel
                         </button>
@@ -324,7 +324,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
             {/* Success Toast */}
             {showSuccess && (
                 <div
-                    className="fixed top-6 right-6 z-[1001] bg-white border border-[#1A2A1A] px-5 py-3 rounded-lg shadow-lg"
+                    className="fixed top-6 right-6 z-[1001] bg-white border border-[#1A2A1A] px-5 py-3 rounded-sm shadow-lg"
                     style={{
                         animation: "slideInFromRight 300ms ease-out",
                     }}

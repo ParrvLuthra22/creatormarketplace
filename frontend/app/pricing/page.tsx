@@ -132,7 +132,7 @@ export default function PricingPage() {
                     <p className="hero-subtext text-[16px] text-[#6B6B6B] mb-4">
                         Start free. Upgrade when you're ready.
                     </p>
-                    <div className="inline-block bg-white border border-[#E5E5E5] rounded-[20px] px-4 py-[6px] text-[13px] text-[#6B6B6B]">
+                    <div className="inline-block bg-white border border-[#E5E5E5] rounded-md px-4 py-[6px] text-[13px] text-[#6B6B6B]">
                         Creators always join for free
                     </div>
                 </div>
@@ -140,7 +140,7 @@ export default function PricingPage() {
                 {/* Pricing Cards Grid */}
                 <div className="pricing-grid grid grid-cols-3 gap-5 items-start mb-16">
                     {/* FREE CARD */}
-                    <div className="pricing-card bg-white border border-zinc-200 rounded-[20px] px-7 py-9 shadow-sm">
+                    <div className="pricing-card bg-white border border-zinc-200 rounded-md px-7 py-9 shadow-sm">
                         <p className="plan-name text-[14px] uppercase text-zinc-500 font-semibold tracking-[1.5px]">
                             FREE
                         </p>
@@ -185,14 +185,14 @@ export default function PricingPage() {
                         {/* CTA Button */}
                         <button
                             onClick={handleAuthGate}
-                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-zinc-200 text-zinc-700 font-semibold text-[15px] rounded-xl cursor-pointer hover:bg-zinc-50 transition-colors"
+                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-zinc-200 text-zinc-700 font-semibold text-[15px] rounded-md cursor-pointer hover:bg-zinc-50 transition-colors"
                         >
                             Get Started — Free
                         </button>
                     </div>
 
                     {/* BASIC CARD */}
-                    <div className="pricing-card bg-white border border-zinc-200 rounded-[20px] px-7 py-9 shadow-sm">
+                    <div className="pricing-card bg-white border border-zinc-200 rounded-md px-7 py-9 shadow-sm">
                         <p className="plan-name text-[14px] uppercase text-zinc-500 font-semibold tracking-[1.5px]">
                             BASIC
                         </p>
@@ -237,16 +237,16 @@ export default function PricingPage() {
                         {/* CTA Button */}
                         <button
                             onClick={() => handleSubscribe('basic')}
-                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-zinc-200 text-zinc-700 font-semibold text-[15px] rounded-xl cursor-pointer hover:bg-zinc-50 transition-colors"
+                            className="cta-button w-full h-[50px] mt-7 bg-transparent border border-zinc-200 text-zinc-700 font-semibold text-[15px] rounded-md cursor-pointer hover:bg-zinc-50 transition-colors"
                         >
                             Choose Basic
                         </button>
                     </div>
 
                     {/* PRO CARD (Most Popular) */}
-                    <div className="pricing-card relative bg-[#FFF8F3] border-2 border-[#FF4D00] rounded-[20px] px-7 py-9 shadow-lg shadow-orange-500/10">
+                    <div className="pricing-card relative bg-[#FFF8F3] border-2 border-[#FF4D00] rounded-md px-7 py-9 shadow-lg shadow-orange-500/10">
                         {/* Most Popular Badge */}
-                        <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 bg-[#FF4D00] text-white font-semibold text-[11px] uppercase tracking-[1.5px] px-[18px] py-[5px] rounded-[20px]">
+                        <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 bg-[#FF4D00] text-white font-semibold text-[11px] uppercase tracking-[1.5px] px-[18px] py-[5px] rounded-md">
                             MOST POPULAR
                         </div>
 
@@ -294,7 +294,7 @@ export default function PricingPage() {
                         {/* CTA Button - Filled */}
                         <button
                             onClick={() => handleSubscribe('pro')}
-                            className="cta-button w-full h-[50px] mt-7 bg-[#FF4D00] text-white font-semibold text-[15px] rounded-xl cursor-pointer hover:bg-[#ff5e1a] transition-colors shadow-md shadow-orange-500/20"
+                            className="cta-button w-full h-[50px] mt-7 bg-[#FF4D00] text-white font-semibold text-[15px] rounded-md cursor-pointer hover:bg-[#ff5e1a] transition-colors shadow-md shadow-orange-500/20"
                         >
                             Choose Pro
                         </button>
@@ -312,7 +312,7 @@ export default function PricingPage() {
 
                     {/* FAQ Cards */}
                     <div className="space-y-3">
-                        <div className="faq-card bg-white border border-zinc-200 rounded-xl px-6 py-5 text-left shadow-sm">
+                        <div className="faq-card bg-white border border-zinc-200 rounded-md px-6 py-5 text-left shadow-sm">
                             <p className="faq-question text-[15px] text-zinc-900 font-semibold mb-[6px]">
                                 Do creators have to pay anything?
                             </p>
@@ -321,7 +321,7 @@ export default function PricingPage() {
                             </p>
                         </div>
 
-                        <div className="faq-card bg-white border border-zinc-200 rounded-xl px-6 py-5 text-left shadow-sm">
+                        <div className="faq-card bg-white border border-zinc-200 rounded-md px-6 py-5 text-left shadow-sm">
                             <p className="faq-question text-[15px] text-zinc-900 font-semibold mb-[6px]">
                                 Can I change my plan later?
                             </p>
@@ -333,12 +333,6 @@ export default function PricingPage() {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="py-8 text-center border-t border-[#E5E5E5]">
-                <p className="text-[13px] text-[#3D3D3D]">
-                    © 2026 CreatorSync. All rights reserved.
-                </p>
-            </footer>
 
             {/* Auth Gate Modal */}
             <AuthGateModal

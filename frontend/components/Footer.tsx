@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Instagram, Linkedin, Twitter, Mail } from "lucide-react";
 
 export function Footer() {
     return (
         <footer className="bg-[#0D0D0D] border-t border-[#1F1F1F] mt-16">
             <div className="container mx-auto px-8 md:px-6 pt-12 pb-8">
-                {/* 3 Column Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8">
+                {/* 4 Column Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-8">
                     {/* Column 1 - Branding */}
                     <div>
                         <h3 className="text-xl font-milker text-white mb-2">
@@ -57,6 +58,27 @@ export function Footer() {
                             <Link href="/delivery-policy" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
                                 Delivery Policy
                             </Link>
+                        </div>
+                    </div>
+
+                    {/* Column 4 - Socials */}
+                    <div>
+                        <h4 className="text-[13px] font-angelo text-white uppercase tracking-wider mb-4">
+                            Connect
+                        </h4>
+                        <div className="flex items-center gap-3">
+                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-md bg-[#1F1F1F] flex items-center justify-center text-[#6B6B6B] hover:bg-[#FF4D00] hover:text-white transition-all">
+                                <Instagram className="w-5 h-5" />
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-md bg-[#1F1F1F] flex items-center justify-center text-[#6B6B6B] hover:bg-[#FF4D00] hover:text-white transition-all">
+                                <Linkedin className="w-5 h-5" />
+                            </a>
+                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-md bg-[#1F1F1F] flex items-center justify-center text-[#6B6B6B] hover:bg-[#FF4D00] hover:text-white transition-all">
+                                <Twitter className="w-5 h-5" />
+                            </a>
+                            <a href="mailto:parrvcodes@gmail.com" className="w-10 h-10 rounded-md bg-[#1F1F1F] flex items-center justify-center text-[#6B6B6B] hover:bg-[#FF4D00] hover:text-white transition-all">
+                                <Mail className="w-5 h-5" />
+                            </a>
                         </div>
                     </div>
                 </div>

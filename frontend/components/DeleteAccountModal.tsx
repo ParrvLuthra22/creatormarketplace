@@ -53,7 +53,7 @@ export function DeleteAccountModal({ isOpen, onClose, onConfirm }: DeleteAccount
             onClick={() => !loading && onClose()}
         >
             <div
-                className="bg-white border border-[#E5E5E5] rounded-2xl w-[380px] max-w-[90vw] px-8 pt-9 pb-7"
+                className="bg-white border border-[#E5E5E5] rounded-md w-[380px] max-w-[90vw] px-8 pt-9 pb-7"
                 style={{
                     animation: "scaleIn 250ms ease-out",
                 }}
@@ -82,7 +82,7 @@ export function DeleteAccountModal({ isOpen, onClose, onConfirm }: DeleteAccount
                     <button
                         onClick={handleConfirm}
                         disabled={loading}
-                        className="w-full h-[46px] bg-[#FF4444] text-black rounded-[10px] font-angelo text-[15px] font-semibold hover:bg-[#D63E3E] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                        className="w-full h-[46px] bg-[#FF4444] text-black rounded-sm font-angelo text-[15px] font-semibold hover:bg-[#D63E3E] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
                     >
                         {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                         {loading ? "Deleting..." : "Yes, delete my account"}
@@ -92,7 +92,7 @@ export function DeleteAccountModal({ isOpen, onClose, onConfirm }: DeleteAccount
                     <button
                         onClick={onClose}
                         disabled={loading}
-                        className="w-full h-[46px] bg-transparent text-black border border-[#2A2A2A] rounded-[10px] font-angelo text-[15px] font-semibold hover:border-[#3D3D3D] transition-colors disabled:opacity-50"
+                        className="w-full h-[46px] bg-transparent text-black border border-[#2A2A2A] rounded-sm font-angelo text-[15px] font-semibold hover:border-[#3D3D3D] transition-colors disabled:opacity-50"
                     >
                         Cancel
                     </button>

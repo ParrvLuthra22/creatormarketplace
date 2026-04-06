@@ -29,7 +29,7 @@ export default function CreatorAnalytics() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                         {METRICS.slice(0, 4).map((m, idx) => (
-                            <div key={idx} className="bg-white border border-zinc-100 rounded-[32px] p-8 hover:border-[#FF4D00] hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-300 group">
+                            <div key={idx} className="bg-white border border-zinc-100 rounded-sm p-8 hover:border-[#FF4D00] hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-300 group">
                                 <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest group-hover:text-[#FF4D00] transition-colors">{m.label}</p>
                                 <p className="text-3xl text-zinc-900 font-black mt-3 tracking-tighter lowercase">{m.value}</p>
                                 <p className="text-xs text-zinc-400 mt-2 lowercase font-medium">this month</p>
@@ -38,10 +38,10 @@ export default function CreatorAnalytics() {
                     </div>
 
                     {/* CHART PLACEHOLDER */}
-                    <div className="bg-white border border-zinc-100 rounded-[40px] p-8 mb-12 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-8 mb-12 shadow-sm">
                         <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">Performance</h2>
-                        <div className="border-2 border-dashed border-zinc-100 rounded-[32px] h-[300px] flex flex-col items-center justify-center bg-zinc-50/50">
-                            <div className="w-16 h-16 rounded-3xl bg-white border border-zinc-100 flex items-center justify-center mb-4 shadow-sm">
+                        <div className="border-2 border-dashed border-zinc-100 rounded-sm h-[300px] flex flex-col items-center justify-center bg-zinc-50/50">
+                            <div className="w-16 h-16 rounded-sm bg-white border border-zinc-100 flex items-center justify-center mb-4 shadow-sm">
                                 <div className="w-8 h-8 rounded-full border-4 border-[#FF4D00] border-t-transparent animate-spin opacity-20" />
                             </div>
                             <p className="text-sm text-zinc-400 font-bold tracking-tight lowercase">chart functionality coming soon</p>
@@ -51,12 +51,12 @@ export default function CreatorAnalytics() {
                     {/* BOTTOM ROW - Two Cards */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                         {/* Recent Activity */}
-                        <div className="bg-white border border-zinc-100 rounded-[40px] p-8 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                             <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">recent activity</h2>
                             <div className="space-y-2">
                                 {ACTIVITIES.map((activity, index) => (
-                                    <div key={index} className="flex items-center gap-4 py-4 px-4 rounded-[24px] hover:bg-zinc-50 transition-all border border-transparent hover:border-zinc-100 group">
-                                        <div className="w-10 h-10 rounded-2xl bg-zinc-50 flex items-center justify-center flex-shrink-0 group-hover:bg-white transition-colors">
+                                    <div key={index} className="flex items-center gap-4 py-4 px-4 rounded-md hover:bg-zinc-50 transition-all border border-transparent hover:border-zinc-100 group">
+                                        <div className="w-10 h-10 rounded-md bg-zinc-50 flex items-center justify-center flex-shrink-0 group-hover:bg-white transition-colors">
                                             <div className="w-2 h-2 rounded-full bg-[#FF4D00] shadow-[0_0_12px_rgba(255,69,0,0.4)]" />
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -69,11 +69,11 @@ export default function CreatorAnalytics() {
                         </div>
 
                         {/* Top Metrics */}
-                        <div className="bg-white border border-zinc-100 rounded-[40px] p-8 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                             <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">key statistics</h2>
                             <div className="space-y-4">
                                 {METRICS.map((metric, index) => (
-                                    <div key={index} className="flex justify-between items-center py-5 px-6 rounded-[24px] bg-zinc-50/50 border border-zinc-100/50">
+                                    <div key={index} className="flex justify-between items-center py-5 px-6 rounded-md bg-zinc-50/50 border border-zinc-100/50">
                                         <p className="text-sm font-bold text-zinc-400 lowercase">{metric.label}</p>
                                         <p className="text-base font-black text-zinc-900 tracking-tight lowercase">{metric.value}</p>
                                     </div>

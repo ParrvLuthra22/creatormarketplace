@@ -46,7 +46,7 @@ export function ProposalCarousel({
 
     if (proposals.length === 0) {
         return (
-            <div className="text-center py-16 bg-white border border-[#E5E5E5] shadow-sm rounded-[20px] max-w-4xl mx-auto">
+            <div className="text-center py-16 bg-white border border-[#E5E5E5] shadow-sm rounded-md max-w-4xl mx-auto">
                 <p className="text-black text-lg font-bold mb-2">No active proposals</p>
                 <p className="text-[#6B6B6B] text-sm">Check back later for new opportunities from top brands.</p>
             </div>

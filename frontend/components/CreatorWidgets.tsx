@@ -63,7 +63,7 @@ export function CreatorWidgets({
     return (
         <div className="w-[300px] space-y-6">
             {/* My Profile Preview Widget */}
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-6">
+            <div className="bg-[#141414] border border-[#1F1F1F] rounded-md p-6">
                 <h3 className="text-base font-bold text-white mb-4 font-milker">My Profile</h3>
 
                 {/* Avatar */}
@@ -104,7 +104,7 @@ export function CreatorWidgets({
             </div>
 
             {/* Recent Activity Widget */}
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-6">
+            <div className="bg-[#141414] border border-[#1F1F1F] rounded-md p-6">
                 <h3 className="text-base font-bold text-white mb-4 font-milker">Activity</h3>
                 <div className="space-y-3">
                     {defaultActivity.map((activity) => {

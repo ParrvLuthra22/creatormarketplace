@@ -70,7 +70,7 @@ export default function BrandDashboard() {
                 <div className="grid grid-cols-12 gap-10">
                     {/* LEFT SIDEBAR - FILTERS */}
                     <aside className="col-span-12 lg:col-span-3">
-                        <div className="bg-white rounded-[32px] p-8 border border-zinc-100 shadow-sm sticky top-24">
+                        <div className="bg-white rounded-sm p-8 border border-zinc-100 shadow-sm sticky top-24">
                             <h2 className="text-xl font-bold text-zinc-900 mb-8">Filters</h2>
 
                             {/* Niche Section */}
@@ -136,7 +136,7 @@ export default function BrandDashboard() {
                                     placeholder="Search creators..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full h-11 pl-10 pr-4 bg-white border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-[#FF4D00] transition-colors"
+                                    className="w-full h-11 pl-10 pr-4 bg-white border border-zinc-200 rounded-md text-sm focus:outline-none focus:border-[#FF4D00] transition-colors"
                                 />
                             </div>
                         </div>
@@ -144,11 +144,11 @@ export default function BrandDashboard() {
                         {loading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                                 {[1, 2, 3, 4, 5, 6].map(i => (
-                                    <div key={i} className="aspect-[3/4.2] rounded-[28px] bg-zinc-100 animate-pulse" />
+                                    <div key={i} className="aspect-[3/4.2] rounded-sm bg-zinc-100 animate-pulse" />
                                 ))}
                             </div>
                         ) : filteredCreators.length === 0 ? (
-                            <div className="text-center py-32 bg-white rounded-[32px] border border-dashed border-zinc-200">
+                            <div className="text-center py-32 bg-white rounded-sm border border-dashed border-zinc-200">
                                 <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-zinc-50 flex items-center justify-center">
                                     <UserIcon className="w-10 h-10 text-zinc-300" />
                                 </div>

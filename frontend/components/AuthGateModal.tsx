@@ -22,7 +22,7 @@ export function AuthGateModal({ isOpen, onClose, onLogin, onSignup }: AuthGateMo
             />
 
             {/* Modal Content */}
-            <div className="relative bg-white border border-[#E5E5E5] rounded-2xl w-full max-w-md shadow-2xl p-10 transform transition-all animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative bg-white border border-[#E5E5E5] rounded-md w-full max-w-md shadow-2xl p-10 transform transition-all animate-in fade-in zoom-in-95 duration-200">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-[#6B6B6B] hover:text-black p-2 rounded-full hover:bg-gray-50 transition-colors"
@@ -48,7 +48,7 @@ export function AuthGateModal({ isOpen, onClose, onLogin, onSignup }: AuthGateMo
                 <div className="space-y-4">
                     <Button
                         onClick={onLogin}
-                        className="w-full bg-[#FF4D00] hover:bg-[#FF4D00] hover:bg-[#cc7700] text-white py-6 text-lg rounded-xl shadow-lg font-angelo"
+                        className="w-full bg-[#FF4D00] hover:bg-[#FF4D00] hover:bg-[#cc7700] text-white py-6 text-lg rounded-md shadow-lg font-angelo"
                     >
                         Sign In
                     </Button>
@@ -56,7 +56,7 @@ export function AuthGateModal({ isOpen, onClose, onLogin, onSignup }: AuthGateMo
                     <Button
                         onClick={onSignup}
                         variant="ghost"
-                        className="w-full border-2 border-white text-black hover:bg-[#F9FAFB] py-6 text-lg rounded-xl font-angelo"
+                        className="w-full border-2 border-white text-black hover:bg-[#F9FAFB] py-6 text-lg rounded-md font-angelo"
                     >
                         Create Account
                     </Button>

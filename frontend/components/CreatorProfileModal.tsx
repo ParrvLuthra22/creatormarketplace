@@ -117,7 +117,7 @@ export function CreatorProfileModal({ creator, isOpen, onClose }: CreatorProfile
 
                     {/* Stats Bar */}
                     <div className="px-6 md:px-10 py-8">
-                        <div className="bg-gray-50 rounded-2xl p-6 flex flex-wrap md:flex-nowrap gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                        <div className="bg-gray-50 rounded-md p-6 flex flex-wrap md:flex-nowrap gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200">
                             <div className="flex-1 px-4 text-center md:text-left">
                                 <p className="text-2xl font-bold text-[#1A1A1A]">{creator.followers}</p>
                                 <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Followers</p>
@@ -150,7 +150,7 @@ export function CreatorProfileModal({ creator, isOpen, onClose }: CreatorProfile
                                     creator.brandWork.map((work, idx) => (
                                         <div
                                             key={idx}
-                                            className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden"
+                                            className="group bg-white rounded-md border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden"
                                             onMouseEnter={() => work.videoUrl && setPlayingVideo(idx)}
                                             onMouseLeave={() => setPlayingVideo(null)}
                                         >
@@ -194,7 +194,7 @@ export function CreatorProfileModal({ creator, isOpen, onClose }: CreatorProfile
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="col-span-full p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                                    <div className="col-span-full p-8 text-center bg-gray-50 rounded-md border border-dashed border-gray-200">
                                         <p className="text-gray-500">No public brand collaborations listed yet.</p>
                                     </div>
                                 )}
@@ -205,7 +205,7 @@ export function CreatorProfileModal({ creator, isOpen, onClose }: CreatorProfile
                         <div className="space-y-6">
 
                             {/* Pricing Card */}
-                            <div className="bg-gradient-to-br from-orange-50 to-pink-50 rounded-2xl p-6 border border-orange-100">
+                            <div className="bg-gradient-to-br from-orange-50 to-pink-50 rounded-md p-6 border border-orange-100">
                                 <h3 className="text-xl font-bold text-[#1A1A1A] mb-4">Collaboration Pricing</h3>
                                 <div className="mb-4">
                                     <p className="text-sm text-gray-500 font-medium mb-1">Starting From</p>
@@ -223,7 +223,7 @@ export function CreatorProfileModal({ creator, isOpen, onClose }: CreatorProfile
                             </div>
 
                             {/* Availability Status */}
-                            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                            <div className="bg-white rounded-md p-6 border border-gray-100 shadow-sm">
                                 <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Current Status</h3>
                                 <div className="flex items-center gap-3">
                                     <span className={`w-3 h-3 rounded-full ${availabilityColors[creator.availability]} animate-pulse`} />

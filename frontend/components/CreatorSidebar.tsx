@@ -79,7 +79,7 @@ export function CreatorSidebar({ isOpen = false, onClose }: CreatorSidebarProps)
                 />
             )}
 
-            <aside className={`w-60 h-[calc(100vh-32px)] bg-[#FF4D00] border border-[#E5E5E5] shadow-xl rounded-2xl flex flex-col fixed left-4 top-4 z-100 text-black transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside className={`w-60 h-[calc(100vh-32px)] bg-[#FF4D00] border border-[#E5E5E5] shadow-xl rounded-md flex flex-col fixed left-4 top-4 z-100 text-black transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo */}
                 <div className="p-6 border-b border-[#E5E5E5] shrink-0 flex justify-between items-center">
                     <h1 className="text-[24px] font-bold text-black tracking-tight">CreatorSync</h1>
@@ -101,7 +101,7 @@ export function CreatorSidebar({ isOpen = false, onClose }: CreatorSidebarProps)
                                 key={item.name}
                                 href={item.href}
                                 onClick={onClose} // Close sidebar on nav click
-                                className={`group flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-bold transition-all duration-200 relative mb-2 mx-2 ${isActive
+                                className={`group flex items-center gap-3 px-4 py-3.5 rounded-md text-[15px] font-bold transition-all duration-200 relative mb-2 mx-2 ${isActive
                                     ? "bg-black text-white shadow-md border border-[#E5E5E5] border-l-4 border-l-[#FF4D00]"
                                     : "text-[#6B6B6B] hover:bg-[#FF9500] hover:text-black"
                                     }`}
@@ -110,7 +110,7 @@ export function CreatorSidebar({ isOpen = false, onClose }: CreatorSidebarProps)
                                 <span className="flex-1">{item.name}</span>
 
                                 {badgeCount > 0 && (
-                                    <span className="absolute right-4 bg-[#FF4D00] text-white font-bold px-2 py-0.5 rounded-xl text-[10px] min-w-6 text-center shadow-sm">
+                                    <span className="absolute right-4 bg-[#FF4D00] text-white font-bold px-2 py-0.5 rounded-md text-[10px] min-w-6 text-center shadow-sm">
                                         {badgeCount}
                                     </span>
                                 )}
@@ -124,7 +124,7 @@ export function CreatorSidebar({ isOpen = false, onClose }: CreatorSidebarProps)
                     <Link
                         href="/dashboard/creator/settings"
                         onClick={onClose}
-                        className={`group flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-bold mb-2 transition-all duration-200 mx-2 ${pathname === "/dashboard/creator/settings"
+                        className={`group flex items-center gap-3 px-4 py-3.5 rounded-md text-[15px] font-bold mb-2 transition-all duration-200 mx-2 ${pathname === "/dashboard/creator/settings"
                             ? "bg-black text-white shadow-md border border-[#E5E5E5] border-l-4 border-l-[#FF4D00]"
                             : "text-[#6B6B6B] hover:bg-[#FF9500] hover:text-black"
                             }`}
@@ -134,7 +134,7 @@ export function CreatorSidebar({ isOpen = false, onClose }: CreatorSidebarProps)
                     </Link>
 
                     <div
-                        className="group flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-bold hover:bg-[#FEE2E2] hover:text-[#EF4444] text-[#6B6B6B] cursor-pointer transition-all duration-200 mx-2"
+                        className="group flex items-center gap-3 px-4 py-3.5 rounded-md text-[15px] font-bold hover:bg-[#FEE2E2] hover:text-[#EF4444] text-[#6B6B6B] cursor-pointer transition-all duration-200 mx-2"
                         onClick={() => setShowLogoutConfirm(true)}
                     >
                         <LogOut className="w-5 h-5" />

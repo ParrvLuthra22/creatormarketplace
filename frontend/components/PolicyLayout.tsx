@@ -27,17 +27,11 @@ export function PolicyLayout({ title, lastUpdated, children }: PolicyLayoutProps
                 </div>
 
                 {/* Content Container */}
-                <div className="bg-white border border-[#E5E5E5] rounded-2xl px-9 py-10 md:px-[36px] md:py-[40px]">
+                <div className="bg-white border border-[#E5E5E5] rounded-md px-9 py-10 md:px-[36px] md:py-[40px]">
                     {children}
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="py-8 text-center">
-                <p className="text-[13px] text-[#3D3D3D]">
-                    © 2026 CreatorSync. All rights reserved.
-                </p>
-            </footer>
 
             {/* Responsive Styles */}
             <style jsx>{`

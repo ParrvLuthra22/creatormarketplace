@@ -54,20 +54,12 @@ export default function BrandCreatorProfilePage() {
 
     const creator = data?.creator;
 
-    // Fallback Mock data for UI replication if creator hasn't filled anything
     const pastWork = creator?.brandWork?.length ? creator.brandWork.map(w => ({
         brand: w.title || "Brand Partnership",
         logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
         image: w.url || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
         stats: ["N/A"]
-    })) : [
-        {
-            brand: "Parrv's Showcase",
-            logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
-            image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
-            stats: ["No work added yet"]
-        }
-    ];
+    })) : [];
 
     if (loading) {
         return (
@@ -138,31 +130,35 @@ export default function BrandCreatorProfilePage() {
                         <div className="brand-work-section">
                             <h2 className="section-title">Past Brand Work</h2>
                             
-                            <div className="brand-work-grid">
-                                {pastWork.map((work, idx) => (
-                                    <div key={idx} className="brand-work-card group cursor-pointer">
-                                        <img src={work.image} alt={work.brand} className="brand-work-img" />
-                                        <div className="brand-logo-container transition-transform group-hover:scale-110">
-                                            <img src={work.logo} alt={work.brand} />
-                                        </div>
-                                        <div className="brand-work-info">
-                                            <div className="flex justify-between items-center mb-4">
-                                                <h3 className="brand-work-title">{work.brand}</h3>
-                                                <Play className="w-4 h-4 text-white/40 group-hover:text-white" />
+                            {pastWork.length > 0 ? (
+                                <div className="brand-work-grid">
+                                    {pastWork.map((work, idx) => (
+                                        <div key={idx} className="brand-work-card group cursor-pointer">
+                                            <img src={work.image} alt={work.brand} className="brand-work-img" />
+                                            <div className="brand-logo-container transition-transform group-hover:scale-110">
+                                                <img src={work.logo} alt={work.brand} />
                                             </div>
-                                            <div className="brand-work-stats">
-                                                {work.stats.map((stat, sIdx) => (
-                                                    <p key={sIdx} className="brand-work-stat">
-                                                        <span>•</span> {stat}
-                                                    </p>
-                                                ))}
+                                            <div className="brand-work-info">
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <h3 className="brand-work-title">{work.brand}</h3>
+                                                    <Play className="w-4 h-4 text-white/40 group-hover:text-white" />
+                                                </div>
+                                                <div className="brand-work-stats">
+                                                    {work.stats.map((stat, sIdx) => (
+                                                        <p key={sIdx} className="brand-work-stat">
+                                                            <span>•</span> {stat}
+                                                        </p>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <button className="view-all-work">View All Work</button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-12 text-center text-zinc-500 italic bg-zinc-50 rounded-md border border-zinc-100">
+                                    This creator hasn't uploaded any past brand work yet.
+                                </div>
+                            )}
                         </div>
 
                         {/* Right Column: Collaboration Info */}
@@ -211,15 +207,7 @@ export default function BrandCreatorProfilePage() {
                         onSent={() => setIsProposalModalOpen(false)}
                     />
 
-                    {/* Footer Banner */}
-                    <div className="bg-black py-16 px-10 text-center mt-20">
-                        <p className="text-white text-xl font-bold mb-8 flex items-center justify-center gap-4">
-                            Partner with CreatorSync to accelerate your growth 
-                            <button className="bg-white text-black px-6 py-2 rounded-lg font-black text-sm uppercase tracking-widest hover:scale-105 transition-transform">
-                                Get Started
-                            </button>
-                        </p>
-                    </div>
+
                 </div>
             </BrandDashboardLayout>
         </RouteGuard>

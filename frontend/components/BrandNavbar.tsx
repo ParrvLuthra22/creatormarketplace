@@ -139,7 +139,7 @@ export function BrandNavbar() {
                             return (
                                 <span
                                     key={item.name}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-zinc-300 cursor-not-allowed select-none"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-zinc-300 cursor-not-allowed select-none"
                                 >
                                     <Lock className="w-4 h-4" />
                                     {item.name}
@@ -151,7 +151,7 @@ export function BrandNavbar() {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                                className={`relative flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                                     active
                                         ? "bg-[#FF4D00]/10 text-[#FF4D00]"
                                         : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
@@ -172,7 +172,7 @@ export function BrandNavbar() {
                 {/* Right side: Bell + Profile + Hamburger */}
                 <div className="flex items-center gap-3 shrink-0">
                     {/* Bell */}
-                    <button className="w-9 h-9 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all">
+                    <button className="w-9 h-9 rounded-md bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all">
                         <Bell className="w-4 h-4" />
                     </button>
 
@@ -180,7 +180,7 @@ export function BrandNavbar() {
                     <div className="relative" ref={profileRef}>
                         <button
                             onClick={() => setProfileOpen(!profileOpen)}
-                            className="flex items-center gap-2 h-9 px-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 transition-all"
+                            className="flex items-center gap-2 h-9 px-3 rounded-md border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 transition-all"
                         >
                             <div className="w-6 h-6 rounded-full bg-[#FF4D00]/10 flex items-center justify-center text-[#FF4D00] font-bold text-xs shrink-0 overflow-hidden">
                                 {isBrand && brandProfile?.logoUrl ? (
@@ -206,7 +206,7 @@ export function BrandNavbar() {
                         </button>
 
                         {profileOpen && (
-                            <div className="absolute top-12 right-0 w-56 bg-white border border-zinc-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                            <div className="absolute top-12 right-0 w-56 bg-white border border-zinc-200 rounded-md shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
                                 <div className="p-4 border-b border-zinc-100">
                                     <p className="text-sm font-bold text-zinc-900 truncate">{user?.fullName}</p>
                                     <p className="text-xs text-zinc-400 truncate">{user?.email}</p>
@@ -260,13 +260,13 @@ export function BrandNavbar() {
                     <div className="relative sm:hidden" ref={menuRef}>
                         <button
                             onClick={() => setMenuOpen(!menuOpen)}
-                            className="w-9 h-9 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
+                            className="w-9 h-9 rounded-md bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
                         >
                             {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
                         </button>
 
                         {menuOpen && (
-                            <div className="absolute top-12 right-0 w-52 bg-white border border-zinc-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                            <div className="absolute top-12 right-0 w-52 bg-white border border-zinc-200 rounded-md shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
                                 <div className="py-1.5">
                                     <Link
                                         href="/dashboard/brand/settings"
