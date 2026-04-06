@@ -66,7 +66,7 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
             <div
-                className="bg-white rounded-2xl w-full max-w-lg shadow-xl"
+                className="bg-white rounded-md w-full max-w-lg shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -94,7 +94,7 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
                 {/* Content */}
                 <div className="p-6 space-y-5">
                     {error && (
-                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">{error}</div>
+                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-sm">{error}</div>
                     )}
 
                     {/* Description */}
@@ -103,22 +103,22 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
                             <FileText className="w-4 h-4 text-[#6B6B6B]" />
                             <span className="text-xs font-bold text-[#6B6B6B] uppercase tracking-wider">Description</span>
                         </div>
-                        <p className="text-sm text-black leading-relaxed bg-[#F9F9F9] rounded-xl p-4">{proposal.description}</p>
+                        <p className="text-sm text-black leading-relaxed bg-[#F9F9F9] rounded-md p-4">{proposal.description}</p>
                     </div>
 
                     {/* Details Grid */}
                     <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-[#F9F9F9] rounded-xl p-4 text-center">
+                        <div className="bg-[#F9F9F9] rounded-md p-4 text-center">
                             <DollarSign className="w-5 h-5 text-[#FF4D00] mx-auto mb-1" />
                             <p className="text-lg font-bold text-black">₹{proposal.budget?.toLocaleString()}</p>
                             <p className="text-[10px] text-[#6B6B6B] uppercase tracking-wider">Budget</p>
                         </div>
-                        <div className="bg-[#F9F9F9] rounded-xl p-4 text-center">
+                        <div className="bg-[#F9F9F9] rounded-md p-4 text-center">
                             <Package className="w-5 h-5 text-[#FF4D00] mx-auto mb-1" />
                             <p className="text-sm font-bold text-black">{proposal.deliverables}</p>
                             <p className="text-[10px] text-[#6B6B6B] uppercase tracking-wider">Deliverables</p>
                         </div>
-                        <div className="bg-[#F9F9F9] rounded-xl p-4 text-center">
+                        <div className="bg-[#F9F9F9] rounded-md p-4 text-center">
                             <Calendar className="w-5 h-5 text-[#FF4D00] mx-auto mb-1" />
                             <p className="text-sm font-bold text-black">{formatDate(proposal.deadline)}</p>
                             <p className="text-[10px] text-[#6B6B6B] uppercase tracking-wider">Deadline</p>
@@ -136,7 +136,7 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
                             <button
                                 onClick={handleDecline}
                                 disabled={loading}
-                                className="flex-1 h-12 bg-[#F5F5F5] text-black font-bold rounded-xl hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="flex-1 h-12 bg-[#F5F5F5] text-black font-bold rounded-md hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 <XCircle className="w-4 h-4" />
                                 Decline
@@ -144,7 +144,7 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
                             <button
                                 onClick={handleAccept}
                                 disabled={loading}
-                                className="flex-1 h-12 bg-[#FF4D00] text-black font-bold rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="flex-1 h-12 bg-[#FF4D00] text-black font-bold rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 <Check className="w-4 h-4" />
                                 Accept

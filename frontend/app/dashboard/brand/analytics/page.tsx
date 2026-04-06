@@ -44,25 +44,25 @@ export default function BrandAnalytics() {
 
                     {/* TOP ROW - 4 Mini Stat Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                        <div className="bg-white border border-zinc-100 rounded-[28px] p-8 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                             <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">TOTAL SPEND</p>
                             <p className="text-4xl text-zinc-900 font-black tracking-tight">₹0</p>
                             <p className="text-xs text-zinc-400 font-bold mt-3">This month</p>
                         </div>
 
-                        <div className="bg-white border border-zinc-100 rounded-[28px] p-8 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                             <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">PROPOSALS SENT</p>
                             <p className="text-4xl text-zinc-900 font-black tracking-tight">0</p>
                             <p className="text-xs text-zinc-400 font-bold mt-3">This month</p>
                         </div>
 
-                        <div className="bg-white border border-zinc-100 rounded-[28px] p-8 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                             <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">RESPONSE RATE</p>
                             <p className="text-4xl text-zinc-900 font-black tracking-tight">0%</p>
                             <p className="text-xs text-zinc-400 font-bold mt-3">Last 30 days</p>
                         </div>
 
-                        <div className="bg-white border border-zinc-100 rounded-[28px] p-8 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                             <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">CREATORS AVAILABLE</p>
                             <p className="text-4xl text-zinc-900 font-black tracking-tight">{creatorCount}</p>
                             <p className="text-xs text-zinc-400 font-bold mt-3">On the platform</p>
@@ -70,9 +70,9 @@ export default function BrandAnalytics() {
                     </div>
 
                     {/* CHART PLACEHOLDER */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Performance</h2>
-                        <div className="aspect-[21/9] w-full border border-zinc-50 bg-zinc-50/50 rounded-[24px] flex flex-col items-center justify-center p-8">
+                        <div className="aspect-[21/9] w-full border border-zinc-50 bg-zinc-50/50 rounded-md flex flex-col items-center justify-center p-8">
                             <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-sm border border-zinc-100">
                                 <div className="w-10 h-10 rounded-full border-2 border-dashed border-zinc-200 animate-spin-slow" />
                             </div>
@@ -84,7 +84,7 @@ export default function BrandAnalytics() {
                     {/* BOTTOM ROW - Two Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {/* Recent Activity */}
-                        <div className="bg-white border border-zinc-100 rounded-[32px] p-10 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm">
                             <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Recent Activity</h2>
                             <div className="space-y-4">
                                 {activities.length === 0 ? (
@@ -94,7 +94,7 @@ export default function BrandAnalytics() {
                                 ) : (
                                     activities.map((activity, index) => (
                                         <div key={index} className="flex items-center gap-5 py-5 border-b border-zinc-50 last:border-b-0 group">
-                                            <div className="w-12 h-12 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors">
+                                            <div className="w-12 h-12 rounded-md bg-zinc-50 border border-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors">
                                                 <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 group-hover:bg-[#FF4D00] transition-colors" />
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -108,11 +108,11 @@ export default function BrandAnalytics() {
                         </div>
 
                         {/* Top Metrics */}
-                        <div className="bg-white border border-zinc-100 rounded-[32px] p-10 shadow-sm">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm">
                             <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Key Metrics</h2>
                             <div className="space-y-2">
                                 {metrics.map((metric, index) => (
-                                    <div key={index} className="flex justify-between items-center py-5 px-6 hover:bg-zinc-50 rounded-2xl transition-all border border-transparent hover:border-zinc-100">
+                                    <div key={index} className="flex justify-between items-center py-5 px-6 hover:bg-zinc-50 rounded-md transition-all border border-transparent hover:border-zinc-100">
                                         <p className="text-sm text-zinc-600 font-bold">{metric.label}</p>
                                         <p className="text-xl text-zinc-900 font-black tracking-tight">{metric.value}</p>
                                     </div>

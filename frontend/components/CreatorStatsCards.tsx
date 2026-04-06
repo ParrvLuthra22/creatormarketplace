@@ -18,7 +18,7 @@ function StatsCard({ title, value, subtext, icon: Icon, trend, action, clickable
     return (
         <div
             onClick={clickable ? onClick : undefined}
-            className={`group relative bg-white border border-zinc-200 rounded-[24px] p-6 shadow-sm transition-all duration-300 hover:border-[#FF4D00] overflow-hidden ${clickable ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+            className={`group relative bg-white border border-zinc-200 rounded-md p-6 shadow-sm transition-all duration-300 hover:border-[#FF4D00] overflow-hidden ${clickable ? 'cursor-pointer hover:-translate-y-1' : ''}`}
         >
             {/* Background Decoration */}
             <div className="absolute -top-5 -right-5 w-30 h-30 rounded-full bg-[radial-gradient(circle,rgba(255,69,0,0.08)_0%,transparent_70%)] pointer-events-none" />
@@ -33,7 +33,7 @@ function StatsCard({ title, value, subtext, icon: Icon, trend, action, clickable
             {/* Header */}
             <div className="flex justify-between items-start mb-3 relative z-10">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-black">
+                    <div className="w-10 h-10 rounded-md bg-orange-50 border border-orange-100 flex items-center justify-center text-black">
                         <Icon className="w-4 h-4 text-[#FF4D00]" />
                     </div>
                     <span className="text-[11px] font-bold text-[#6B6B6B] uppercase tracking-wider">
@@ -115,14 +115,14 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
 
             {/* CARD 3: STATUS */}
             <div
-                className="bg-white border border-zinc-200 p-6 rounded-[24px] shadow-sm hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-pointer hover:border-[#FF4D00]"
+                className="bg-white border border-zinc-200 p-6 rounded-md shadow-sm hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-pointer hover:border-[#FF4D00]"
                 onClick={onToggleStatus}
             >
                 <div className="absolute -top-5 -right-5 w-30 h-30 rounded-full bg-[radial-gradient(circle,rgba(255,69,0,0.08)_0%,transparent_70%)] pointer-events-none" />
 
                 <div className="flex justify-between items-start mb-3 relative z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-md bg-orange-50 border border-orange-100 flex items-center justify-center">
                             <CheckCircle className="w-4 h-4 text-[#FF4D00]" />
                         </div>
                         <span className="text-[11px] font-bold text-[#6B6B6B] uppercase tracking-wider">
@@ -132,7 +132,7 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                     {/* Toggle Switch */}
                     <div
                         onClick={onToggleStatus}
-                        className={`relative w-13 h-7.5 rounded-[16px] transition-colors focus:outline-none ${isActive ? 'bg-[#4CAF50]' : 'bg-[#CCCCCC]'}`}
+                        className={`relative w-13 h-7.5 rounded-md transition-colors focus:outline-none ${isActive ? 'bg-[#4CAF50]' : 'bg-[#CCCCCC]'}`}
                     >
                         <span
                             className={`inline-block w-5.5 h-5.5 rounded-full bg-white shadow-sm transform transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`}

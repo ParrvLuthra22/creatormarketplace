@@ -87,7 +87,7 @@ export default function CreatorProposals() {
                                 <button
                                     key={tab.label}
                                     onClick={() => setSelectedFilter(tab.label)}
-                                    className={`px-6 py-2.5 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${selectedFilter === tab.label
+                                    className={`px-6 py-2.5 rounded-md text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${selectedFilter === tab.label
                                         ? "bg-[#FF4D00] text-white border border-[#FF4D00] shadow-lg shadow-orange-500/20"
                                         : "bg-white text-zinc-400 border border-zinc-100 hover:border-[#FF4D00] hover:text-[#FF4D00] hover:shadow-md"
                                         }`}
@@ -112,7 +112,7 @@ export default function CreatorProposals() {
                                 {filteredProposals.map((proposal) => (
                                     <div
                                         key={proposal._id}
-                                        className="bg-white border border-zinc-100 rounded-[32px] p-6 hover:border-[#FF4D00] hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                                        className="bg-white border border-zinc-100 rounded-sm p-6 hover:border-[#FF4D00] hover:shadow-xl transition-all duration-300 cursor-pointer group"
                                         onClick={() => setSelectedProposal(proposal)}
                                     >
                                         {/* Status Badge */}
@@ -130,15 +130,15 @@ export default function CreatorProposals() {
 
                                         {/* Details Grid */}
                                         <div className="grid grid-cols-3 gap-3 mb-6">
-                                            <div className="bg-zinc-50 rounded-[18px] p-3 text-center border border-zinc-100/50">
+                                            <div className="bg-zinc-50 rounded-md p-3 text-center border border-zinc-100/50">
                                                 <DollarSign className="w-4 h-4 text-[#FF4D00] mx-auto mb-1" />
                                                 <p className="text-[11px] font-black text-zinc-900 tracking-tight">₹{(proposal.budget / 1000).toFixed(0)}k</p>
                                             </div>
-                                            <div className="bg-zinc-50 rounded-[18px] p-3 text-center border border-zinc-100/50 overflow-hidden">
+                                            <div className="bg-zinc-50 rounded-md p-3 text-center border border-zinc-100/50 overflow-hidden">
                                                 <Package className="w-4 h-4 text-[#FF4D00] mx-auto mb-1" />
                                                 <p className="text-[11px] font-black text-zinc-900 tracking-tight truncate px-1">{proposal.deliverables}</p>
                                             </div>
-                                            <div className="bg-zinc-50 rounded-[18px] p-3 text-center border border-zinc-100/50">
+                                            <div className="bg-zinc-50 rounded-md p-3 text-center border border-zinc-100/50">
                                                 <Calendar className="w-4 h-4 text-[#FF4D00] mx-auto mb-1" />
                                                 <p className="text-[11px] font-black text-zinc-900 tracking-tight">{formatDate(proposal.deadline)}</p>
                                             </div>
@@ -147,14 +147,14 @@ export default function CreatorProposals() {
                                         {/* Action Buttons */}
                                         <div className="flex gap-2">
                                             <button
-                                                className="flex-1 h-9 bg-[#FF4D00] text-black font-bold text-xs rounded-lg hover:opacity-90 transition-opacity"
+                                                className="flex-1 h-9 bg-[#FF4D00] text-black font-bold text-xs rounded-sm hover:opacity-90 transition-opacity"
                                                 onClick={(e) => { e.stopPropagation(); setSelectedProposal(proposal); }}
                                             >
                                                 VIEW PROPOSAL
                                             </button>
                                             {proposal.status === 'accepted' && (
                                                 <button
-                                                    className="flex-1 h-9 bg-white text-black border border-[#E5E5E5] font-bold text-xs rounded-lg hover:bg-[#FFF3E0] transition-colors flex items-center justify-center gap-1"
+                                                    className="flex-1 h-9 bg-white text-black border border-[#E5E5E5] font-bold text-xs rounded-sm hover:bg-[#FFF3E0] transition-colors flex items-center justify-center gap-1"
                                                     onClick={(e) => { e.stopPropagation(); handleMessage(proposal); }}
                                                 >
                                                     <MessageCircle className="w-3.5 h-3.5" />

@@ -72,7 +72,7 @@ export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps
     };
 
     return (
-        <aside className="w-55 h-[calc(100vh-32px)] bg-[#FF4D00] border border-[#E5E5E5] shadow-xl rounded-2xl flex flex-col fixed left-4 top-4 z-100 text-black">
+        <aside className="w-55 h-[calc(100vh-32px)] bg-[#FF4D00] border border-[#E5E5E5] shadow-xl rounded-md flex flex-col fixed left-4 top-4 z-100 text-black">
             {/* Logo */}
             <div className="p-6 border-b border-[#E5E5E5] shrink-0">
                 <h1 className="text-[24px] font-bold text-black tracking-tight">CreatorSync</h1>
@@ -80,7 +80,7 @@ export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps
 
             {/* Plan Badge */}
             <div className="flex items-center justify-between px-5 mb-6 mt-6">
-                <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase ${user?.plan === 'free'
+                <span className={`px-2.5 py-1 rounded-sm text-[11px] font-bold tracking-wide uppercase ${user?.plan === 'free'
                     ? 'bg-[#FF4D00] text-gray-400 border border-[#2A2A2A]'
                     : user?.plan === 'basic'
                         ? 'bg-[rgba(74,70,255,0.1)] text-info border border-[rgba(74,70,255,0.2)]'
@@ -116,7 +116,7 @@ export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps
                                 ) : (
                                     <Link
                                         href={item.href}
-                                        className={`flex items-center gap-3 px-4 py-3.5 text-[15px] font-bold transition-all relative rounded-xl mx-2 my-1
+                                        className={`flex items-center gap-3 px-4 py-3.5 text-[15px] font-bold transition-all relative rounded-md mx-2 my-1
                                             ${isActive
                                             ? "bg-black text-white shadow-md border border-[#E5E5E5]"
                                             : "text-[#6B6B6B] hover:bg-[#FF9500] hover:text-black"
@@ -143,7 +143,7 @@ export function DashboardSidebar({ userName, userAvatar }: DashboardSidebarProps
             {/* User Profile with Logout - Fixed at bottom */}
             <div className="mt-4 border-t border-[#E5E5E5] pt-4 px-4 pb-4">
                 <div
-                    className="shrink-0 p-3 mx-0 rounded-xl cursor-pointer bg-[#FF9500] hover:bg-[#FF4D00] border border-transparent hover:border-[#E5E5E5] text-black/80 hover:text-black transition-colors group flex items-center gap-3"
+                    className="shrink-0 p-3 mx-0 rounded-md cursor-pointer bg-[#FF9500] hover:bg-[#FF4D00] border border-transparent hover:border-[#E5E5E5] text-black/80 hover:text-black transition-colors group flex items-center gap-3"
                     onClick={() => setShowLogoutConfirm(true)}
                 >
                     <div className="w-8 h-8 rounded-full bg-[#FF4D00] border border-[#E5E5E5] flex items-center justify-center text-black font-semibold text-xs shrink-0">

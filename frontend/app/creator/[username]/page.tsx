@@ -59,7 +59,7 @@ export default function CreatorProfileViewPage() {
                 <main className="container mx-auto px-4 md:px-6 py-8">
                     <div className="max-w-4xl mx-auto">
                         {/* Profile Header */}
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-8">
+                        <div className="bg-white rounded-md p-8 shadow-sm border border-gray-100 mb-8">
                             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                                 {/* Avatar */}
                                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-[#FF6B35] to-[#FF6B9D] flex items-center justify-center flex-shrink-0">
@@ -111,25 +111,25 @@ export default function CreatorProfileViewPage() {
 
                         {/* Stats */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+                            <div className="bg-white rounded-md p-4 shadow-sm border border-gray-100 text-center">
                                 <p className="text-2xl font-bold text-gray-900">
                                     {creator.followers || '-'}
                                 </p>
                                 <p className="text-sm text-gray-600">Followers</p>
                             </div>
-                            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+                            <div className="bg-white rounded-md p-4 shadow-sm border border-gray-100 text-center">
                                 <p className="text-2xl font-bold text-gray-900">
                                     {creator.engagement || '-'}
                                 </p>
                                 <p className="text-sm text-gray-600">Engagement</p>
                             </div>
-                            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+                            <div className="bg-white rounded-md p-4 shadow-sm border border-gray-100 text-center">
                                 <p className="text-2xl font-bold text-gray-900">
                                     {creator.avgLikes?.toLocaleString('en-IN') || '-'}
                                 </p>
                                 <p className="text-sm text-gray-600">Avg. Likes</p>
                             </div>
-                            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+                            <div className="bg-white rounded-md p-4 shadow-sm border border-gray-100 text-center">
                                 <p className="text-2xl font-bold text-gray-900">
                                     ₹{creator.pricing?.starting?.toLocaleString('en-IN') || '-'}
                                 </p>
@@ -139,11 +139,11 @@ export default function CreatorProfileViewPage() {
 
                         {/* Pricing */}
                         {creator.pricing && (
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+                            <div className="bg-white rounded-md p-6 shadow-sm border border-gray-100 mb-8">
                                 <h2 className="text-xl font-bold text-gray-900 mb-4">Pricing</h2>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {creator.pricing.reel && (
-                                        <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                        <div className="text-center p-4 bg-gray-50 rounded-sm">
                                             <p className="text-lg font-bold text-[#FF6B35]">
                                                 ₹{creator.pricing.reel.toLocaleString('en-IN')}
                                             </p>
@@ -151,7 +151,7 @@ export default function CreatorProfileViewPage() {
                                         </div>
                                     )}
                                     {creator.pricing.story && (
-                                        <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                        <div className="text-center p-4 bg-gray-50 rounded-sm">
                                             <p className="text-lg font-bold text-[#FF6B35]">
                                                 ₹{creator.pricing.story.toLocaleString('en-IN')}
                                             </p>
@@ -159,7 +159,7 @@ export default function CreatorProfileViewPage() {
                                         </div>
                                     )}
                                     {creator.pricing.post && (
-                                        <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                        <div className="text-center p-4 bg-gray-50 rounded-sm">
                                             <p className="text-lg font-bold text-[#FF6B35]">
                                                 ₹{creator.pricing.post.toLocaleString('en-IN')}
                                             </p>

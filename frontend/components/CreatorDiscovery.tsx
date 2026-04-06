@@ -41,7 +41,7 @@ export function CreatorDiscovery() {
             </div>
 
             {/* Creator List Container */}
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
+            <div className="bg-[#141414] border border-[#1F1F1F] rounded-md overflow-hidden">
                 {/* Column Headers */}
                 <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-[#1F1F1F] bg-[#0D0D0D]">
                     <div className="col-span-4 text-[11px] font-semibold text-[#3D3D3D] uppercase tracking-wide">

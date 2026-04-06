@@ -74,7 +74,7 @@ export default function BrandProposals() {
                     </div>
                     <button
                         onClick={() => router.push('/dashboard/brand')}
-                        className="px-8 h-12 bg-[#FF4D00] text-white rounded-2xl font-bold text-sm hover:bg-[#FF4D00]/90 transition-all flex items-center gap-2 shadow-lg shadow-orange-500/10"
+                        className="px-8 h-12 bg-[#FF4D00] text-white rounded-md font-bold text-sm hover:bg-[#FF4D00]/90 transition-all flex items-center gap-2 shadow-lg shadow-orange-500/10"
                     >
                         <Plus className="w-4 h-4" />
                         Send New Proposal
@@ -98,7 +98,7 @@ export default function BrandProposals() {
                 </div>
 
                 {/* Proposals List */}
-                <div className="bg-white rounded-[32px] overflow-hidden border border-zinc-100 shadow-sm">
+                <div className="bg-white rounded-sm overflow-hidden border border-zinc-100 shadow-sm">
                     {/* Column Headers */}
                     <div className="hidden md:grid md:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center px-10 py-6 border-b border-zinc-50 bg-zinc-50/50 text-zinc-400">
                         <div className="text-[10px] uppercase font-black tracking-widest leading-none">CREATOR</div>
@@ -131,7 +131,7 @@ export default function BrandProposals() {
                             >
                                 {/* Creator */}
                                 <div className="flex items-center gap-5 mb-4 md:mb-0">
-                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-[#FF4D00] bg-orange-50 border border-orange-100 text-sm font-black shrink-0 shadow-sm overflow-hidden">
+                                    <div className="w-12 h-12 rounded-md flex items-center justify-center text-[#FF4D00] bg-orange-50 border border-orange-100 text-sm font-black shrink-0 shadow-sm overflow-hidden">
                                         {proposal.creatorProfile?.profilePhoto ? (
                                             <img src={getProfilePhotoUrl(proposal.creatorProfile.profilePhoto)} className="w-full h-full object-cover" alt="Creator Profile" />
                                         ) : (
@@ -152,7 +152,7 @@ export default function BrandProposals() {
 
                                 {/* Status */}
                                 <div className="mb-2 md:mb-0">
-                                    <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider ${getStatusColor(proposal.status)}`}>
+                                    <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider ${getStatusColor(proposal.status)}`}>
                                         {proposal.status}
                                     </span>
                                 </div>
@@ -167,13 +167,13 @@ export default function BrandProposals() {
                                     {proposal.status === 'accepted' && (
                                         <button
                                             onClick={(e) => handleMessage(e, proposal)}
-                                            className="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-all"
+                                            className="w-11 h-11 rounded-md bg-zinc-900 border border-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-all"
                                             title="Message Creator"
                                         >
                                             <MessageCircle className="w-5 h-5 text-white" />
                                         </button>
                                     )}
-                                    <div className="w-11 h-11 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:bg-[#FF4D00] group-hover:border-[#FF4D00] group-hover:text-white transition-all shadow-sm">
+                                    <div className="w-11 h-11 rounded-md bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:bg-[#FF4D00] group-hover:border-[#FF4D00] group-hover:text-white transition-all shadow-sm">
                                         <ArrowRight className="w-5 h-5" />
                                     </div>
                                 </div>

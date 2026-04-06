@@ -257,7 +257,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
             />
 
             {/* Modal Content */}
-            <div className="relative bg-white border border-[#E5E5E5] rounded-3xl w-full max-w-md shadow-2xl p-8 transform transition-all animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-white border border-[#E5E5E5] rounded-sm w-full max-w-md shadow-2xl p-8 transform transition-all animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
                 <button
                     onClick={handleClose}
                     disabled={loading}
@@ -330,12 +330,12 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
 
                 {/* Error/Success Messages */}
                 {error && (
-                    <div className="mb-4 p-3 bg-red-600/10 border border-red-600/20 rounded-xl text-red-400 text-sm">
+                    <div className="mb-4 p-3 bg-red-600/10 border border-red-600/20 rounded-md text-red-400 text-sm">
                         {error}
                     </div>
                 )}
                 {successMessage && (
-                    <div className="mb-4 p-3 bg-green-600/10 border border-green-600/20 rounded-xl text-green-400 text-sm">
+                    <div className="mb-4 p-3 bg-green-600/10 border border-green-600/20 rounded-md text-green-400 text-sm">
                         {successMessage}
                     </div>
                 )}
@@ -355,7 +355,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 onBlur={handleLoginEmailBlur}
                                 required
                                 disabled={loading}
-                                className={`w-full px-4 py-3 rounded-xl border ${loginEmailError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                className={`w-full px-4 py-3 rounded-md border ${loginEmailError ? "border-red-600/50" : "border-[#E5E5E5]"
                                     } focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                             />
                             {loginEmailError && (
@@ -371,7 +371,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     onChange={(e) => setLoginPassword(e.target.value)}
                                     required
                                     disabled={loading}
-                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-[#E5E5E5] focus:outline-none focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50"
+                                    className="w-full px-4 py-3 pr-12 rounded-md border border-[#E5E5E5] focus:outline-none focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
@@ -414,13 +414,13 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                         <button
                             onClick={() => setAccountType("Brand")}
                             disabled={loading}
-                            className={`w-full p-6 border rounded-2xl transition-all text-left disabled:opacity-50 ${accountType === "Brand"
+                            className={`w-full p-6 border rounded-md transition-all text-left disabled:opacity-50 ${accountType === "Brand"
                                 ? "border-black bg-[#F4EFE6]"
                                 : "border-[#E5E5E5] hover:border-[#FF4D00] hover:bg-[#F4EFE6]"
                                 }`}
                         >
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#ffec00] flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-md bg-[#ffec00] flex items-center justify-center">
                                     <Briefcase className="w-6 h-6 text-black" />
                                 </div>
                                 <div className="flex-1">
@@ -434,13 +434,13 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                         <button
                             onClick={() => setAccountType("Creator")}
                             disabled={loading}
-                            className={`w-full p-6 border rounded-2xl transition-all text-left disabled:opacity-50 ${accountType === "Creator"
+                            className={`w-full p-6 border rounded-md transition-all text-left disabled:opacity-50 ${accountType === "Creator"
                                 ? "border-black bg-[#F4EFE6]"
                                 : "border-[#E5E5E5] hover:border-[#FF4D00] hover:bg-[#F4EFE6]"
                                 }`}
                         >
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#ffec00] flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-md bg-[#ffec00] flex items-center justify-center">
                                     <Star className="w-6 h-6 text-black" />
                                 </div>
                                 <div className="flex-1">
@@ -486,7 +486,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 onBlur={handleSignupNameBlur}
                                 required
                                 disabled={loading}
-                                className={`w-full px-4 py-3 rounded-xl border ${signupNameError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                className={`w-full px-4 py-3 rounded-md border ${signupNameError ? "border-red-600/50" : "border-[#E5E5E5]"
                                     } focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                             />
                             {signupNameError && (
@@ -506,7 +506,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 onBlur={handleSignupEmailBlur}
                                 required
                                 disabled={loading}
-                                className={`w-full px-4 py-3 rounded-xl border ${signupEmailError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                className={`w-full px-4 py-3 rounded-md border ${signupEmailError ? "border-red-600/50" : "border-[#E5E5E5]"
                                     } focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                             />
                             {signupEmailError && (
@@ -523,7 +523,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     value={companyName}
                                     onChange={(e) => setCompanyName(e.target.value)}
                                     disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl border border-[#E5E5E5] focus:outline-none focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50"
+                                    className="w-full px-4 py-3 rounded-md border border-[#E5E5E5] focus:outline-none focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50"
                                 />
                             </div>
                         )}
@@ -541,7 +541,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     }}
                                     required
                                     disabled={loading}
-                                    className={`w-full px-4 py-3 rounded-xl border ${instagramHandleError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                    className={`w-full px-4 py-3 rounded-md border ${instagramHandleError ? "border-red-600/50" : "border-[#E5E5E5]"
                                         } focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                                 />
                                 {instagramHandleError && (
@@ -564,7 +564,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                     required
                                     minLength={8}
                                     disabled={loading}
-                                    className={`w-full px-4 py-3 pr-12 rounded-xl border ${signupPasswordError ? "border-red-600/50" : "border-[#E5E5E5]"
+                                    className={`w-full px-4 py-3 pr-12 rounded-md border ${signupPasswordError ? "border-red-600/50" : "border-[#E5E5E5]"
                                         } focus:border-[#FF4D00] transition-all bg-white text-black placeholder-[#6B6B6B] disabled:opacity-50`}
                                 />
                                 <button
@@ -634,7 +634,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 type="button"
                                 onClick={() => setSelectedPlan('free')}
                                 disabled={loading}
-                                className={`relative text-left bg-white border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'free'
+                                className={`relative text-left bg-white border rounded-md p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'free'
                                     ? 'border-black border-2 bg-[#F4EFE6]'
                                     : 'border-[#E5E5E5] hover:border-[#6B6B6B]'
                                     }`}
@@ -679,7 +679,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 type="button"
                                 onClick={() => setSelectedPlan('basic')}
                                 disabled={loading}
-                                className={`relative text-left bg-white border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'basic'
+                                className={`relative text-left bg-white border rounded-md p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'basic'
                                     ? 'border-black border-2 bg-[#F4EFE6]'
                                     : 'border-[#E5E5E5] hover:border-[#6B6B6B]'
                                     }`}
@@ -724,7 +724,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 type="button"
                                 onClick={() => setSelectedPlan('pro')}
                                 disabled={loading}
-                                className={`relative text-left bg-white border rounded-[16px] p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'pro'
+                                className={`relative text-left bg-white border rounded-md p-6 cursor-pointer transition-all duration-200 disabled:opacity-50 ${selectedPlan === 'pro'
                                     ? 'border-black border-2 bg-[#F4EFE6]'
                                     : 'border-[#E5E5E5] hover:border-[#6B6B6B]'
                                     }`}

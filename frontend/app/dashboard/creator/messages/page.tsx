@@ -62,7 +62,10 @@ export default function CreatorMessagesPage() {
 
     // Scroll to bottom when messages update
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        const container = document.getElementById("messages-container");
+        if (container) {
+            container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+        }
     }, [messages]);
 
     // Socket listeners
@@ -151,7 +154,7 @@ export default function CreatorMessagesPage() {
     return (
         <RouteGuard allowedRole="creator">
             <CreatorDashboardLayout variant="white">
-                <div className="flex h-[calc(100vh-160px)] overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-xl">
+                <div className="flex h-[calc(100vh-160px)] overflow-hidden rounded-sm border border-zinc-200 bg-white shadow-xl">
                     {/* CONVERSATION LIST PANEL */}
                     <div className={`w-full md:w-[350px] bg-zinc-50 border-r border-zinc-100 flex flex-col ${showMobileChat ? 'hidden md:flex' : 'flex'}`}>
                         {/* Header */}
@@ -167,7 +170,7 @@ export default function CreatorMessagesPage() {
                                 <input
                                     type="text"
                                     placeholder="Search chats..."
-                                    className="w-full bg-white border border-zinc-200 rounded-xl py-2 pl-9 pr-4 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#FF4D00] transition-colors"
+                                    className="w-full bg-white border border-zinc-200 rounded-md py-2 pl-9 pr-4 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#FF4D00] transition-colors"
                                 />
                             </div>
                         </div>
@@ -190,7 +193,7 @@ export default function CreatorMessagesPage() {
                                         setSelectedConversation(conv._id);
                                         setShowMobileChat(true);
                                     }}
-                                    className={`flex items-center gap-4 px-5 py-4 mx-3 my-1 rounded-2xl cursor-pointer transition-all border ${selectedConversation === conv._id
+                                    className={`flex items-center gap-4 px-5 py-4 mx-3 my-1 rounded-md cursor-pointer transition-all border ${selectedConversation === conv._id
                                         ? 'bg-white text-[#FF4D00] border-[#FF4D00]/20 shadow-sm'
                                         : 'hover:bg-zinc-100 border-transparent text-zinc-900'
                                         }`}
@@ -251,17 +254,17 @@ export default function CreatorMessagesPage() {
                                     <div className="relative">
                                         <button
                                             onClick={() => setShowMenu(!showMenu)}
-                                            className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:bg-zinc-100 transition-all"
+                                            className="w-10 h-10 rounded-md bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:bg-zinc-100 transition-all"
                                         >
                                             <MoreVertical className="w-5 h-5" />
                                         </button>
 
                                         {showMenu && (
-                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-zinc-100 rounded-2xl p-2 z-10 shadow-xl overflow-hidden">
-                                                <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 rounded-xl transition-all lowercase">
+                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-zinc-100 rounded-md p-2 z-10 shadow-xl overflow-hidden">
+                                                <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 rounded-md transition-all lowercase">
                                                     View Profile
                                                 </button>
-                                                <button className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-all lowercase">
+                                                <button className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-md transition-all lowercase">
                                                     Close Chat
                                                 </button>
                                             </div>
@@ -270,7 +273,7 @@ export default function CreatorMessagesPage() {
                                 </div>
 
                                 {/* Messages Area */}
-                                <div className="flex-1 overflow-y-auto px-8 py-8 space-y-4 bg-zinc-50 scrollbar-hide">
+                                <div id="messages-container" className="flex-1 overflow-y-auto px-8 py-8 space-y-4 bg-zinc-50 scrollbar-hide">
                                     {messages.map((msg) => {
                                         const isMe = msg.senderId === user?.id;
                                         return (
@@ -310,16 +313,16 @@ export default function CreatorMessagesPage() {
                                             onChange={(e) => setMessageInput(e.target.value)}
                                             onKeyPress={handleKeyPress}
                                             placeholder="Type your message..."
-                                            className="w-full h-14 bg-zinc-50 border border-zinc-200 rounded-2xl px-6 text-[15px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#FF4D00] transition-all"
+                                            className="w-full h-14 bg-zinc-50 border border-zinc-200 rounded-md px-6 text-[15px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#FF4D00] transition-all"
                                         />
-                                        <button className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-zinc-200 flex items-center justify-center transition-colors">
+                                        <button className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-sm hover:bg-zinc-200 flex items-center justify-center transition-colors">
                                             <Paperclip className="w-4 h-4 text-zinc-400" />
                                         </button>
                                     </div>
                                     <button
                                         onClick={handleSendMessage}
                                         disabled={!connected || !messageInput.trim()}
-                                        className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${
+                                        className={`h-14 w-14 rounded-md flex items-center justify-center transition-all ${
                                             messageInput.trim() && connected
                                             ? 'bg-[#FF4D00] text-white hover:bg-[#FF4D00]/90 active:scale-95 shadow-lg shadow-orange-500/20' 
                                             : 'bg-zinc-100 text-zinc-400 cursor-not-allowed'
@@ -332,7 +335,7 @@ export default function CreatorMessagesPage() {
                         ) : (
                             // Empty State
                             <div className="flex-1 flex flex-col items-center justify-center p-12">
-                                <div className="w-24 h-24 rounded-[32px] bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-8">
+                                <div className="w-24 h-24 rounded-sm bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-8">
                                     <MessageCircle className="w-10 h-10 text-zinc-300" strokeWidth={1.5} />
                                 </div>
                                 <h3 className="text-2xl font-extrabold text-zinc-900 tracking-tight mb-3 lowercase">your inbox</h3>

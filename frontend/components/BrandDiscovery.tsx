@@ -16,7 +16,7 @@ export function BrandDiscovery({ brands }: BrandDiscoveryProps) {
                 {activeBrands.map((brand) => (
                     <div
                         key={brand.id}
-                        className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                        className="bg-white rounded-md p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                     >
                         <div className="flex items-start gap-4">
                             {/* Brand Logo */}
@@ -51,7 +51,7 @@ export function BrandDiscovery({ brands }: BrandDiscoveryProps) {
             </div>
 
             {activeBrands.length === 0 && (
-                <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
+                <div className="text-center py-12 bg-white rounded-md border border-gray-100">
                     <p className="text-gray-500">No brands actively hiring at the moment.</p>
                 </div>
             )}

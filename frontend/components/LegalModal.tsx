@@ -45,7 +45,7 @@ export function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
             onClick={onClose}
         >
             <div
-                className="bg-[#141414] border border-[#1F1F1F] rounded-2xl w-[680px] max-w-[92vw] max-h-[80vh] flex flex-col"
+                className="bg-[#141414] border border-[#1F1F1F] rounded-md w-[680px] max-w-[92vw] max-h-[80vh] flex flex-col"
                 style={{
                     animation: "scaleIn 250ms ease-out",
                 }}

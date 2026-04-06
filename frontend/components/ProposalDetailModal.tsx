@@ -25,7 +25,7 @@ export function ProposalDetailModal({ proposal, onClose }: ProposalDetailModalPr
 
             {/* Modal */}
             <div className="relative min-h-screen flex items-center justify-center p-4">
-                <div className="relative bg-[#FF4D00] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="relative bg-[#FF4D00] rounded-md shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                     {/* Header */}
                     <div className="sticky top-0 bg-[#FF4D00] border-b border-gray-200 px-8 py-6 flex items-center justify-between rounded-t-2xl">
                         <div className="flex items-center gap-4">
@@ -48,7 +48,7 @@ export function ProposalDetailModal({ proposal, onClose }: ProposalDetailModalPr
                     {/* Content */}
                     <div className="px-8 py-6 space-y-6">
                         {/* Budget */}
-                        <div className="bg-pink-50 rounded-xl p-6">
+                        <div className="bg-pink-50 rounded-md p-6">
                             <div className="flex items-center gap-3 mb-2">
                                 <DollarSign className="w-6 h-6 text-[#FF6B9D]" />
                                 <h3 className="text-lg font-semibold text-gray-900">Budget</h3>

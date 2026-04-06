@@ -154,18 +154,18 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
             <h2 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h2>
 
             {/* Stats Summary */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+            <div className="bg-white rounded-md p-6 shadow-sm border border-gray-100 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Summary</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center p-4 bg-pink-50 rounded-lg">
+                    <div className="text-center p-4 bg-pink-50 rounded-sm">
                         <p className="text-2xl font-bold text-[#FF6B9D]">{formatCurrency(totalEarnings)}</p>
                         <p className="text-sm text-gray-600 mt-1">Total Earnings</p>
                     </div>
-                    <div className="text-center p-4 bg-pink-50 rounded-lg">
+                    <div className="text-center p-4 bg-pink-50 rounded-sm">
                         <p className="text-2xl font-bold text-[#FF6B9D]">{pendingProposals}</p>
                         <p className="text-sm text-gray-600 mt-1">Pending Proposals</p>
                     </div>
-                    <div className="text-center p-4 bg-pink-50 rounded-lg">
+                    <div className="text-center p-4 bg-pink-50 rounded-sm">
                         <p className="text-2xl font-bold text-[#FF6B9D]">{profileViews}</p>
                         <p className="text-sm text-gray-600 mt-1">Profile Views</p>
                     </div>
@@ -173,7 +173,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
             </div>
 
             {/* Profile Information */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-md p-6 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-gray-900">Creator Information</h3>
                     {!isEditing && (
@@ -191,7 +191,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                 <div className="space-y-6">
                     {(saveError || saveSuccess) && (
                         <div
-                            className={`rounded-lg border px-4 py-3 text-sm ${saveError
+                            className={`rounded-sm border px-4 py-3 text-sm ${saveError
                                     ? "border-red-200 bg-red-50 text-red-700"
                                     : "border-green-200 bg-green-50 text-green-700"
                                 }`}
@@ -239,7 +239,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                             value={profileData.fullName}
                             onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
                             disabled
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         />
                     </div>
 
@@ -253,7 +253,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                                 type="url"
                                 value={profileData.profilePhoto}
                                 onChange={(e) => setProfileData({ ...profileData, profilePhoto: e.target.value })}
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent"
                                 placeholder="https://..."
                             />
                             <p className="text-xs text-gray-500 mt-1">(Upload wiring can be added later; for now paste a URL.)</p>
@@ -273,7 +273,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                             value={profileData.instagramHandle}
                             onChange={(e) => setProfileData({ ...profileData, instagramHandle: e.target.value })}
                             disabled={!isEditing}
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         />
                     </div>
 
@@ -310,7 +310,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                             disabled={!isEditing}
                             maxLength={200}
                             rows={3}
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         />
                         <p className="text-xs text-gray-500 mt-1">{profileData.bio.length}/200</p>
                     </div>
@@ -328,7 +328,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                                     value={profileData.pricePerReel}
                                     onChange={(e) => setProfileData({ ...profileData, pricePerReel: Number(e.target.value) })}
                                     disabled={!isEditing}
-                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                                 />
                             </div>
                             <div>
@@ -340,7 +340,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                                     value={profileData.pricePerStory}
                                     onChange={(e) => setProfileData({ ...profileData, pricePerStory: Number(e.target.value) })}
                                     disabled={!isEditing}
-                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                                 />
                             </div>
                         </div>
@@ -355,7 +355,7 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                             value={profileData.availability}
                             onChange={(e) => setProfileData({ ...profileData, availability: e.target.value as Availability })}
                             disabled={!isEditing}
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B9D] focus:border-transparent disabled:bg-gray-50 disabled:text-gray-600"
                         >
                             <option value="available">Available</option>
                             <option value="limited">Limited Availability</option>

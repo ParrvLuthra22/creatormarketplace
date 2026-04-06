@@ -66,7 +66,7 @@ export default function BrandSettings() {
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10">Settings</h1>
 
                     {/* SECTION 1 - Plan & Billing */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Plan & Billing</h2>
 
                         {/* Current Plan Display */}
@@ -85,7 +85,7 @@ export default function BrandSettings() {
                                 </p>
                             </div>
                             <div className="shrink-0 ml-6">
-                                <span className={`px-6 py-2.5 rounded-2xl text-[10px] font-black tracking-widest uppercase border ${
+                                <span className={`px-6 py-2.5 rounded-md text-[10px] font-black tracking-widest uppercase border ${
                                     user?.plan === 'free' ? 'text-zinc-400 border-zinc-100 bg-zinc-50' :
                                         user?.plan === 'basic' ? 'bg-[#FF4D00] text-white border-[#FF4D00] shadow-lg shadow-orange-500/20' :
                                             'bg-zinc-900 text-white border-zinc-900 shadow-xl'
@@ -100,7 +100,7 @@ export default function BrandSettings() {
                             {user?.plan !== 'pro' ? (
                                 <button
                                     onClick={() => router.push('/pricing')}
-                                    className="h-14 px-10 bg-[#FF4D00] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10"
+                                    className="h-14 px-10 bg-[#FF4D00] text-white rounded-md font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10"
                                 >
                                     Upgrade Plan
                                 </button>
@@ -108,13 +108,13 @@ export default function BrandSettings() {
                                 <>
                                     <button
                                         onClick={() => router.push('/pricing')}
-                                        className="h-14 px-10 bg-zinc-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-zinc-800 transition-all"
+                                        className="h-14 px-10 bg-zinc-900 text-white rounded-md font-black text-sm uppercase tracking-widest hover:bg-zinc-800 transition-all"
                                     >
                                         Change Plan
                                     </button>
                                     <button
                                         onClick={handleCancelSubscription}
-                                        className="h-14 px-10 bg-white border border-red-100 text-red-500 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-50 transition-all"
+                                        className="h-14 px-10 bg-white border border-red-100 text-red-500 rounded-md font-black text-sm uppercase tracking-widest hover:bg-red-50 transition-all"
                                     >
                                         Cancel Subscription
                                     </button>
@@ -143,7 +143,7 @@ export default function BrandSettings() {
                     </div>
 
                     {/* SECTION 2 - Account Details */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10">Account Details</h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
@@ -153,7 +153,7 @@ export default function BrandSettings() {
                                 <input
                                     type="text"
                                     defaultValue={user?.fullName || ""}
-                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-bold focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-bold focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                 />
                             </div>
 
@@ -164,14 +164,14 @@ export default function BrandSettings() {
                                     type="email"
                                     defaultValue={user?.email || ""}
                                     disabled
-                                    className="w-full h-15 bg-zinc-50/50 border border-zinc-100 rounded-2xl px-6 text-zinc-400 text-[15px] font-bold cursor-not-allowed italic"
+                                    className="w-full h-15 bg-zinc-50/50 border border-zinc-100 rounded-md px-6 text-zinc-400 text-[15px] font-bold cursor-not-allowed italic"
                                 />
                                 <p className="text-[10px] text-zinc-300 font-black uppercase tracking-widest mt-3 px-1">Cannot be modified</p>
                             </div>
                         </div>
 
                         <div className="flex flex-wrap items-center justify-between gap-6 pt-4">
-                            <button className="h-14 px-12 bg-[#FF4D00] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
+                            <button className="h-14 px-12 bg-[#FF4D00] text-white rounded-md font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
                                 Save Changes
                             </button>
                             
@@ -185,7 +185,7 @@ export default function BrandSettings() {
                     </div>
 
                     {/* SECTION 3 - Notifications */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Notifications</h2>
 
                         <div className="space-y-2">
@@ -195,7 +195,7 @@ export default function BrandSettings() {
                                 { label: "Profile views", sub: "See which creators are looking at your brand", state: profileViews, set: setProfileViews },
                                 { label: "Marketing insights", sub: "Weekly tips to scale your influencer engine", state: marketingEmails, set: setMarketingEmails }
                             ].map((item, i) => (
-                                <div key={i} className="flex justify-between items-center py-6 border-b border-zinc-50 last:border-b-0 group px-6 -mx-6 hover:bg-zinc-50 rounded-2xl transition-all">
+                                <div key={i} className="flex justify-between items-center py-6 border-b border-zinc-50 last:border-b-0 group px-6 -mx-6 hover:bg-zinc-50 rounded-md transition-all">
                                     <div>
                                         <p className="text-[15px] text-zinc-900 font-black mb-1.5 group-hover:text-[#FF4D00] transition-colors">{item.label}</p>
                                         <p className="text-xs text-zinc-500 font-medium leading-relaxed">{item.sub}</p>
@@ -213,24 +213,24 @@ export default function BrandSettings() {
 
                     {/* SECTION 4 - Legal & Privacy */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-                        <div className="bg-white border border-zinc-100 rounded-[32px] p-10 shadow-sm flex flex-col">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm flex flex-col">
                             <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-3">Privacy Policy</h2>
                             <p className="text-sm text-zinc-500 font-medium leading-relaxed mb-8">Learn how we process and secure your corporate data.</p>
                             <div
                                 onClick={() => router.push('/privacy-policy')}
-                                className="mt-auto group bg-zinc-50 border border-zinc-100 rounded-2xl px-8 py-5 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-all"
+                                className="mt-auto group bg-zinc-50 border border-zinc-100 rounded-md px-8 py-5 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-all"
                             >
                                 <span className="text-sm font-black text-zinc-900 uppercase tracking-widest">Full Policy</span>
                                 <ArrowRight className="w-5 h-5 text-zinc-300 group-hover:text-zinc-900 group-hover:translate-x-1 transition-all" />
                             </div>
                         </div>
 
-                        <div className="bg-white border border-zinc-100 rounded-[32px] p-10 shadow-sm flex flex-col">
+                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm flex flex-col">
                             <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-3">Terms of Service</h2>
                             <p className="text-sm text-zinc-500 font-medium leading-relaxed mb-8">Review the official rules and conditions of usage.</p>
                             <div
                                 onClick={() => router.push('/terms-and-conditions')}
-                                className="mt-auto group bg-zinc-50 border border-zinc-100 rounded-2xl px-8 py-5 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-all"
+                                className="mt-auto group bg-zinc-50 border border-zinc-100 rounded-md px-8 py-5 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-all"
                             >
                                 <span className="text-sm font-black text-zinc-900 uppercase tracking-widest">Legal Agreement</span>
                                 <ArrowRight className="w-5 h-5 text-zinc-300 group-hover:text-zinc-900 group-hover:translate-x-1 transition-all" />
@@ -239,14 +239,14 @@ export default function BrandSettings() {
                     </div>
 
                     {/* SECTION 5 - Danger Zone */}
-                    <div className="bg-red-50 border border-red-100 rounded-[32px] p-10 flex items-center justify-between shadow-sm">
+                    <div className="bg-red-50 border border-red-100 rounded-sm p-10 flex items-center justify-between shadow-sm">
                         <div>
                             <h2 className="text-2xl font-black text-red-600 tracking-tight mb-1.5">Danger Zone</h2>
                             <p className="text-sm text-red-400 font-medium">Permanently delete your account and all associated data.</p>
                         </div>
                         <button
                             onClick={() => setShowDeleteModal(true)}
-                            className="h-14 px-10 bg-white border border-red-200 text-red-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-red-600 hover:text-white hover:border-red-600 transition-all shadow-sm"
+                            className="h-14 px-10 bg-white border border-red-200 text-red-600 rounded-md font-black text-xs uppercase tracking-widest hover:bg-red-600 hover:text-white hover:border-red-600 transition-all shadow-sm"
                         >
                             Delete Account
                         </button>

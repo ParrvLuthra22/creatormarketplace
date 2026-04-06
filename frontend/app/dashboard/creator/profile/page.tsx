@@ -61,7 +61,7 @@ export default function CreatorProfile() {
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10 lowercase">my profile</h1>
 
                     {/* CARD 1 - Creator Info */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10 lowercase">profile details</h2>
 
                         {/* Photo Upload */}
@@ -104,7 +104,7 @@ export default function CreatorProfile() {
                                 <input
                                     type="text"
                                     defaultValue={user?.fullName || ""}
-                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner lowercase"
+                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner lowercase"
                                 />
                             </div>
 
@@ -115,7 +115,7 @@ export default function CreatorProfile() {
                                     <input
                                         type="text"
                                         defaultValue={creatorProfile?.instagramHandle || "@creator"}
-                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                     <p className="text-[11px] text-[#4A46FF] font-bold mt-3 flex items-center gap-1 lowercase">
                                         <Check className="w-3 h-3" /> account connected
@@ -129,7 +129,7 @@ export default function CreatorProfile() {
                                 <textarea
                                     rows={4}
                                     placeholder="Tell brands about your unique style..."
-                                    className="w-full px-8 py-5 bg-zinc-50 border border-zinc-100 rounded-[24px] text-zinc-900 text-[15px] font-medium focus:outline-none focus:border-[#FF4D00] transition-colors resize-none leading-relaxed shadow-inner"
+                                    className="w-full px-8 py-5 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] font-medium focus:outline-none focus:border-[#FF4D00] transition-colors resize-none leading-relaxed shadow-inner"
                                 />
                             </div>
 
@@ -141,7 +141,7 @@ export default function CreatorProfile() {
                                         <button
                                             key={niche}
                                             onClick={() => toggleNiche(niche)}
-                                            className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase transition-all border ${selectedNiches.includes(niche)
+                                            className={`px-4 py-2 rounded-md text-xs font-black tracking-widest uppercase transition-all border ${selectedNiches.includes(niche)
                                                 ? "bg-[#FF4D00] text-white border-[#FF4D00] shadow-md scale-105"
                                                 : "text-zinc-400 border-zinc-100 bg-zinc-50 hover:border-[#FF4D00] hover:text-[#FF4D00]"
                                                 }`}
@@ -155,7 +155,7 @@ export default function CreatorProfile() {
                     </div>
 
                     {/* CARD 2 - Pricing */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10 lowercase">rate card</h2>
 
                         <div className="space-y-4">
@@ -166,7 +166,7 @@ export default function CreatorProfile() {
                                     <input
                                         type="number"
                                         placeholder="5000"
-                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                 </div>
                             </div>
@@ -178,7 +178,7 @@ export default function CreatorProfile() {
                                     <input
                                         type="number"
                                         placeholder="1500"
-                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                 </div>
                             </div>
@@ -190,7 +190,7 @@ export default function CreatorProfile() {
                                     <input
                                         type="number"
                                         placeholder="3000"
-                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
+                                        className="w-full h-15 pl-12 pr-6 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                     />
                                 </div>
                             </div>
@@ -208,7 +208,7 @@ export default function CreatorProfile() {
                     </div>
 
                     {/* CARD 3 - Availability */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm transition-all duration-300 hover:shadow-md">
                         <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10 lowercase">availability status</h2>
 
                         <div className="space-y-8">
@@ -218,7 +218,7 @@ export default function CreatorProfile() {
                                     <select
                                         value={availability}
                                         onChange={(e) => setAvailability(e.target.value)}
-                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-2xl px-8 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-all appearance-none cursor-pointer shadow-inner"
+                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-8 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-all appearance-none cursor-pointer shadow-inner"
                                     >
                                         <option>🟢 Available for work</option>
                                         <option>🟡 Limited slots</option>
@@ -231,7 +231,7 @@ export default function CreatorProfile() {
                             </div>
 
                             <div className="pt-6">
-                                <button className="h-15 px-14 bg-[#FF4D00] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
+                                <button className="h-15 px-14 bg-[#FF4D00] text-white rounded-md font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
                                     Save Profile
                                 </button>
                             </div>

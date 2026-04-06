@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Anton, Nunito } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Footer } from "@/components/Footer";
 
 const anton = Anton({
   weight: "400",
@@ -38,6 +39,7 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <Footer />
         {/* Razorpay Checkout Script */}
         <Script
           src="https://checkout.razorpay.com/v1/checkout.js"

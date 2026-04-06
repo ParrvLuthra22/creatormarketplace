@@ -151,13 +151,13 @@ export function CreatorCard({
                     <div className="flex flex-col gap-2.5">
                         <button 
                             onClick={handleCtaClick}
-                            className="w-full h-11 bg-[#FF4D00] hover:bg-[#FF6A20] text-white rounded-xl font-bold text-sm transition-all shadow-lg active:scale-95"
+                            className="w-full h-11 bg-[#FF4D00] hover:bg-[#FF6A20] text-white rounded-md font-bold text-sm transition-all shadow-lg active:scale-95"
                         >
                             {ctaText}
                         </button>
                         <button 
                             onClick={handleProposalClick}
-                            className="w-full h-11 bg-white border border-[#FF4D00] text-[#FF4D00] hover:bg-zinc-50 rounded-xl font-bold text-sm transition-all active:scale-95"
+                            className="w-full h-11 bg-white border border-[#FF4D00] text-[#FF4D00] hover:bg-zinc-50 rounded-md font-bold text-sm transition-all active:scale-95"
                         >
                             Send Proposal
                         </button>
@@ -167,7 +167,7 @@ export function CreatorCard({
 
             {/* Lock for non-authenticated */}
             {!isAuthenticated && (
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 rounded-[28px]">
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 rounded-sm">
                     <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center border border-white/20">
                         <Lock className="w-6 h-6 text-white" />
                     </div>

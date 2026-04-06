@@ -41,7 +41,7 @@ export default function CreatorSettings() {
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10 lowercase">settings</h1>
 
                     {/* SECTION 1 - Account */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mb-8 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-8 mb-8 shadow-sm">
                         <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">account</h2>
 
                         <div className="space-y-6">
@@ -51,7 +51,7 @@ export default function CreatorSettings() {
                                 <input
                                     type="text"
                                     defaultValue={user?.fullName || ""}
-                                    className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-900 text-[15px] focus:outline-none focus:border-[#FF4D00] transition-all"
+                                    className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] focus:outline-none focus:border-[#FF4D00] transition-all"
                                 />
                             </div>
 
@@ -62,7 +62,7 @@ export default function CreatorSettings() {
                                     type="email"
                                     defaultValue={user?.email || ""}
                                     disabled
-                                    className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-2xl text-zinc-400 text-[15px] opacity-60 cursor-not-allowed"
+                                    className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-400 text-[15px] opacity-60 cursor-not-allowed"
                                 />
                                 <p className="text-[10px] text-zinc-400 font-bold lowercase mt-2 ml-1">this address cannot be changed</p>
                             </div>
@@ -80,19 +80,19 @@ export default function CreatorSettings() {
                                 </div>
                             </div>
 
-                            <button className="h-14 px-10 bg-zinc-900 text-white rounded-[20px] font-black text-[11px] uppercase tracking-widest hover:bg-[#FF4D00] transition-all duration-300 shadow-lg shadow-zinc-900/10">
+                            <button className="h-14 px-10 bg-zinc-900 text-white rounded-md font-black text-[11px] uppercase tracking-widest hover:bg-[#FF4D00] transition-all duration-300 shadow-lg shadow-zinc-900/10">
                                 save changes
                             </button>
                         </div>
                     </div>
 
                     {/* SECTION 2 - Notifications */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mb-8 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-8 mb-8 shadow-sm">
                         <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-8">notifications</h2>
 
                         <div className="space-y-2">
                             {/* Toggle 1 */}
-                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-md hover:bg-zinc-50 transition-all group">
                                 <div>
                                     <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">email notifications</p>
                                     <p className="text-[10px] text-zinc-400 font-bold lowercase">receive proposal and session emails</p>
@@ -106,7 +106,7 @@ export default function CreatorSettings() {
                             </div>
 
                             {/* Toggle 2 */}
-                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-md hover:bg-zinc-50 transition-all group">
                                 <div>
                                     <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">new proposals</p>
                                     <p className="text-[10px] text-zinc-400 font-bold lowercase">get real-time alerts for opportunities</p>
@@ -120,7 +120,7 @@ export default function CreatorSettings() {
                             </div>
 
                             {/* Toggle 3 */}
-                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-md hover:bg-zinc-50 transition-all group">
                                 <div>
                                     <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">profile views</p>
                                     <p className="text-[10px] text-zinc-400 font-bold lowercase">know who's checking out your work</p>
@@ -134,7 +134,7 @@ export default function CreatorSettings() {
                             </div>
 
                             {/* Toggle 4 */}
-                            <div className="flex justify-between items-center py-4 px-6 rounded-[24px] hover:bg-zinc-50 transition-all group border-t border-zinc-100">
+                            <div className="flex justify-between items-center py-4 px-6 rounded-md hover:bg-zinc-50 transition-all group border-t border-zinc-100">
                                 <div>
                                     <p className="text-sm font-bold text-zinc-900 lowercase tracking-tight">marketing updates</p>
                                     <p className="text-[10px] text-zinc-400 font-bold lowercase">tips to scale your creator journey</p>
@@ -150,25 +150,25 @@ export default function CreatorSettings() {
                     </div>
 
                     {/* SECTION 3 - Danger Zone */}
-                    <div className="bg-white border border-red-50 rounded-[32px] p-8 mb-8 shadow-sm">
+                    <div className="bg-white border border-red-50 rounded-sm p-8 mb-8 shadow-sm">
                         <h2 className="text-xl font-black text-red-600 tracking-tight lowercase mb-4">danger zone</h2>
                         <p className="text-sm text-zinc-400 font-bold lowercase mb-8">once you delete your account, there is no going back. please be certain.</p>
                         <button
                             onClick={() => setShowDeleteModal(true)}
-                            className="px-10 h-14 bg-red-50 text-red-600 rounded-[20px] font-black text-[11px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all duration-300"
+                            className="px-10 h-14 bg-red-50 text-red-600 rounded-md font-black text-[11px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all duration-300"
                         >
                             delete account
                         </button>
                     </div>
 
                     {/* SECTION 4 - Privacy Policy */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mb-8 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-8 mb-8 shadow-sm">
                         <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-2">privacy policy</h2>
                         <p className="text-sm text-zinc-400 font-bold lowercase mb-8">how we collect, use, and protect your data</p>
 
                         <div
                             onClick={() => router.push('/privacy-policy')}
-                            className="bg-zinc-50 border border-zinc-100/50 rounded-[24px] px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
+                            className="bg-zinc-50 border border-zinc-100/50 rounded-md px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
                         >
                             <span className="text-sm font-black text-zinc-900 lowercase tracking-tight">read privacy policy</span>
                             <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-[#FF4D00] translate-x-0 group-hover:translate-x-1 transition-all" />
@@ -178,13 +178,13 @@ export default function CreatorSettings() {
                     </div>
 
                     {/* SECTION 5 - Terms of Service */}
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
+                    <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
                         <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-2">terms of service</h2>
                         <p className="text-sm text-zinc-400 font-bold lowercase mb-8">rules and conditions for using creatorsync</p>
 
                         <div
                             onClick={() => router.push('/terms-and-conditions')}
-                            className="bg-zinc-50 border border-zinc-100/50 rounded-[24px] px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
+                            className="bg-zinc-50 border border-zinc-100/50 rounded-md px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
                         >
                             <span className="text-sm font-black text-zinc-900 lowercase tracking-tight">read terms of service</span>
                             <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-[#FF4D00] translate-x-0 group-hover:translate-x-1 transition-all" />
