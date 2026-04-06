@@ -26,6 +26,9 @@ initSocket(httpServer);
 const PORT = process.env.PORT || 5001;
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Trust proxy for Render load balancers
+app.set('trust proxy', 1);
+
 // Connect to database
 connectDB();
 
