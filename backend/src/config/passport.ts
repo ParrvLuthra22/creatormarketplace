@@ -93,7 +93,7 @@ tryRegister('google', () => {
                 clientSecret,
                 callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5001/api/auth/google/callback',
             },
-            async (_accessToken, _refreshToken, profile: GoogleProfile, done) => {
+            async (_accessToken: string, _refreshToken: string, profile: GoogleProfile, done: (err: Error | null, user?: any) => void) => {
                 try {
                     const email = profile.emails?.[0]?.value;
                     if (!email) return done(new Error('No email in Google profile'), undefined);
@@ -135,7 +135,7 @@ tryRegister('instagram', () => {
                 // Request a long-lived token scope
                 enableProof: true,
             },
-            async (accessToken, _refreshToken, profile: FacebookProfile, done) => {
+            async (accessToken: string, _refreshToken: string, profile: FacebookProfile, done: (err: Error | null, user?: any) => void) => {
                 try {
                     const email = profile.emails?.[0]?.value;
                     if (!email) {
@@ -171,8 +171,8 @@ tryRegister('instagram', () => {
 
 
 // ─── Passport session stubs (we use JWT cookies, not sessions) ─────────────────
-passport.serializeUser((user: any, done) => done(null, user._id));
-passport.deserializeUser(async (id: string, done) => {
+passport.serializeUser((user: any, done: (err: any, id?: any) => void) => done(null, user._id));
+passport.deserializeUser(async (id: string, done: (err: any, user?: any) => void) => {
     try {
         const user = await User.findById(id);
         done(null, user);

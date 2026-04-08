@@ -465,7 +465,7 @@ router.get(
 router.get(
     '/google/callback',
     passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=google_auth_failed` }),
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: any, res: Response): Promise<void> => {
         try {
             const user = req.user as any;
             if (!user) {
@@ -511,7 +511,7 @@ router.get(
 router.get(
     '/instagram/callback',
     passport.authenticate('facebook', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=instagram_auth_failed` }),
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: any, res: Response): Promise<void> => {
         try {
             const user = req.user as any;
             if (!user) {
