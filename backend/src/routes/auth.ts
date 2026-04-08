@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import passport from 'passport';
 import User from '../models/User';
 import BrandProfile from '../models/BrandProfile';
 import CreatorProfile from '../models/CreatorProfile';
@@ -264,6 +265,34 @@ router.get('/token', authMiddleware, (req: AuthRequest, res: Response): void => 
     }
 });
 
+// PUT /api/auth/profile - Update user profile (fullName)
+router.put('/profile', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { fullName } = req.body;
+
+        if (!fullName) {
+            res.status(400).json({ error: 'Full name is required' });
+            return;
+        }
+
+        const user = await User.findByIdAndUpdate(
+            req.userId,
+            { $set: { fullName } },
+            { new: true }
+        ).select('-password');
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        res.status(200).json({ success: true, user });
+    } catch (error: any) {
+        console.error('Update user profile error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // PUT /api/auth/password - Change user password
 router.put('/password', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -370,5 +399,147 @@ router.delete('/account', authMiddleware, async (req: AuthRequest, res: Response
         });
     }
 });
+
+// ─── Onboarding Route (for new OAuth users selecting Creator / Brand) ──────────
+
+// POST /api/auth/onboarding - Set accountType after OAuth signup
+router.post('/onboarding', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { accountType, instagramHandle } = req.body;
+
+        if (!['Brand', 'Creator'].includes(accountType)) {
+            res.status(400).json({ error: 'accountType must be Brand or Creator' });
+            return;
+        }
+
+        if (accountType === 'Creator' && !instagramHandle) {
+            res.status(400).json({ error: 'Instagram handle is required for creator accounts' });
+            return;
+        }
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        // Update accountType
+        user.accountType = accountType;
+        if (instagramHandle) {
+            user.instagramHandle = instagramHandle.replace(/^@+/, '');
+        }
+        await user.save();
+
+        // Create the profile if it doesn't already exist
+        if (accountType === 'Brand') {
+            const existing = await BrandProfile.findOne({ userId: user._id });
+            if (!existing) {
+                await new BrandProfile({ userId: user._id }).save();
+            }
+        } else {
+            const existing = await CreatorProfile.findOne({ userId: user._id });
+            if (!existing) {
+                await new CreatorProfile({
+                    userId: user._id,
+                    instagramHandle: user.instagramHandle || '',
+                }).save();
+            }
+        }
+
+        res.status(200).json({ success: true, accountType });
+    } catch (error: any) {
+        console.error('Onboarding error:', error);
+        res.status(500).json({ error: 'Server error during onboarding' });
+    }
+});
+
+
+
+// GET /api/auth/google - Redirect to Google consent screen
+router.get(
+    '/google',
+    passport.authenticate('google', { scope: ['profile', 'email'], session: false })
+);
+
+// GET /api/auth/google/callback - Handle Google callback
+router.get(
+    '/google/callback',
+    passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=google_auth_failed` }),
+    async (req: Request, res: Response): Promise<void> => {
+        try {
+            const user = req.user as any;
+            if (!user) {
+                res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=no_user`);
+                return;
+            }
+
+            const token = generateToken({
+                userId: user._id.toString(),
+                email: user.email,
+            });
+
+            const isProduction = process.env.NODE_ENV === 'production';
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? 'none' : 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+
+            const isNew = (user as any)._isNewOAuthUser ? '1' : '0';
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+            res.redirect(`${frontendUrl}/auth/callback?new=${isNew}`);
+        } catch (error) {
+            console.error('Google callback error:', error);
+            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=callback_failed`);
+        }
+    }
+);
+
+// ─── OAuth: Instagram (via Facebook) ───────────────────────────────────────────
+
+// GET /api/auth/instagram - Redirect to Meta consent screen
+router.get(
+    '/instagram',
+    passport.authenticate('facebook', {
+        session: false,
+        scope: ['email', 'public_profile'],
+    })
+);
+
+// GET /api/auth/instagram/callback - Handle Meta/Instagram callback
+router.get(
+    '/instagram/callback',
+    passport.authenticate('facebook', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=instagram_auth_failed` }),
+    async (req: Request, res: Response): Promise<void> => {
+        try {
+            const user = req.user as any;
+            if (!user) {
+                res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=no_user`);
+                return;
+            }
+
+            const token = generateToken({
+                userId: user._id.toString(),
+                email: user.email,
+            });
+
+            const isProduction = process.env.NODE_ENV === 'production';
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: isProduction ? 'none' : 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+
+            const isNew = (user as any)._isNewOAuthUser ? '1' : '0';
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+            res.redirect(`${frontendUrl}/auth/callback?new=${isNew}`);
+        } catch (error) {
+            console.error('Instagram callback error:', error);
+            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=callback_failed`);
+        }
+    }
+);
 
 export default router;

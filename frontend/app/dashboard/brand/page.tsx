@@ -9,6 +9,8 @@ import { CreatorCard } from "@/components/CreatorCard";
 import { SendProposalModal } from "@/components/SendProposalModal";
 import { Search, Filter, User as UserIcon } from "lucide-react";
 import { getPublicCreators } from "@/lib/api";
+import { SkeletonCreatorCard } from "@/components/ui/Skeleton";
+import { BrandStatsCards } from "@/components/BrandStatsCards";
 
 const FILTER_NICHES = ["All", "Fashion", "Fitness", "Tech", "Beauty", "Food", "Travel", "Comedy", "Finance"];
 
@@ -75,7 +77,7 @@ export default function BrandDashboard() {
 
                             {/* Niche Section */}
                             <div className="mb-8">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-5">Niche</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-5">Niche</p>
                                 <div className="space-y-4">
                                     {["Tech", "Lifestyle", "Gaming", "Fashion", "Food"].map(niche => (
                                         <div key={niche} className="flex justify-between items-center group cursor-pointer" onClick={() => toggleNiche(niche)}>
@@ -90,10 +92,10 @@ export default function BrandDashboard() {
 
                             {/* Pricing Section */}
                             <div className="mb-8">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-5">Pricing</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-5">Pricing</p>
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-xs font-bold text-zinc-900">
-                                        ${priceRange[0]}k - ${priceRange[1]}k+
+                                        ₹{priceRange[0]}k - ₹{priceRange[1]}k+
                                     </span>
                                 </div>
                                 <div className="relative h-1.5 bg-zinc-100 rounded-full mb-2">
@@ -105,7 +107,7 @@ export default function BrandDashboard() {
 
                             {/* Content Type Section */}
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-5">Content Type</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-5">Content Type</p>
                                 <div className="space-y-4">
                                     {["Video", "Photo", "Blog", "Podcast", "Live Stream"].map(type => (
                                         <div key={type} className="flex justify-between items-center group cursor-pointer" onClick={() => toggleContentType(type)}>
@@ -124,7 +126,7 @@ export default function BrandDashboard() {
                     <div className="col-span-12 lg:col-span-9">
                         <div className="flex justify-between items-end mb-10">
                             <div>
-                                <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-3">Creator Discovery Grid</h1>
+                                <h1 className="text-4xl font-bold text-zinc-900 tracking-tight leading-none mb-3">Creator Discovery Grid</h1>
                                 <p className="text-zinc-500 font-medium">Browse through our network of elite content creators</p>
                             </div>
                             
@@ -141,10 +143,19 @@ export default function BrandDashboard() {
                             </div>
                         </div>
 
+                        {/* Stats Cards Section */}
+                        <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                            <BrandStatsCards
+                                totalSpend={125000}
+                                creatorsHired={12}
+                                pendingProposals={4}
+                            />
+                        </div>
+
                         {loading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                                 {[1, 2, 3, 4, 5, 6].map(i => (
-                                    <div key={i} className="aspect-[3/4.2] rounded-sm bg-zinc-100 animate-pulse" />
+                                    <SkeletonCreatorCard key={i} />
                                 ))}
                             </div>
                         ) : filteredCreators.length === 0 ? (

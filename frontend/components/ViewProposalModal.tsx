@@ -66,7 +66,7 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
             <div
-                className="bg-white rounded-md w-full max-w-lg shadow-xl"
+                className="bg-white rounded-md w-full max-w-lg shadow-xl max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -92,7 +92,7 @@ export function ViewProposalModal({ proposal, isOpen, onClose, userRole, onStatu
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-5">
+                <div className="p-6 space-y-5 overflow-y-auto">
                     {error && (
                         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-sm">{error}</div>
                     )}

@@ -3,9 +3,13 @@
 import Link from "next/link";
 import { Instagram, Linkedin, Twitter, Mail } from "lucide-react";
 
-export function Footer() {
+interface FooterProps {
+    showPricing?: boolean;
+}
+
+export function Footer({ showPricing = true }: FooterProps) {
     return (
-        <footer className="bg-[#0D0D0D] border-t border-[#1F1F1F] mt-16">
+        <footer className="relative bg-[#0D0D0D] border-t border-[#1F1F1F] mt-16 w-full">
             <div className="container mx-auto px-8 md:px-6 pt-12 pb-8">
                 {/* 4 Column Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-8">
@@ -34,9 +38,11 @@ export function Footer() {
                             <Link href="/" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
                                 For Creators
                             </Link>
-                            <Link href="/pricing" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
-                                Pricing
-                            </Link>
+                            {showPricing && (
+                                <Link href="/pricing" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
+                                    Pricing
+                                </Link>
+                            )}
                         </div>
                     </div>
 

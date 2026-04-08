@@ -11,7 +11,10 @@ import profileRoutes from './routes/profile';
 import uploadsRoutes from './routes/uploads';
 import chatRoutes from './routes/chat';
 import proposalRoutes from './routes/proposals';
+import instagramRoutes from './routes/instagram';
 import path from 'path';
+import './config/passport'; // Initialize Passport strategies
+import passport from 'passport';
 // import paymentsRoutes from './routes/payments';
 
 // Load environment variables
@@ -42,6 +45,7 @@ app.use(helmet({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+app.use(passport.initialize()); // Initialize Passport (no sessions — we use JWT cookies)
 
 // CORS configuration
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',').map(s => s.trim());
@@ -81,6 +85,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/uploads', uploadsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/proposals', proposalRoutes);
+app.use('/api/instagram', instagramRoutes);
 // app.use('/api/payments', paymentsRoutes);
 
 // Serve uploaded files (local dev)

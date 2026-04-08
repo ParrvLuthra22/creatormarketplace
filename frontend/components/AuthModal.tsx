@@ -4,6 +4,7 @@ import { useState, FormEvent, useEffect } from "react";
 import { Button } from "./ui/Button";
 import { X, Eye, EyeOff, Briefcase, Star, ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { OAuthButtons } from "./OAuthButtons";
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -342,7 +343,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
 
                 {/* Login Form */}
                 {activeTab === "login" && (
-                    <form className="space-y-4" onSubmit={handleLoginSubmit}>
+                    <>
+                        <OAuthButtons mode="login" />
+                        <form className="space-y-4" onSubmit={handleLoginSubmit}>
                         <div>
                             <input
                                 type="email"
@@ -404,12 +407,15 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                                 Create account
                             </button>
                         </p>
-                    </form>
+                        </form>
+                    </>
                 )}
 
                 {/* Signup Form - Step 1: Role Selection */}
                 {activeTab === "signup" && signupStep === 1 && (
-                    <div className="space-y-4">
+                    <>
+                        <OAuthButtons mode="signup" />
+                        <div className="space-y-4">
                         {/* Brand Card */}
                         <button
                             onClick={() => setAccountType("Brand")}
@@ -460,6 +466,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login" }: AuthModalPr
                             </Button>
                         )}
                     </div>
+                    </>
                 )}
 
                 {/* Signup Form - Step 2: Account Details */}

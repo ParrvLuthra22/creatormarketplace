@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useLayoutEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 import { AuthModal } from '@/components/AuthModal';
 import { SmoothScroll } from './SmoothScroll';
 import { Search } from 'lucide-react';
@@ -11,6 +12,7 @@ import './LandingPage.css';
 
 const LandingPage = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<'login' | 'signup'>('login');
   
@@ -19,6 +21,26 @@ const LandingPage = () => {
   const handleGetStarted = () => {
     setAuthModalTab('signup');
     setShowAuthModal(true);
+  };
+
+  const handleSearchClick = () => {
+    if (!user) {
+      setAuthModalTab('login');
+      setShowAuthModal(true);
+    }
+  };
+
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+    };
+  }, []);
+
+  const scrollToAbout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const aboutSection = document.getElementById('about');
+    aboutSection?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const creators = [
@@ -66,10 +88,7 @@ const LandingPage = () => {
         <nav className="top-nav">
           <div className="logo">CreatorSync</div>
           <div className="nav-links">
-            <a href="#" className="nav-link">Home</a>
-            <a href="#" className="nav-link">About</a>
-            <a href="#" className="nav-link">Blog</a>
-            <a href="#" className="nav-link" onClick={() => { setAuthModalTab('login'); setShowAuthModal(true); }}>Log in</a>
+            <a href="#about" className="nav-link" onClick={scrollToAbout}>About us</a>
             <button className="nav-cta" onClick={handleGetStarted}>Get Started</button>
           </div>
         </nav>
@@ -86,18 +105,20 @@ const LandingPage = () => {
                 CreatorSync is your new awareness and sales engine driven by creators who genuinely love your Brand.
               </p>
               
-              <div className="search-container">
-                <Search className="search-icon" size={20} />
+              <div className="search-container" onClick={handleSearchClick}>
                 <input 
                   type="text" 
                   placeholder="Search creators by niche or name" 
                   className="search-input"
+                  readOnly={!user}
                 />
+                <button className="search-btn" type="button" onClick={handleSearchClick}>
+                  <Search size={18} />
+                </button>
               </div>
 
               <div className="hero-ctas">
-                <button className="btn-primary" onClick={handleGetStarted}>Explore creators</button>
-                <button className="btn-secondary" onClick={handleGetStarted}>Join as brand</button>
+                <button className="btn-primary" onClick={handleGetStarted}>Get Started</button>
               </div>
             </div>
 
@@ -113,6 +134,35 @@ const LandingPage = () => {
             </div>
           </section>
         </main>
+
+        <section id="about" className="about-section">
+          <div className="about-content">
+            <h2 className="about-title">About CreatorSync</h2>
+            <p className="about-text">
+              CreatorSync is your new awareness and sales engine driven by
+              Creators who genuinely love your Brand. We connect thousands
+              of verified creators with brands for authentic collaborations
+              that actually convert.
+            </p>
+            <div className="about-stats">
+              <div className="about-stat">
+                <h3>2,400+</h3>
+                <p>Creators</p>
+              </div>
+              <div className="about-stat">
+                <h3>850+</h3>
+                <p>Brands</p>
+              </div>
+              <div className="about-stat">
+                <h3>12,000+</h3>
+                <p>Collaborations</p>
+              </div>
+            </div>
+            <button className="btn-primary about-cta" onClick={handleGetStarted}>
+              Join CreatorSync Free
+            </button>
+          </div>
+        </section>
 
         <AuthModal
           isOpen={showAuthModal}
