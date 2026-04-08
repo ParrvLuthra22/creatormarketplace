@@ -209,6 +209,7 @@ export default function BrandSettings() {
                             </div>
                         </div>
 
+                        <div className="mt-6 flex flex-col gap-4">
                             <div className="flex items-center gap-6">
                                 <button
                                     onClick={handleSave}
@@ -230,10 +231,10 @@ export default function BrandSettings() {
                                     <span className="text-xs font-black uppercase tracking-widest text-red-600">{saveError}</span>
                                 )}
                             </div>
-                            
+
                             <button
                                 onClick={() => setShowChangePassword(true)}
-                                className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-all group"
+                                className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-all group w-fit"
                             >
                                 Change Security Settings <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
