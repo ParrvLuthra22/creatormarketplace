@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 export interface IUser extends Document {
     fullName: string;
     email: string;
-    password: string;
+    password?: string;
     accountType: 'Brand' | 'Creator';
     plan: 'free' | 'basic' | 'pro';
     subscriptionStatus: 'inactive' | 'active' | 'past_due' | 'cancelled' | 'expired';
@@ -12,6 +12,14 @@ export interface IUser extends Document {
     razorpayCustomerId?: string;
     subscriptionStartDate?: Date;
     subscriptionEndDate?: Date;
+    profilePicture?: string;
+    // OAuth fields
+    googleId?: string;
+    instagramId?: string;
+    oauthProvider?: 'google' | 'instagram' | 'local';
+    instagramAccessToken?: string;
+    instagramHandle?: string;
+    isNewOAuthUser?: boolean; // transient flag, not persisted
     createdAt: Date;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -32,8 +40,33 @@ const UserSchema = new Schema<IUser>({
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
         minlength: [8, 'Password must be at least 8 characters long'],
+        // Not required for OAuth users
+    },
+    profilePicture: {
+        type: String,
+    },
+    // OAuth
+    googleId: {
+        type: String,
+        sparse: true,
+        unique: true,
+    },
+    instagramId: {
+        type: String,
+        sparse: true,
+        unique: true,
+    },
+    oauthProvider: {
+        type: String,
+        enum: ['google', 'instagram', 'local'],
+        default: 'local',
+    },
+    instagramAccessToken: {
+        type: String,
+    },
+    instagramHandle: {
+        type: String,
     },
     accountType: {
         type: String,
@@ -72,7 +105,8 @@ const UserSchema = new Schema<IUser>({
 
 // Hash password before saving
 UserSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
+    // Only hash if password is present and modified
+    if (!this.password || !this.isModified('password')) {
         return next();
     }
 
@@ -87,6 +121,7 @@ UserSchema.pre('save', async function (next) {
 
 // Method to compare passwords
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+    if (!this.password) return false;
     return bcrypt.compare(candidatePassword, this.password);
 };
 

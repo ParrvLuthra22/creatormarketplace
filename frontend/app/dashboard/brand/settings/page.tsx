@@ -8,7 +8,8 @@ import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { LegalModal } from "@/components/LegalModal";
 import { DeleteAccountModal } from "@/components/DeleteAccountModal";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { updateUserProfile, updateBrandProfile } from "@/lib/api";
 
 export default function BrandSettings() {
     const { user } = useAuth();
@@ -19,6 +20,43 @@ export default function BrandSettings() {
     const [marketingEmails, setMarketingEmails] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    // Form & UI state
+    const [fullName, setFullName] = useState(user?.fullName || "");
+    const [companyName, setCompanyName] = useState(""); // Initialize in useEffect?
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+
+    // Fetch and sync company name
+    const [hasLoadedProfile, setHasLoadedProfile] = useState(false);
+    const { profile, refreshProfile } = useAuth();
+
+    if (!hasLoadedProfile && profile && user?.accountType === 'Brand') {
+        setCompanyName((profile as any).companyName || "");
+        setHasLoadedProfile(true);
+    }
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        setSaveError(null);
+        setSaveSuccess(false);
+        try {
+            // Update User (fullName)
+            await updateUserProfile({ fullName });
+            
+            // Update Brand Profile (companyName)
+            await updateBrandProfile({ companyName });
+            
+            await refreshProfile();
+            setSaveSuccess(true);
+            setTimeout(() => setSaveSuccess(false), 3000);
+        } catch (err: any) {
+            setSaveError(err.message || "Failed to save changes");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleDeleteAccount = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/account`, {
@@ -152,7 +190,8 @@ export default function BrandSettings() {
                                 <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Full Name</label>
                                 <input
                                     type="text"
-                                    defaultValue={user?.fullName || ""}
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                     className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-bold focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
                                 />
                             </div>
@@ -170,10 +209,27 @@ export default function BrandSettings() {
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-between gap-6 pt-4">
-                            <button className="h-14 px-12 bg-[#FF4D00] text-white rounded-md font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10">
-                                Save Changes
-                            </button>
+                            <div className="flex items-center gap-6">
+                                <button
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                    className="h-14 px-12 bg-[#FF4D00] text-white rounded-md font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-3 disabled:opacity-70"
+                                >
+                                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                                    {isSaving ? "Saving..." : "Save Changes"}
+                                </button>
+
+                                {saveSuccess && (
+                                    <div className="flex items-center gap-2 text-green-600 animate-in fade-in slide-in-from-left-4 duration-500">
+                                        <CheckCircle2 className="w-5 h-5" />
+                                        <span className="text-xs font-black uppercase tracking-widest">Profile Updated!</span>
+                                    </div>
+                                )}
+
+                                {saveError && (
+                                    <span className="text-xs font-black uppercase tracking-widest text-red-600">{saveError}</span>
+                                )}
+                            </div>
                             
                             <button
                                 onClick={() => setShowChangePassword(true)}
@@ -210,36 +266,7 @@ export default function BrandSettings() {
                             ))}
                         </div>
                     </div>
-
-                    {/* SECTION 4 - Legal & Privacy */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm flex flex-col">
-                            <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-3">Privacy Policy</h2>
-                            <p className="text-sm text-zinc-500 font-medium leading-relaxed mb-8">Learn how we process and secure your corporate data.</p>
-                            <div
-                                onClick={() => router.push('/privacy-policy')}
-                                className="mt-auto group bg-zinc-50 border border-zinc-100 rounded-md px-8 py-5 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-all"
-                            >
-                                <span className="text-sm font-black text-zinc-900 uppercase tracking-widest">Full Policy</span>
-                                <ArrowRight className="w-5 h-5 text-zinc-300 group-hover:text-zinc-900 group-hover:translate-x-1 transition-all" />
-                            </div>
-                        </div>
-
-                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm flex flex-col">
-                            <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-3">Terms of Service</h2>
-                            <p className="text-sm text-zinc-500 font-medium leading-relaxed mb-8">Review the official rules and conditions of usage.</p>
-                            <div
-                                onClick={() => router.push('/terms-and-conditions')}
-                                className="mt-auto group bg-zinc-50 border border-zinc-100 rounded-md px-8 py-5 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-all"
-                            >
-                                <span className="text-sm font-black text-zinc-900 uppercase tracking-widest">Legal Agreement</span>
-                                <ArrowRight className="w-5 h-5 text-zinc-300 group-hover:text-zinc-900 group-hover:translate-x-1 transition-all" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* SECTION 5 - Danger Zone */}
-                    <div className="bg-red-50 border border-red-100 rounded-sm p-10 flex items-center justify-between shadow-sm">
+                    <div className="bg-red-50 border border-red-100 rounded-sm p-10 flex items-center justify-between shadow-sm mt-10">
                         <div>
                             <h2 className="text-2xl font-black text-red-600 tracking-tight mb-1.5">Danger Zone</h2>
                             <p className="text-sm text-red-400 font-medium">Permanently delete your account and all associated data.</p>

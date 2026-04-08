@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HelpSupportModal } from "./HelpSupportModal";
-import { User, getProfilePhotoUrl } from "@/lib/api";
+import { User, getProfilePhotoUrl, getProposalsSummary, getChatSummary } from "@/lib/api";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Search, Bell, Menu, X, Check, Briefcase, User as UserIcon, Settings, BarChart3, LogOut, HelpCircle } from "lucide-react";
@@ -43,7 +43,7 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
         { id: 3, title: 'Profile View', message: 'Your profile was viewed by 5 brands', time: '5h ago', read: true, icon: <UserIcon size={16} className="text-[#2E86DE]" /> },
     ];
     const [notifications] = useState<NotificationItem[]>(mockNotifications);
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const [liveUnreadCount, setLiveUnreadCount] = useState(0);
     const [profileOpen, setProfileOpen] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
 
@@ -63,6 +63,30 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Notification Polling
+    useEffect(() => {
+        const fetchCounts = async () => {
+            try {
+                const [propRes, chatRes] = await Promise.all([
+                    getProposalsSummary(),
+                    getChatSummary()
+                ]);
+                
+                let total = 0;
+                if (propRes.success) total += (propRes as any).pendingProposals || 0;
+                if (chatRes.success) total += (chatRes as any).unreadMessages || 0;
+                
+                setLiveUnreadCount(total);
+            } catch (err) {
+                console.error("Failed to fetch notification counts:", err);
+            }
+        };
+
+        fetchCounts();
+        const interval = setInterval(fetchCounts, 30000); // Poll every 30s
+        return () => clearInterval(interval);
     }, []);
 
     // Search handler (mock)
@@ -136,9 +160,9 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                         onClick={() => setNotificationsOpen(!notificationsOpen)}
                     >
                         <Bell className="w-5 h-5" />
-                        {unreadCount > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-[#FF5722] text-[#FFFFFF] text-[10px] font-bold px-1.5 py-0.5 rounded-sm border-2 border-[#FF9500]">
-                                {unreadCount}
+                        {liveUnreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-[#FF4D00] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
+                                {liveUnreadCount}
                             </span>
                         )}
                     </button>
@@ -211,15 +235,24 @@ export function DashboardHeader({ user, onLogout, onMenuClick }: DashboardHeader
                             </div>
 
                             <div className="py-2">
-                                <Link href="/dashboard/creator/profile" className="flex items-center gap-3 px-5 py-3 text-black text-[14px] font-sf-pro lowercase hover:bg-[rgba(255,61,0,0.08)] transition-colors">
+                                <Link 
+                                    href={isBrand ? "/dashboard/brand/settings" : "/dashboard/creator/profile"} 
+                                    className="flex items-center gap-3 px-5 py-3 text-black text-[14px] font-sf-pro lowercase hover:bg-[rgba(255,61,0,0.08)] transition-colors"
+                                >
                                     <UserIcon size={18} className="text-[#6B6B6B]" />
-                                    <span>my profile</span>
+                                    <span>{isBrand ? "brand profile" : "my profile"}</span>
                                 </Link>
-                                <Link href="/dashboard/creator/settings" className="flex items-center gap-3 px-5 py-3 text-black text-[14px] font-sf-pro lowercase hover:bg-[rgba(255,61,0,0.08)] transition-colors">
+                                <Link 
+                                    href={isBrand ? "/dashboard/brand/settings" : "/dashboard/creator/settings"} 
+                                    className="flex items-center gap-3 px-5 py-3 text-black text-[14px] font-sf-pro lowercase hover:bg-[rgba(255,61,0,0.08)] transition-colors"
+                                >
                                     <Settings size={18} className="text-[#6B6B6B]" />
                                     <span>settings</span>
                                 </Link>
-                                <Link href="/dashboard/creator/analytics" className="flex items-center gap-3 px-5 py-3 text-black text-[14px] font-sf-pro lowercase hover:bg-[rgba(255,61,0,0.08)] transition-colors">
+                                <Link 
+                                    href={isBrand ? "/dashboard/brand/analytics" : "/dashboard/creator/analytics"} 
+                                    className="flex items-center gap-3 px-5 py-3 text-black text-[14px] font-sf-pro lowercase hover:bg-[rgba(255,61,0,0.08)] transition-colors"
+                                >
                                     <BarChart3 size={18} className="text-[#6B6B6B]" />
                                     <span>analytics</span>
                                 </Link>

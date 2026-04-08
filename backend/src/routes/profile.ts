@@ -60,6 +60,51 @@ router.put('/creator', authMiddleware, async (req: AuthRequest, res: Response): 
     }
 });
 
+// PUT /api/profile/brand - Brand updates own profile
+router.put('/brand', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        if (!req.userId) {
+            res.status(401).json({ error: 'Authentication required' });
+            return;
+        }
+
+        const user = await User.findById(req.userId).select('accountType');
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        if (user.accountType !== 'Brand') {
+            res.status(403).json({ error: 'Only brand accounts can update brand profiles' });
+            return;
+        }
+
+        const allowedFields = [
+            'companyName',
+            'industry',
+            'logoUrl',
+        ] as const;
+
+        const update: Record<string, any> = {};
+        for (const key of allowedFields) {
+            if (Object.prototype.hasOwnProperty.call(req.body, key)) {
+                update[key] = (req.body as any)[key];
+            }
+        }
+
+        const profile = await BrandProfile.findOneAndUpdate(
+            { userId: req.userId },
+            { $set: update },
+            { new: true, upsert: true }
+        );
+
+        res.status(200).json({ success: true, profile });
+    } catch (error: any) {
+        console.error('Update brand profile error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // GET /api/profile/brand/:userId - Get brand profile
 router.get('/brand/:userId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
     try {

@@ -7,8 +7,10 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { CreatorStatsCards } from "@/components/CreatorStatsCards";
 import { ProposalCarousel } from "@/components/ProposalCarousel";
-import { createConversation, getProposals } from "@/lib/api";
+import { createConversation, getProposals, updateCreatorProfile } from "@/lib/api";
 import { ViewProposalModal } from "@/components/ViewProposalModal";
+import { SkeletonStats, SkeletonCard } from "@/components/ui/Skeleton";
+import { BrandDiscovery } from "@/components/BrandDiscovery";
 
 type DashboardProposalCard = {
     id: number;
@@ -26,11 +28,30 @@ type DashboardProposalCard = {
 };
 
 export default function CreatorDashboard() {
-    const { user, logout } = useAuth();
+    const { user, profile, refreshProfile } = useAuth();
     const router = useRouter();
     const [isActive, setIsActive] = useState(true);
     const [proposals, setProposals] = useState<DashboardProposalCard[]>([]);
     const [selectedProposal, setSelectedProposal] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (profile && 'availability' in profile) {
+            setIsActive(profile.availability === 'available');
+        }
+    }, [profile]);
+
+    const handleToggleStatus = async () => {
+        const newStatus = !isActive;
+        setIsActive(newStatus); // optimistic update
+        try {
+            await updateCreatorProfile({ availability: newStatus ? 'available' : 'unavailable' });
+            if (refreshProfile) refreshProfile();
+        } catch (error) {
+            console.error("Failed to update status", error);
+            setIsActive(isActive); // revert on error
+        }
+    };
 
     const idToNumber = (id: string) => {
         let hash = 0;
@@ -72,6 +93,8 @@ export default function CreatorDashboard() {
             setProposals(mapped);
         } catch (err) {
             console.error("Failed to fetch proposals:", err);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -102,7 +125,7 @@ export default function CreatorDashboard() {
                 <main className="max-w-6xl mx-auto py-8 transition-all duration-300">
                     {/* Welcome Heading */}
                     <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <h1 className="text-4xl md:text-5xl font-black text-zinc-900 mb-2 tracking-tight lowercase">
+                        <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-2 tracking-tight lowercase">
                             hello, {user?.fullName?.split(' ')[0] || "creator"}
                         </h1>
                         <p className="text-zinc-500 text-lg lowercase font-medium">
@@ -112,39 +135,51 @@ export default function CreatorDashboard() {
 
                     {/* Stats Cards Row */}
                     <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-100 mb-16">
-                        <CreatorStatsCards
-                            totalEarnings={45000}
-                            pendingProposals={activeProposals.length}
-                            isActive={isActive}
-                            onToggleStatus={() => setIsActive(!isActive)}
-                            onEarningsClick={() => router.push('/dashboard/creator/analytics?tab=earnings')}
-                            onProposalsClick={() => router.push('/dashboard/creator/proposals')}
-                        />
+                        {isLoading ? (
+                            <SkeletonStats />
+                        ) : (
+                            <CreatorStatsCards
+                                totalEarnings={45000}
+                                pendingProposals={activeProposals.length}
+                                isActive={isActive}
+                                onToggleStatus={handleToggleStatus}
+                                onEarningsClick={() => router.push('/dashboard/creator/analytics?tab=earnings')}
+                                onProposalsClick={() => router.push('/dashboard/creator/proposals')}
+                            />
+                        )}
                     </div>
 
                     {/* Recent Proposals Section */}
                     <section className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
                         <div className="flex items-center justify-between mb-8 px-2">
-                            <h2 className="text-2xl font-black text-zinc-900 tracking-tight lowercase">
+                            <h2 className="text-2xl font-bold text-zinc-900 tracking-tight lowercase">
                                 new proposals <span className="text-zinc-400 text-lg font-bold ml-2">({activeProposals.length})</span>
                             </h2>
-                            <button className="text-sm font-black tracking-widest text-zinc-400 hover:text-[#FF4D00] transition-colors lowercase">
+                            <button className="text-sm font-bold tracking-widest text-zinc-400 hover:text-[#FF4D00] transition-colors lowercase">
                                 view all
                             </button>
                         </div>
 
-                        <ProposalCarousel
-                            proposals={activeProposals}
-                            onProposalClick={(p: any) => setSelectedProposal(p.rawProposal)}
-                            showMoreLink="/dashboard/creator/proposals"
-                        />
+                        {isLoading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <SkeletonCard />
+                                <SkeletonCard />
+                                <SkeletonCard />
+                            </div>
+                        ) : (
+                            <ProposalCarousel
+                                proposals={activeProposals}
+                                onProposalClick={(p: any) => setSelectedProposal(p.rawProposal)}
+                                showMoreLink="/dashboard/creator/proposals"
+                            />
+                        )}
                     </section>
 
                     {/* Active Collaborations Section */}
                     {acceptedProposals.length > 0 && (
                         <section className="mt-20 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
                             <div className="flex items-center justify-between mb-8 px-2">
-                                <h2 className="text-2xl font-black text-zinc-900 tracking-tight lowercase">
+                                <h2 className="text-2xl font-bold text-zinc-900 tracking-tight lowercase">
                                     active collaborations
                                 </h2>
                             </div>
@@ -157,6 +192,9 @@ export default function CreatorDashboard() {
                             />
                         </section>
                     )}
+
+                    {/* Brand Discovery Section */}
+                    <BrandDiscovery />
                 </main>
 
                 {selectedProposal && (

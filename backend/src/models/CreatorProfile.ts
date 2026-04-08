@@ -22,6 +22,26 @@ export interface ICreatorProfile extends Document {
     followers?: string;
     engagement?: string;
     brandWork: BrandWorkItem[];
+    // Instagram Graph API data (cached after OAuth)
+    instagramUserId?: string;
+    instagramBio?: string;
+    instagramFollowerCount?: number;
+    instagramFollowingCount?: number;
+    instagramMediaCount?: number;
+    instagramAccountType?: string; // 'PERSONAL', 'BUSINESS', 'MEDIA_CREATOR'
+    instagramWebsite?: string;
+    instagramDataUpdatedAt?: Date;
+    recentMedia?: {
+        id: string;
+        mediaUrl?: string;
+        thumbnailUrl?: string;
+        permalink: string;
+        mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+        caption?: string;
+        timestamp: string;
+        likeCount?: number;
+        commentsCount?: number;
+    }[];
     createdAt: Date;
 }
 
@@ -75,6 +95,29 @@ const CreatorProfileSchema = new Schema<ICreatorProfile>({
             },
             url: String,
             instagramUrl: String,
+        }],
+        default: [],
+    },
+    // Instagram Graph API cached data
+    instagramUserId: { type: String },
+    instagramBio: { type: String },
+    instagramFollowerCount: { type: Number },
+    instagramFollowingCount: { type: Number },
+    instagramMediaCount: { type: Number },
+    instagramAccountType: { type: String },
+    instagramWebsite: { type: String },
+    instagramDataUpdatedAt: { type: Date },
+    recentMedia: {
+        type: [{
+            id: String,
+            mediaUrl: String,
+            thumbnailUrl: String,
+            permalink: String,
+            mediaType: { type: String, enum: ['IMAGE', 'VIDEO', 'CAROUSEL_ALBUM'] },
+            caption: String,
+            timestamp: String,
+            likeCount: Number,
+            commentsCount: Number,
         }],
         default: [],
     },

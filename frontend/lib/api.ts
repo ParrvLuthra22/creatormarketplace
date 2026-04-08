@@ -197,7 +197,6 @@ export const getCurrentUser = async (): Promise<{ user: User; profile: BrandProf
         method: 'GET',
     });
 };
-
 export const logout = async (): Promise<void> => {
     await apiFetch<void>('/api/auth/logout', {
         method: 'POST',
@@ -334,6 +333,20 @@ export async function updateCreatorProfile(input: UpdateCreatorProfileInput) {
     return apiFetch<{ success: boolean; profile: unknown }>(`/api/profile/creator`, {
         method: "PUT",
         body: JSON.stringify(input),
+    });
+}
+
+export async function updateUserProfile(data: { fullName: string }) {
+    return apiFetch<{ success: boolean; user: User }>(`/api/auth/profile`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+    });
+}
+
+export async function updateBrandProfile(data: Partial<BrandProfile>) {
+    return apiFetch<{ success: boolean; profile: BrandProfile }>(`/api/profile/brand`, {
+        method: "PUT",
+        body: JSON.stringify(data),
     });
 }
 

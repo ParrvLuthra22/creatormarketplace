@@ -131,12 +131,13 @@ export function CreatorStatsCards({ totalEarnings, pendingProposals, isActive = 
                     </div>
                     {/* Toggle Switch */}
                     <div
-                        onClick={onToggleStatus}
-                        className={`relative w-13 h-7.5 rounded-md transition-colors focus:outline-none ${isActive ? 'bg-[#4CAF50]' : 'bg-[#CCCCCC]'}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleStatus?.();
+                        }}
+                        className={`w-14 h-7 rounded-full transition-all relative ${isActive ? 'bg-[#FF4D00]' : 'bg-zinc-200'}`}
                     >
-                        <span
-                            className={`inline-block w-5.5 h-5.5 rounded-full bg-white shadow-sm transform transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`}
-                        />
+                        <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm ${isActive ? 'translate-x-7' : 'translate-x-0'}`} />
                     </div>
                 </div>
 

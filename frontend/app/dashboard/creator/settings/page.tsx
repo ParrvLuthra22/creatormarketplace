@@ -8,7 +8,8 @@ import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { LegalModal } from "@/components/LegalModal";
 import { DeleteAccountModal } from "@/components/DeleteAccountModal";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { updateUserProfile } from "@/lib/api";
 
 export default function CreatorSettings() {
     const { user } = useAuth();
@@ -19,6 +20,27 @@ export default function CreatorSettings() {
     const [marketingEmails, setMarketingEmails] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    
+    // Form & UI state
+    const [fullName, setFullName] = useState(user?.fullName || "");
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        setSaveError(null);
+        setSaveSuccess(false);
+        try {
+            await updateUserProfile({ fullName });
+            setSaveSuccess(true);
+            setTimeout(() => setSaveSuccess(false), 3000);
+        } catch (err: any) {
+            setSaveError(err.message || "Failed to save changes");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleDeleteAccount = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/account`, {
@@ -50,7 +72,8 @@ export default function CreatorSettings() {
                                 <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-2 lowercase">full name</label>
                                 <input
                                     type="text"
-                                    defaultValue={user?.fullName || ""}
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                     className="w-full h-14 px-6 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] focus:outline-none focus:border-[#FF4D00] transition-all"
                                 />
                             </div>
@@ -80,9 +103,27 @@ export default function CreatorSettings() {
                                 </div>
                             </div>
 
-                            <button className="h-14 px-10 bg-zinc-900 text-white rounded-md font-black text-[11px] uppercase tracking-widest hover:bg-[#FF4D00] transition-all duration-300 shadow-lg shadow-zinc-900/10">
-                                save changes
-                            </button>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                    className="h-14 px-10 bg-zinc-900 text-white rounded-md font-black text-[11px] uppercase tracking-widest hover:bg-[#FF4D00] transition-all duration-300 shadow-lg shadow-zinc-900/10 flex items-center justify-center gap-2 disabled:opacity-70"
+                                >
+                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                                    {isSaving ? "saving..." : "save changes"}
+                                </button>
+
+                                {saveSuccess && (
+                                    <div className="flex items-center gap-1.5 text-green-600 animate-in fade-in slide-in-from-left-2 duration-300">
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">saved!</span>
+                                    </div>
+                                )}
+
+                                {saveError && (
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-red-600">{saveError}</span>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -157,40 +198,7 @@ export default function CreatorSettings() {
                             onClick={() => setShowDeleteModal(true)}
                             className="px-10 h-14 bg-red-50 text-red-600 rounded-md font-black text-[11px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all duration-300"
                         >
-                            delete account
-                        </button>
-                    </div>
-
-                    {/* SECTION 4 - Privacy Policy */}
-                    <div className="bg-white border border-zinc-100 rounded-sm p-8 mb-8 shadow-sm">
-                        <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-2">privacy policy</h2>
-                        <p className="text-sm text-zinc-400 font-bold lowercase mb-8">how we collect, use, and protect your data</p>
-
-                        <div
-                            onClick={() => router.push('/privacy-policy')}
-                            className="bg-zinc-50 border border-zinc-100/50 rounded-md px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
-                        >
-                            <span className="text-sm font-black text-zinc-900 lowercase tracking-tight">read privacy policy</span>
-                            <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-[#FF4D00] translate-x-0 group-hover:translate-x-1 transition-all" />
-                        </div>
-
-                        <p className="text-[10px] text-zinc-300 font-bold lowercase mt-6 ml-1 tracking-tight">last updated: march 15, 2026</p>
-                    </div>
-
-                    {/* SECTION 5 - Terms of Service */}
-                    <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
-                        <h2 className="text-xl font-black text-zinc-900 tracking-tight lowercase mb-2">terms of service</h2>
-                        <p className="text-sm text-zinc-400 font-bold lowercase mb-8">rules and conditions for using creatorsync</p>
-
-                        <div
-                            onClick={() => router.push('/terms-and-conditions')}
-                            className="bg-zinc-50 border border-zinc-100/50 rounded-md px-8 py-5 cursor-pointer hover:bg-zinc-100 transition-all flex items-center justify-between group"
-                        >
-                            <span className="text-sm font-black text-zinc-900 lowercase tracking-tight">read terms of service</span>
-                            <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-[#FF4D00] translate-x-0 group-hover:translate-x-1 transition-all" />
-                        </div>
-
-                        <p className="text-[10px] text-zinc-300 font-bold lowercase mt-6 ml-1 tracking-tight">last updated: march 15, 2026</p>
+                            </button>
                     </div>
                 </main>
             </CreatorDashboardLayout>
