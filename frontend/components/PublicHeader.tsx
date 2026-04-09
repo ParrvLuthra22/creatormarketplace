@@ -1,37 +1,90 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { AuthModal } from "./AuthModal";
 
 export function PublicHeader() {
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
+
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F8F8F8] border-b border-[#E5E5E5] h-16">
-            <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
+        <>
+            <header
+                className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between"
+                style={{
+                    height: "100px",
+                    padding: "0 80px",
+                    background: "rgba(255,255,255,0.7)",
+                    backdropFilter: "blur(30px)",
+                    WebkitBackdropFilter: "blur(30px)",
+                }}
+            >
                 {/* Logo */}
-                <Link href="/" className="text-lg font-milker text-[#0A0A0A]">
+                <Link
+                    href="/"
+                    style={{
+                        fontSize: "32px",
+                        fontWeight: 950,
+                        color: "#18181b",
+                        letterSpacing: "-0.04em",
+                        textDecoration: "none",
+                        fontFamily: "inherit",
+                    }}
+                >
                     CreatorSync
                 </Link>
 
-                {/* Navigation */}
-                <nav className="hidden md:block">
-                    <Link href="/pricing" className="text-sm text-[#6B6B6B] hover:text-[#0A0A0A] transition-colors">
+                {/* Nav Links */}
+                <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>
+                    <Link
+                        href="/pricing"
+                        style={{
+                            fontSize: "16px",
+                            color: "#18181b",
+                            textDecoration: "none",
+                            fontWeight: 600,
+                        }}
+                    >
                         Pricing
                     </Link>
-                </nav>
-
-                {/* Buttons */}
-                <div className="flex items-center gap-3">
-                    <Link
-                        href="/"
-                        className="px-4 py-2 text-sm font-angelo text-[#0A0A0A] border border-[#0A0A0A] bg-transparent rounded-sm hover:bg-[#E5E5E5] transition-colors"
+                    <button
+                        onClick={() => { setAuthTab('login'); setShowAuthModal(true); }}
+                        style={{
+                            fontSize: "16px",
+                            color: "#18181b",
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                            padding: 0,
+                        }}
                     >
                         Sign In
-                    </Link>
-                    <Link
-                        href="/"
-                        className="px-4 py-2 text-sm font-angelo text-white bg-[#0A0A0A] rounded-sm hover:bg-[#2A2A2A] transition-colors"
+                    </button>
+                    <button
+                        onClick={() => { setAuthTab('signup'); setShowAuthModal(true); }}
+                        style={{
+                            padding: "16px 36px",
+                            background: "#FF4D00",
+                            color: "#FFFFFF",
+                            borderRadius: "50px",
+                            fontSize: "16px",
+                            fontWeight: 800,
+                            border: "none",
+                            cursor: "pointer",
+                        }}
                     >
                         Get Started
-                    </Link>
+                    </button>
                 </div>
-            </div>
-        </header>
+            </header>
+
+            <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                initialTab={authTab}
+            />
+        </>
     );
 }
