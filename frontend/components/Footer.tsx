@@ -64,8 +64,12 @@ export function Footer({ showPricing = true }: FooterProps) {
                             <Link href="/delivery-policy" className="text-sm text-[#6B6B6B] hover:text-white transition-colors">
                                 Delivery Policy
                             </Link>
+                            <Link href="/data-deletion" className="text-sm text-[#FF4D00] hover:text-white transition-colors">
+                                Data Deletion
+                            </Link>
                         </div>
                     </div>
+
 
                     {/* Column 4 - Socials */}
                     <div>
