@@ -8,7 +8,7 @@ import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { CreatorCard } from "@/components/CreatorCard";
 import { SendProposalModal } from "@/components/SendProposalModal";
 import { Search, Filter, User as UserIcon } from "lucide-react";
-import { getPublicCreators } from "@/lib/api";
+import { getPublicCreators, getBrandDashboardSummary } from "@/lib/api";
 import { SkeletonCreatorCard } from "@/components/ui/Skeleton";
 import { BrandStatsCards } from "@/components/BrandStatsCards";
 
@@ -24,6 +24,17 @@ export default function BrandDashboard() {
     const [creators, setCreators] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [proposalModal, setProposalModal] = useState<{ isOpen: boolean; creatorId: string; creatorName: string }>({ isOpen: false, creatorId: "", creatorName: "" });
+    const [dashSummary, setDashSummary] = useState({ totalSpend: 0, creatorsHired: 0, pendingProposals: 0 });
+
+    useEffect(() => {
+        const fetchSummary = async () => {
+            try {
+                const s = await getBrandDashboardSummary();
+                if (s.success) setDashSummary({ totalSpend: s.totalSpend, creatorsHired: s.creatorsHired, pendingProposals: s.pendingProposals });
+            } catch {}
+        };
+        fetchSummary();
+    }, []);
 
     useEffect(() => {
         const fetchCreators = async () => {
@@ -146,9 +157,10 @@ export default function BrandDashboard() {
                         {/* Stats Cards Section */}
                         <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
                             <BrandStatsCards
-                                totalSpend={125000}
-                                creatorsHired={12}
-                                pendingProposals={4}
+                                totalSpend={dashSummary.totalSpend}
+                                creatorsHired={dashSummary.creatorsHired}
+                                pendingProposals={dashSummary.pendingProposals}
+                                onProposalsClick={() => router.push('/dashboard/brand/proposals')}
                             />
                         </div>
 
