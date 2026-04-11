@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Check, Global, Briefcase, Users, FileText, Send } from "lucide-react";
+import { ArrowLeft, Check, Briefcase, Users, FileText, Send } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SendProposalModal } from "@/components/SendProposalModal";
