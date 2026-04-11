@@ -8,7 +8,7 @@ import cookie from 'cookie';
 interface SocketUser extends JWTPayload {}
 
 export function initSocket(httpServer: HttpServer) {
-    const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',');
+    const allowedOrigins = (process.env.CORS_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')).split(',');
 
     const io = new Server(httpServer, {
         cors: {

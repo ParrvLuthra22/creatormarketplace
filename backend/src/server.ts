@@ -48,7 +48,7 @@ app.use(cookieParser());
 app.use(passport.initialize()); // Initialize Passport (no sessions — we use JWT cookies)
 
 // CORS configuration
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',').map(s => s.trim());
+const allowedOrigins = (process.env.CORS_ORIGIN || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')).split(',').map(s => s.trim());
 app.use(
     cors({
         origin: (origin, callback) => {
