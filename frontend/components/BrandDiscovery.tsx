@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { getPublicBrands, PublicBrand } from "@/lib/api";
-import { Briefcase, Building2, ExternalLink } from "lucide-react";
+import { Building2, Briefcase, ArrowRight } from "lucide-react";
 import { Skeleton } from "./ui/Skeleton";
+import Link from "next/link";
+import "./CreatorCard.css";
 
 export function BrandDiscovery() {
     const [brands, setBrands] = useState<PublicBrand[]>([]);
@@ -35,16 +37,7 @@ export function BrandDiscovery() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="h-40 bg-white border border-zinc-100 rounded-md p-6 animate-pulse">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Skeleton className="w-10 h-10 rounded-md" />
-                                <div className="space-y-2">
-                                    <Skeleton className="w-24 h-4" />
-                                    <Skeleton className="w-16 h-3" />
-                                </div>
-                            </div>
-                            <Skeleton className="w-full h-8 rounded-sm" />
-                        </div>
+                        <div key={i} className="creator-card-skeleton" />
                     ))}
                 </div>
             </div>
@@ -65,35 +58,59 @@ export function BrandDiscovery() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {brands.map((brand) => (
-                    <div 
-                        key={brand.id} 
-                        className="group bg-white border border-zinc-100 rounded-md p-6 shadow-sm hover:border-[#FF4D00] hover:shadow-md transition-all duration-300 cursor-pointer"
-                    >
-                        <div className="flex items-center gap-4 mb-5">
-                            <div className="w-12 h-12 bg-zinc-50 rounded-md flex items-center justify-center border border-zinc-100 group-hover:bg-orange-50 transition-colors">
-                                <Building2 className="w-6 h-6 text-zinc-400 group-hover:text-[#FF4D00]" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {brands.map((brand) => {
+                    // For the sake of this demo, since API doesn't return cover photos yet,
+                    // we'll assign a placeholder background based on ID or index
+                    // Fallback to simple solid color if none is available
+                    const name = brand.companyName || brand.name;
+                    return (
+                        <Link
+                            key={brand.id}
+                            href={`/brand/${brand.id}`}
+                            className="creator-card group"
+                        >
+                            {/* Background Placeholder - since branding image is missing from PublicBrand model */}
+                            <div className="creator-card-bg-placeholder bg-zinc-900">
+                                <Building2 className="w-12 h-12 text-zinc-600" />
                             </div>
-                            <div>
-                                <h3 className="font-bold text-zinc-900 group-hover:text-[#FF4D00] transition-colors truncate max-w-[140px]">
-                                    {brand.companyName || brand.name}
-                                </h3>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                                    {brand.industry || "General"}
-                                </p>
-                            </div>
-                        </div>
 
-                        <div className="flex items-center justify-between mt-auto">
-                            <div className="flex items-center gap-1.5">
-                                <Briefcase className="w-3.5 h-3.5 text-zinc-400" />
-                                <span className="text-xs font-bold text-zinc-500 lowercase">open to collabs</span>
+                            {/* Top Badge */}
+                            <div className="creator-card-badge">
+                                Open to Collabs
                             </div>
-                            <ExternalLink className="w-4 h-4 text-zinc-300 group-hover:text-[#FF4D00] transition-colors" />
-                        </div>
-                    </div>
-                ))}
+
+                            {/* Main Info Overlay (Visible by default) */}
+                            <div className="creator-card-overlay">
+                                <div className="flex justify-between items-end w-full">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white mb-0.5 truncate">{name}</h3>
+                                        <p className="text-xs text-white/80 font-medium">{brand.industry || 'General'}</p>
+                                    </div>
+                                    <Briefcase className="w-5 h-5 text-white/90" />
+                                </div>
+                            </div>
+
+                            {/* Hover Expansion Content */}
+                            <div className="creator-card-expansion">
+                                <div className="p-6 pt-0">
+                                    <div className="h-px bg-white/10 mb-5" />
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Company:</p>
+                                            <p className="text-sm font-bold text-white truncate max-w-[120px]">{name}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2.5">
+                                        <div className="w-full h-11 bg-[#FF4D00] hover:bg-[#FF6A20] text-white rounded-md font-bold text-sm transition-all shadow-lg active:scale-95 flex items-center justify-center uppercase tracking-widest gap-2">
+                                            View Profile <ArrowRight className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    );
+                })}
             </div>
         </section>
     );
