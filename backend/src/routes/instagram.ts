@@ -265,7 +265,7 @@ function parseSignedRequest(signedRequest: string, appSecret: string): Record<st
 router.post('/deletion', async (req: any, res: Response): Promise<void> => {
     try {
         const appSecret = process.env.FACEBOOK_APP_SECRET;
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000');
 
         if (!appSecret) {
             console.error('[Deletion] FACEBOOK_APP_SECRET is not set');

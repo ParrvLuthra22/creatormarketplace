@@ -464,12 +464,12 @@ router.get(
 // GET /api/auth/google/callback - Handle Google callback
 router.get(
     '/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=google_auth_failed` }),
+    passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')}/?error=google_auth_failed` }),
     async (req: any, res: Response): Promise<void> => {
         try {
             const user = req.user as any;
             if (!user) {
-                res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=no_user`);
+                res.redirect(`${process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')}/?error=no_user`);
                 return;
             }
 
@@ -487,11 +487,11 @@ router.get(
             });
 
             const isNew = (user as any)._isNewOAuthUser ? '1' : '0';
-            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+            const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000');
             res.redirect(`${frontendUrl}/auth/callback?new=${isNew}`);
         } catch (error) {
             console.error('Google callback error:', error);
-            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=callback_failed`);
+            res.redirect(`${process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')}/?error=callback_failed`);
         }
     }
 );
@@ -510,12 +510,12 @@ router.get(
 // GET /api/auth/instagram/callback - Handle Meta/Instagram callback
 router.get(
     '/instagram/callback',
-    passport.authenticate('facebook', { session: false, failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=instagram_auth_failed` }),
+    passport.authenticate('facebook', { session: false, failureRedirect: `${process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')}/?error=instagram_auth_failed` }),
     async (req: any, res: Response): Promise<void> => {
         try {
             const user = req.user as any;
             if (!user) {
-                res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=no_user`);
+                res.redirect(`${process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')}/?error=no_user`);
                 return;
             }
 
@@ -533,11 +533,11 @@ router.get(
             });
 
             const isNew = (user as any)._isNewOAuthUser ? '1' : '0';
-            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+            const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000');
             res.redirect(`${frontendUrl}/auth/callback?new=${isNew}`);
         } catch (error) {
             console.error('Instagram callback error:', error);
-            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/?error=callback_failed`);
+            res.redirect(`${process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://creatormarketplace.vercel.app' : 'http://localhost:3000')}/?error=callback_failed`);
         }
     }
 );
