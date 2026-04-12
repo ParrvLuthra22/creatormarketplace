@@ -122,7 +122,7 @@ export function CreatorNavbar() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-zinc-200 h-[64px] flex items-center px-6 gap-6">
+            <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-zinc-200 h-[64px] flex items-center px-4 md:px-6 gap-2 md:gap-6">
                 {/* Logo */}
                 <Link href="/dashboard/creator" className="flex items-center gap-2 shrink-0 mr-4">
                     <div
@@ -152,7 +152,7 @@ export function CreatorNavbar() {
                                 }`}
                             >
                                 <Icon className={`w-4 h-4 ${active ? "text-[#FF4D00]" : "text-zinc-400"}`} />
-                                <span className="lowercase">{item.name}</span>
+                                <span className="lowercase hidden md:inline">{item.name}</span>
                                 {badge > 0 && (
                                     <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold bg-[#FF4D00] text-white rounded-full">
                                         {badge}
