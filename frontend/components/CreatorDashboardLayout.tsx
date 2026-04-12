@@ -19,7 +19,7 @@ export function CreatorDashboardLayout({ children, variant = "white" }: CreatorD
             <CreatorNavbar />
             {/* Main Content - offset by navbar height */}
             <main className="pt-[64px]">
-                <div className="max-w-7xl mx-auto px-6 py-8">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
                     {children}
                 </div>
             </main>

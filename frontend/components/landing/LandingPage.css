@@ -355,11 +355,50 @@ body {
 }
 
 @media (max-width: 1024px) {
+  .top-nav { padding: 0 40px; }
+  .landing-container { padding-left: 40px; padding-right: 40px; padding-top: 140px; }
+  .hero-section { grid-template-columns: 1fr; gap: 80px; text-align: center; }
+  .hero-content { margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+  .search-container { margin-left: auto; margin-right: auto; }
+  .hero-visual { height: 500px; justify-content: center; }
+  .slanted-card-grid { transform: perspective(2000px) rotateY(-15deg) rotateX(10deg) rotateZ(5deg) scale(0.85); width: auto; gap: 20px; }
+  .hero-ctas { justify-content: center; }
+  
   .about-section { padding: 60px 40px; margin: 0 20px 40px; }
   .about-stats { gap: 24px; }
 }
 
+@media (max-width: 768px) {
+  .top-nav { padding: 0 24px; height: 80px; }
+  .logo { font-size: 24px; }
+  .nav-links { gap: 16px; }
+  .nav-link { display: none; } /* Hide 'About us' on small mobile */
+  .nav-cta { padding: 12px 24px; font-size: 14px; }
+  
+  .landing-container { padding-left: 24px; padding-right: 24px; padding-top: 120px; }
+  .hero-title { font-size: clamp(36px, 10vw, 48px); margin-bottom: 24px; }
+  .hero-description { font-size: 16px; margin-bottom: 32px; }
+  
+  /* Stack buttons on tiny screens */
+  .hero-ctas { flex-direction: column; width: 100%; max-width: 320px; }
+  .btn-primary, .btn-secondary { width: 100%; padding: 16px; }
+
+  /* Slanted Grid adjustments for mobile: scale it down significantly and center it */
+  .hero-visual { height: 400px; }
+  .slanted-card-grid { 
+    transform: perspective(1000px) rotateY(-10deg) rotateX(5deg) rotateZ(0deg) scale(calc(100vw / 600)); 
+    transform-origin: top center;
+    gap: 15px;
+  }
+}
+
 @media (max-width: 640px) {
+  .search-input { height: 60px; padding: 0 20px 0 50px; font-size: 15px; }
+  .search-icon { left: 20px; }
+  .search-btn { height: 44px; width: 44px; right: 8px; }
+
+  .hero-visual { height: 320px; margin-top: -20px; }
+  
   .about-section { padding: 40px 24px; margin: 0 12px 32px; }
   .about-stats { grid-template-columns: 1fr; gap: 16px; }
 }
