@@ -130,8 +130,8 @@ export function CreatorProfileEdit({ totalEarnings, pendingProposals, profileVie
                 location: profileData.location,
                 availability: profileData.availability,
                 pricing: {
-                    reel: String(profileData.pricePerReel || ""),
-                    story: String(profileData.pricePerStory || ""),
+                    reel: Number(profileData.pricePerReel) || 0,
+                    story: Number(profileData.pricePerStory) || 0,
                 },
             });
 
