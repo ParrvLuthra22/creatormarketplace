@@ -68,6 +68,7 @@ export default function CreatorProfile() {
                             <label className="relative w-32 h-32 rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-[#FF4D00] hover:bg-orange-50 transition-all shadow-sm group-hover:scale-105 group-hover:shadow-lg overflow-hidden">
                                 {uploading ? (
                                     <Loader2 className="w-8 h-8 animate-spin" />
+                                ) : creatorProfile?.profilePhoto && !imgError ? (
                                     <>
                                         <img 
                                             src={getProfilePhotoUrl(creatorProfile.profilePhoto)} 
