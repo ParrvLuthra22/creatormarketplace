@@ -8,14 +8,18 @@ interface BrandWorkItem {
 }
 
 interface PricingInfo {
-    starting: number;
-    per: string;
+    starting?: number;
+    per?: string;
+    reel?: number;
+    story?: number;
+    post?: number;
 }
 
 export interface ICreatorProfile extends Document {
     userId: mongoose.Types.ObjectId;
     instagramHandle: string;
     profilePhoto?: string;
+    bio?: string;
     niches: string[];
     pricing?: PricingInfo;
     availability: 'available' | 'limited' | 'unavailable';
@@ -62,6 +66,10 @@ const CreatorProfileSchema = new Schema<ICreatorProfile>({
         type: String,
         trim: true,
     },
+    bio: {
+        type: String,
+        trim: true,
+    },
     niches: {
         type: [String],
         default: [],
@@ -73,6 +81,18 @@ const CreatorProfileSchema = new Schema<ICreatorProfile>({
         },
         per: {
             type: String,
+        },
+        reel: {
+            type: Number,
+            min: 0,
+        },
+        story: {
+            type: Number,
+            min: 0,
+        },
+        post: {
+            type: Number,
+            min: 0,
         },
     },
     availability: {

@@ -83,6 +83,8 @@ router.put('/brand', authMiddleware, async (req: AuthRequest, res: Response): Pr
             'companyName',
             'industry',
             'logoUrl',
+            'website',
+            'brandStory'
         ] as const;
 
         const update: Record<string, any> = {};
@@ -223,7 +225,7 @@ router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, re
                 const profile = profileMap.get(creator._id.toString());
                 return {
                     id: creator._id,
-                    profilePicture: profile?.profilePhoto || '/api/placeholder/100/100',
+                    profilePicture: profile?.profilePhoto || null,
                 };
             });
 
@@ -245,7 +247,7 @@ router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, re
                 id: creator._id,
                 name: creator.fullName, // Map fullName to name for frontend
                 instagramHandle: normalizedHandle || 'unknown',
-                profilePicture: profile?.profilePhoto || '/api/placeholder/140/140',
+                profilePicture: profile?.profilePhoto || null,
                 followers: profile?.followers || '0',
                 following: '0', // Not in schema yet
                 bio: '', // Not in schema yet  
@@ -307,7 +309,7 @@ router.get('/creators/:userId/public', optionalAuth, async (req: OptionalAuthReq
                 id: user._id,
                 name: user.fullName,
                 instagramHandle: normalizedHandle,
-                profilePicture: profile.profilePhoto || '/api/placeholder/140/140',
+                profilePicture: profile.profilePhoto || null,
                 niches: profile.niches || [],
                 followers: profile.followers || '0',
                 engagement: profile.engagement || null,
