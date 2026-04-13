@@ -50,10 +50,14 @@ router.get('/conversations', authMiddleware, async (req: AuthRequest, res: Respo
             convObj.participants = await Promise.all(convObj.participants.map(async (p: any) => {
                 if (p.accountType === 'Creator') {
                     const profile = await CreatorProfile.findOne({ userId: p._id }).select('profilePhoto');
-                    if (profile?.profilePhoto) p.profilePhoto = profile.profilePhoto;
+                    if (profile?.profilePhoto && !profile.profilePhoto.includes('/api/placeholder')) {
+                        p.profilePhoto = profile.profilePhoto;
+                    }
                 } else if (p.accountType === 'Brand') {
                     const profile = await BrandProfile.findOne({ userId: p._id }).select('logoUrl');
-                    if (profile?.logoUrl) p.profilePhoto = profile.logoUrl;
+                    if (profile?.logoUrl && !profile.logoUrl.includes('/api/placeholder')) {
+                        p.profilePhoto = profile.logoUrl;
+                    }
                 }
                 return p;
             }));
@@ -149,10 +153,14 @@ router.post('/conversations', authMiddleware, async (req: AuthRequest, res: Resp
         convObj.participants = await Promise.all(convObj.participants.map(async (p: any) => {
             if (p.accountType === 'Creator') {
                 const profile = await CreatorProfile.findOne({ userId: p._id }).select('profilePhoto');
-                if (profile?.profilePhoto) p.profilePhoto = profile.profilePhoto;
+                if (profile?.profilePhoto && !profile.profilePhoto.includes('/api/placeholder')) {
+                    p.profilePhoto = profile.profilePhoto;
+                }
             } else if (p.accountType === 'Brand') {
                 const profile = await BrandProfile.findOne({ userId: p._id }).select('logoUrl');
-                if (profile?.logoUrl) p.profilePhoto = profile.logoUrl;
+                if (profile?.logoUrl && !profile.logoUrl.includes('/api/placeholder')) {
+                    p.profilePhoto = profile.logoUrl;
+                }
             }
             return p;
         }));
