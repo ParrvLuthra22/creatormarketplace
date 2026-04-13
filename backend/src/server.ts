@@ -35,10 +35,10 @@ app.set('trust proxy', 1);
 // Connect to database
 connectDB();
 
-// Security middleware
 app.use(helmet({
     contentSecurityPolicy: isProduction ? undefined : false, // Disable CSP in dev for HMR
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow frontend apps to load uploaded images
 }));
 
 // Middleware
