@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { Plus, Camera, Loader2 } from "lucide-react";
-import { uploadProfilePhoto, showToast } from "@/lib/api";
+import { uploadProfilePhoto, showToast, getProfilePhotoUrl } from "@/lib/api";
 
 export default function BrandProfile() {
     const { user, profile, refreshProfile } = useAuth();
@@ -59,7 +59,7 @@ export default function BrandProfile() {
                                 ) : brandProfile?.logoUrl ? (
                                     <>
                                         <img 
-                                            src={brandProfile.logoUrl.startsWith('/') ? `http://localhost:5001${brandProfile.logoUrl}` : brandProfile.logoUrl} 
+                                            src={getProfilePhotoUrl(brandProfile.logoUrl)} 
                                             alt="Brand Logo" 
                                             className="w-full h-full object-cover"
                                         />
