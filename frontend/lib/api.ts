@@ -41,6 +41,9 @@ export interface BrandProfile {
     userId: string;
     companyName?: string;
     industry?: string;
+    logoUrl?: string;
+    website?: string;
+    brandStory?: string;
     totalRevenue: number;
     creatorsHired: string[];
     createdAt: string;
@@ -282,8 +285,11 @@ export interface PublicCreatorStatsResponse {
         engagement: string | null;
         availability: 'available' | 'limited' | 'unavailable';
         pricing: {
-            starting: number;
-            per: string;
+            starting?: number;
+            per?: string;
+            reel?: number;
+            story?: number;
+            post?: number;
         } | null;
         brandWork: Array<{
             title: string;
@@ -317,16 +323,17 @@ export type UpdateCreatorProfileInput = Partial<{
     location: string;
     availability: string;
     pricing: {
-        sponsoredPost?: string;
-        reel?: string;
-        story?: string;
+        starting?: number;
+        per?: string;
+        reel?: number;
+        story?: number;
+        post?: number;
     };
     brandWork: Array<{
-        brandName?: string;
-        campaignTitle?: string;
-        date?: string;
-        description?: string;
-        mediaUrl?: string;
+        title: string;
+        type: 'image' | 'video';
+        url: string;
+        instagramUrl?: string;
     }>;
 }>;
 

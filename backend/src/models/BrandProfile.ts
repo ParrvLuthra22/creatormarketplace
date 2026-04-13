@@ -5,6 +5,8 @@ export interface IBrandProfile extends Document {
     companyName?: string;
     industry?: string;
     logoUrl?: string;
+    website?: string;
+    brandStory?: string;
     totalRevenue: number;
     creatorsHired: mongoose.Types.ObjectId[];
     createdAt: Date;
@@ -26,6 +28,14 @@ const BrandProfileSchema = new Schema<IBrandProfile>({
         trim: true,
     },
     logoUrl: {
+        type: String,
+        trim: true,
+    },
+    website: {
+        type: String,
+        trim: true,
+    },
+    brandStory: {
         type: String,
         trim: true,
     },
