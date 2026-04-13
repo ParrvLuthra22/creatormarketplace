@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Plus, Check, Camera, Loader2 } from "lucide-react";
-import { uploadProfilePhoto, showToast } from "@/lib/api";
+import { uploadProfilePhoto, showToast, getProfilePhotoUrl } from "@/lib/api";
 
 const AVAILABLE_NICHES = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Comedy", "Finance", "Education"];
 
@@ -69,10 +68,9 @@ export default function CreatorProfile() {
                             <label className="relative w-32 h-32 rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-[#FF4D00] hover:bg-orange-50 transition-all shadow-sm group-hover:scale-105 group-hover:shadow-lg overflow-hidden">
                                 {uploading ? (
                                     <Loader2 className="w-8 h-8 animate-spin" />
-                                ) : creatorProfile?.profilePhoto && !imgError ? (
                                     <>
                                         <img 
-                                            src={creatorProfile.profilePhoto.startsWith('http') ? creatorProfile.profilePhoto : (creatorProfile.profilePhoto.startsWith('/') ? creatorProfile.profilePhoto : `/${creatorProfile.profilePhoto}`)} 
+                                            src={getProfilePhotoUrl(creatorProfile.profilePhoto)} 
                                             alt="Profile" 
                                             className="w-full h-full object-cover"
                                             onError={() => setImgError(true)}

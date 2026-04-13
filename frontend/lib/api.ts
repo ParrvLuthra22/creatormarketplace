@@ -230,7 +230,8 @@ export const uploadProfilePhoto = async (file: File): Promise<{ success: boolean
 export const getProfilePhotoUrl = (url?: string): string => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return url.startsWith('/') ? url : `/${url}`;
+    const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+    return `${API_BASE_URL}${cleanUrl}`;
 };
 
 export const getProposalsSummary = async (): Promise<{ success: boolean; pendingProposals: number }> => {

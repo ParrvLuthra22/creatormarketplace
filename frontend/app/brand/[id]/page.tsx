@@ -6,6 +6,8 @@ import { ArrowLeft, Check, Briefcase, Users, FileText, Send } from "lucide-react
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SendProposalModal } from "@/components/SendProposalModal";
+import { AuthModal } from "@/components/AuthModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { showToast } from "@/lib/api";
 import "./BrandProfile.css";
 
@@ -33,6 +35,18 @@ export default function PublicBrandProfile() {
     const [loading, setLoading] = useState(true);
     const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
     const [brand, setBrand] = useState<BrandMockData | null>(null);
+    const { user, logout } = useAuth();
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authModalTab, setAuthModalTab] = useState<'login' | 'signup'>('login');
+
+    const handleSendProposalClick = () => {
+        if (!user) {
+            setAuthModalTab('login');
+            setShowAuthModal(true);
+        } else {
+            setIsProposalModalOpen(true);
+        }
+    };
 
     useEffect(() => {
         // Mocking brand data fetch
@@ -86,7 +100,12 @@ export default function PublicBrandProfile() {
 
     return (
         <div className="min-h-screen bg-zinc-50">
-            <Header />
+            <Header 
+                user={user}
+                onLoginClick={() => { setAuthModalTab('login'); setShowAuthModal(true); }}
+                onSignupClick={() => { setAuthModalTab('signup'); setShowAuthModal(true); }}
+                onLogoutClick={logout}
+            />
 
             <div className="brand-profile-container">
                 {/* Hero Section */}
@@ -192,7 +211,7 @@ export default function PublicBrandProfile() {
                             </p>
                             
                             <button 
-                                onClick={() => setIsProposalModalOpen(true)}
+                                onClick={handleSendProposalClick}
                                 className="w-full h-12 bg-[#FF4D00] text-white rounded-md font-bold text-sm uppercase tracking-widest hover:bg-[#E64500] active:scale-95 transition-all shadow-[0_4px_14px_rgba(255,77,0,0.3)] flex items-center justify-center gap-2"
                             >
                                 Send Proposal
@@ -210,6 +229,12 @@ export default function PublicBrandProfile() {
                 isOpen={isProposalModalOpen}
                 onClose={() => setIsProposalModalOpen(false)}
                 onSent={() => setIsProposalModalOpen(false)}
+            />
+
+            <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                initialTab={authModalTab}
             />
         </div>
     );
