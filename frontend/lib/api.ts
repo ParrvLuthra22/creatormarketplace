@@ -423,6 +423,26 @@ export const getPublicBrands = async (): Promise<PublicBrandsResponse> => {
     });
 };
 
+export interface PublicBrandProfileResponse {
+    success: boolean;
+    brand: {
+        id: string;
+        name: string;
+        companyName: string;
+        industry: string;
+        logoUrl: string | null;
+        website: string | null;
+        brandStory: string | null;
+    };
+    authenticated: boolean;
+}
+
+export const getPublicBrandProfile = async (userId: string): Promise<PublicBrandProfileResponse> => {
+    return apiFetch<PublicBrandProfileResponse>(`/api/profile/brand/${userId}/public`, {
+        method: 'GET',
+    });
+};
+
 // Proposal API
 export interface ProposalData {
     creatorId: string;
