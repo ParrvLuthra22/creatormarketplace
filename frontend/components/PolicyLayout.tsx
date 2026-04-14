@@ -151,7 +151,6 @@ export function PolicyLayout({ title, lastUpdated, children, badge }: PolicyLayo
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

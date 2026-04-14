@@ -3,10 +3,21 @@
 import Link from "next/link";
 import { useState } from "react";
 import { AuthModal } from "./AuthModal";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export function PublicHeader() {
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
+    const { user, logout } = useAuth();
+    const router = useRouter();
+
+    const handleDashboardClick = () => {
+        if (user) {
+            const dashboardPath = user.accountType === 'Brand' ? '/dashboard/brand' : '/dashboard/creator';
+            router.push(dashboardPath);
+        }
+    };
 
     return (
         <>
@@ -37,46 +48,73 @@ export function PublicHeader() {
 
                 {/* Nav Links */}
                 <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>
-                    <Link
-                        href="/pricing"
-                        style={{
-                            fontSize: "16px",
-                            color: "#18181b",
-                            textDecoration: "none",
-                            fontWeight: 600,
-                        }}
-                    >
-                        Pricing
-                    </Link>
-                    <button
-                        onClick={() => { setAuthTab('login'); setShowAuthModal(true); }}
-                        style={{
-                            fontSize: "16px",
-                            color: "#18181b",
-                            background: "transparent",
-                            border: "none",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                            padding: 0,
-                        }}
-                    >
-                        Sign In
-                    </button>
-                    <button
-                        onClick={() => { setAuthTab('signup'); setShowAuthModal(true); }}
-                        style={{
-                            padding: "16px 36px",
-                            background: "#FF4D00",
-                            color: "#FFFFFF",
-                            borderRadius: "50px",
-                            fontSize: "16px",
-                            fontWeight: 800,
-                            border: "none",
-                            cursor: "pointer",
-                        }}
-                    >
-                        Get Started
-                    </button>
+
+
+                    {user ? (
+                        <>
+                            <button
+                                onClick={handleDashboardClick}
+                                style={{
+                                    fontSize: "16px",
+                                    color: "#18181b",
+                                    background: "transparent",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    fontWeight: 600,
+                                    padding: 0,
+                                }}
+                            >
+                                Dashboard
+                            </button>
+                            <button
+                                onClick={logout}
+                                style={{
+                                    padding: "12px 28px",
+                                    background: "#FF4D00",
+                                    color: "#FFFFFF",
+                                    borderRadius: "50px",
+                                    fontSize: "15px",
+                                    fontWeight: 800,
+                                    border: "none",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button
+                                onClick={() => { setAuthTab('login'); setShowAuthModal(true); }}
+                                style={{
+                                    fontSize: "16px",
+                                    color: "#18181b",
+                                    background: "transparent",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    fontWeight: 600,
+                                    padding: 0,
+                                }}
+                            >
+                                Sign In
+                            </button>
+                            <button
+                                onClick={() => { setAuthTab('signup'); setShowAuthModal(true); }}
+                                style={{
+                                    padding: "16px 36px",
+                                    background: "#FF4D00",
+                                    color: "#FFFFFF",
+                                    borderRadius: "50px",
+                                    fontSize: "16px",
+                                    fontWeight: 800,
+                                    border: "none",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Get Started
+                            </button>
+                        </>
+                    )}
                 </div>
             </header>
 

@@ -191,16 +191,14 @@ body {
 .slanted-card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 40px;
   transform: perspective(2000px) rotateY(-20deg) rotateX(12deg) rotateZ(10deg);
-  width: 600px;
+  width: 650px;
 }
 
-.hero-creator-card:nth-child(2) { transform: translateY(100px); }
-.hero-creator-card:nth-child(3) { transform: translateY(50px); }
-.hero-creator-card:nth-child(4) { transform: translateY(-40px); }
-.hero-creator-card:nth-child(5) { transform: translateY(60px); }
-.hero-creator-card:nth-child(6) { transform: translateY(-20px); }
+.hero-creator-card:nth-child(2), .hero-creator-card:nth-child(5) { transform: translateY(80px); }
+.hero-creator-card:nth-child(3), .hero-creator-card:nth-child(6) { transform: translateY(40px); }
+.hero-creator-card:nth-child(4) { transform: translateY(0px); }
 
 .hero-creator-card {
   width: 170px;

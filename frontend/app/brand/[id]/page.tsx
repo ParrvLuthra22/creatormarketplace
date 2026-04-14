@@ -3,21 +3,23 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Check, Briefcase, Users, FileText, Send } from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PublicHeader } from "@/components/PublicHeader";
 import { SendProposalModal } from "@/components/SendProposalModal";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { showToast } from "@/lib/api";
+import { getPublicBrandProfile, getProfilePhotoUrl, showToast } from "@/lib/api";
 import "./BrandProfile.css";
 
-// Use a mock data interface since there's no specific public brand API yet
-interface BrandMockData {
+// Interface for the dynamic brand data from API
+interface BrandData {
+    id: string;
+    name: string;
     companyName: string;
     industry: string;
-    website: string;
-    logoUrl: string;
-    description: string;
+    logoUrl: string | null;
+    website: string | null;
+    brandStory: string | null;
+    // Keep mock sections for now as they aren't in schema
     hiringCriteria: string[];
     pastCreators: {
         name: string;
@@ -34,7 +36,7 @@ export default function PublicBrandProfile() {
 
     const [loading, setLoading] = useState(true);
     const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
-    const [brand, setBrand] = useState<BrandMockData | null>(null);
+    const [brand, setBrand] = useState<BrandData | null>(null);
     const { user, logout } = useAuth();
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authModalTab, setAuthModalTab] = useState<'login' | 'signup'>('login');
@@ -49,43 +51,44 @@ export default function PublicBrandProfile() {
     };
 
     useEffect(() => {
-        // Mocking brand data fetch
-        setTimeout(() => {
-            setBrand({
-                companyName: "upSosh",
-                industry: "Fashion & Lifestyle",
-                website: "https://upsosh.com",
-                logoUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
-                description: "We are a modern fashion brand focused on sustainability and minimal design. We look for creative minds who share our passion for positive change through fashion.",
-                hiringCriteria: [
-                    "High engagement rate (> 5%)",
-                    "Aesthetic aligns with minimalism",
-                    "Authentic audience connection",
-                    "Quality content production"
-                ],
-                pastCreators: [
-                    {
-                        name: "Satyaki Das",
-                        handle: "@satyakid",
-                        avatar: "/images/satyaki.png",
-                        campaign: "Summer Collection Launch"
-                    },
-                    {
-                        name: "Elena Silva",
-                        handle: "@elenastyles",
-                        avatar: "https://i.pravatar.cc/150?img=47",
-                        campaign: "Sustainable Autumn"
-                    },
-                    {
-                        name: "Marcus Roy",
-                        handle: "@marcusroy",
-                        avatar: "https://i.pravatar.cc/150?img=11",
-                        campaign: "Everyday Essentials"
-                    }
-                ]
-            });
-            setLoading(false);
-        }, 800);
+        const fetchBrand = async () => {
+            try {
+                const res = await getPublicBrandProfile(id);
+                if (res.success) {
+                    setBrand({
+                        ...res.brand,
+                        // Fill in mock data for missing schema fields
+                        hiringCriteria: [
+                            "High engagement rate (> 5%)",
+                            "Aesthetic aligns with minimalism",
+                            "Authentic audience connection",
+                            "Quality content production"
+                        ],
+                        pastCreators: [
+                            {
+                                name: "Satyaki Das",
+                                handle: "@satyakid",
+                                avatar: "/images/satyaki.png",
+                                campaign: "Summer Collection Launch"
+                            },
+                            {
+                                name: "Elena Silva",
+                                handle: "@elenastyles",
+                                avatar: "https://i.pravatar.cc/150?img=47",
+                                campaign: "Sustainable Autumn"
+                            }
+                        ]
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to fetch brand:", err);
+                showToast("Failed to load brand profile", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBrand();
     }, [id]);
 
     if (loading) {
@@ -100,18 +103,13 @@ export default function PublicBrandProfile() {
 
     return (
         <div className="min-h-screen bg-zinc-50">
-            <Header 
-                user={user}
-                onLoginClick={() => { setAuthModalTab('login'); setShowAuthModal(true); }}
-                onSignupClick={() => { setAuthModalTab('signup'); setShowAuthModal(true); }}
-                onLogoutClick={logout}
-            />
+            <PublicHeader />
 
-            <div className="brand-profile-container">
+            <div className="brand-profile-container pt-[100px]">
                 {/* Hero Section */}
                 <div className="profile-hero">
                     <img 
-                        src={brand.logoUrl} 
+                        src={getProfilePhotoUrl(brand.logoUrl || "") || "/images/brand-placeholder.png"} 
                         alt={brand.companyName} 
                         className="profile-hero-img" 
                     />
@@ -149,7 +147,7 @@ export default function PublicBrandProfile() {
                                 About {brand.companyName}
                             </h2>
                             <p className="text-zinc-600 leading-relaxed font-medium">
-                                {brand.description}
+                                {brand.brandStory || `We are a professional ${brand.industry} brand committed to quality and excellence.`}
                             </p>
                         </div>
 
@@ -221,10 +219,8 @@ export default function PublicBrandProfile() {
                 </div>
             </div>
 
-            <Footer />
-
             <SendProposalModal
-                creatorId={id} // Should actually be brandId when backend supports it
+                creatorId={id} 
                 creatorName={brand.companyName}
                 isOpen={isProposalModalOpen}
                 onClose={() => setIsProposalModalOpen(false)}

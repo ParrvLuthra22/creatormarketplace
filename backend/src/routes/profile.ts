@@ -331,6 +331,47 @@ router.get('/creators/:userId/public', optionalAuth, async (req: OptionalAuthReq
     }
 });
 
+// GET /api/profile/brand/:userId/public - Public brand profile (with optional auth)
+router.get('/brand/:userId/public', optionalAuth, async (req: OptionalAuthRequest, res: Response): Promise<void> => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findById(userId).select('_id fullName accountType');
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        if (user.accountType !== 'Brand') {
+            res.status(400).json({ error: 'User is not a brand account' });
+            return;
+        }
+
+        const profile = await BrandProfile.findOne({ userId: user._id });
+        if (!profile) {
+            res.status(404).json({ error: 'Brand profile not found' });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            brand: {
+                id: user._id,
+                name: user.fullName,
+                companyName: profile.companyName || user.fullName,
+                industry: profile.industry || 'General',
+                logoUrl: profile.logoUrl || null,
+                website: profile.website || null,
+                brandStory: profile.brandStory || null,
+            },
+            authenticated: !!req.userId,
+        });
+    } catch (error: any) {
+        console.error('Get public brand profile error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // GET /api/profile/brands/public - Get public brands list
 router.get('/brands/public', optionalAuth, async (req: OptionalAuthRequest, res: Response): Promise<void> => {
     try {
