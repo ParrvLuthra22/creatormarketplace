@@ -46,7 +46,7 @@ export function CreatorGrid({
     onCtaClick,
     emptyMessage,
     emptySubMessage,
-    columns = { desktop: 3, tablet: 2, mobile: 1 }
+    columns = { desktop: 4, tablet: 3, mobile: 1 }
 }: CreatorGridProps) {
     // Show loading skeletons
     if (isLoading) {

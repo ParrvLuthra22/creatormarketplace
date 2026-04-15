@@ -21,6 +21,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
 import { HelpSupportModal } from "@/components/HelpSupportModal";
+import { NotificationBell } from "./NotificationBell";
 import { getChatSummary, getProposalsSummary, getProfilePhotoUrl } from "@/lib/api";
 
 interface NavItem {
@@ -172,9 +173,7 @@ export function BrandNavbar() {
                 {/* Right side: Bell + Profile + Hamburger */}
                 <div className="flex items-center gap-3 shrink-0">
                     {/* Bell */}
-                    <button className="w-9 h-9 rounded-md bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all">
-                        <Bell className="w-4 h-4" />
-                    </button>
+                    <NotificationBell />
 
                     {/* Profile dropdown */}
                     <div className="relative" ref={profileRef}>
