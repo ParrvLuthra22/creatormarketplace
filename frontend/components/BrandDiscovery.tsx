@@ -35,8 +35,8 @@ export function BrandDiscovery() {
                         discover new brands
                     </h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {[1, 2, 3].map(i => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {[1, 2, 3, 4].map(i => (
                         <div key={i} className="creator-card-skeleton" />
                     ))}
                 </div>
@@ -58,7 +58,7 @@ export function BrandDiscovery() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {brands.map((brand) => {
                     // For the sake of this demo, since API doesn't return cover photos yet,
                     // we'll assign a placeholder background based on ID or index

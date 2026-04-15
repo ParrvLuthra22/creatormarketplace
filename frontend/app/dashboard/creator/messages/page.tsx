@@ -261,9 +261,12 @@ export default function CreatorMessagesPage() {
 
                                         {showMenu && (
                                             <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-zinc-100 rounded-md p-2 z-10 shadow-xl overflow-hidden">
-                                                <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 rounded-md transition-all lowercase">
+                                                <Link 
+                                                    href={`/brand/${chatPartner._id}`}
+                                                    className="block w-full text-left px-4 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 rounded-md transition-all lowercase"
+                                                >
                                                     View Profile
-                                                </button>
+                                                </Link>
                                                 <button className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-md transition-all lowercase">
                                                     Close Chat
                                                 </button>

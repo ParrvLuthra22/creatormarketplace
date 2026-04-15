@@ -74,7 +74,12 @@ export default function BrandDashboard() {
         const matchesSearch = searchQuery === "" ||
             (creator.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
             (creator.instagramHandle || '').toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesNiche && matchesSearch;
+            
+        // Pricing Filter logic
+        const creatorPrice = creator.pricing?.starting ? creator.pricing.starting / 1000 : 0;
+        const matchesPrice = creatorPrice >= priceRange[0] && (priceRange[1] >= 100 || creatorPrice <= priceRange[1]);
+
+        return matchesNiche && matchesSearch && matchesPrice;
     });
 
     return (
@@ -103,16 +108,27 @@ export default function BrandDashboard() {
 
                             {/* Pricing Section */}
                             <div className="mb-8">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-5">Pricing</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-5">Pricing (Max)</p>
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-xs font-bold text-zinc-900">
-                                        ₹{priceRange[0]}k - ₹{priceRange[1]}k+
+                                        Up to ₹{priceRange[1]}k{priceRange[1] >= 100 ? "+" : ""}
                                     </span>
                                 </div>
-                                <div className="relative h-1.5 bg-zinc-100 rounded-full mb-2">
-                                    <div className="absolute left-[20%] right-[0%] h-full bg-[#FF4D00] rounded-full" />
-                                    <div className="absolute left-[20%] -top-1.5 w-4 h-4 bg-white border-2 border-[#FF4D00] rounded-full shadow-md cursor-pointer" />
-                                    <div className="absolute right-0 -top-1.5 w-4 h-4 bg-white border-2 border-[#FF4D00] rounded-full shadow-md cursor-pointer" />
+                                <div className="relative pt-1">
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        step="5"
+                                        value={priceRange[1]}
+                                        onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                                        className="w-full h-1.5 bg-zinc-100 rounded-full appearance-none cursor-pointer accent-[#FF4D00]"
+                                    />
+                                    <div className="flex justify-between text-[10px] text-zinc-400 mt-2 font-bold uppercase tracking-tighter">
+                                        <span>₹0</span>
+                                        <span>₹50k</span>
+                                        <span>₹100k+</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -165,8 +181,8 @@ export default function BrandDashboard() {
                         </div>
 
                         {loading ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                                {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                                     <SkeletonCreatorCard key={i} />
                                 ))}
                             </div>
@@ -179,7 +195,7 @@ export default function BrandDashboard() {
                                 <p className="text-zinc-500 mt-2">Try adjusting your filters or search terms</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
                                 {filteredCreators.map((creator) => (
                                     <CreatorCard 
                                         key={creator.id || creator._id} 

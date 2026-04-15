@@ -28,7 +28,7 @@ export function ProposalCarousel({
     showMoreLink
 }: ProposalCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const itemsPerPage = 3;
+    const itemsPerPage = 4;
 
     const handlePrev = () => {
         setCurrentIndex((prev) => Math.max(0, prev - itemsPerPage));
@@ -70,7 +70,7 @@ export function ProposalCarousel({
                 </button>
 
                 {/* Proposal Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {visibleProposals.map((proposal) => (
                         <div key={proposal.id} className="transition-all duration-500 animate-in fade-in slide-in-from-right-4">
                             <ProposalCard
