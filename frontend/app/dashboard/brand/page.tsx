@@ -42,14 +42,23 @@ export default function BrandDashboard() {
                 const res = await getPublicCreators();
                 if (res.success && res.creators) {
                     // Mock additional fields for the new UI
-                    const enhancedCreators = res.creators.map((c: any, index: number) => ({
-                        ...c,
-                        profilePicture: c.name === "Satyaki Das" ? "/images/satyaki.png" : c.profilePicture,
-                        engagementRate: index % 2 === 0 ? "12.5%" : "8.2%",
-                        pastBrands: ["Nike", "Google", "Apple"],
-                        isNew: index % 3 === 0,
-                        featured: index % 4 === 0
-                    }));
+                    const enhancedCreators = res.creators.map((c: any, index: number) => {
+                        const mockPrices = [15000, 45000, 85000, 120000, 5000];
+                        const mockStarting = c.pricing?.starting || mockPrices[index % mockPrices.length];
+                        
+                        return {
+                            ...c,
+                            pricing: {
+                                ...c.pricing,
+                                starting: mockStarting
+                            },
+                            profilePicture: c.name === "Satyaki Das" ? "/images/satyaki.png" : c.profilePicture,
+                            engagementRate: index % 2 === 0 ? "12.5%" : "8.2%",
+                            pastBrands: ["Nike", "Google", "Apple"],
+                            isNew: index % 3 === 0,
+                            featured: index % 4 === 0
+                        };
+                    });
                     setCreators(enhancedCreators);
                 }
             } catch (err) {
