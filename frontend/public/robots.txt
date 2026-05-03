@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /login/brand
+Disallow: /login/creator
+
+Sitemap: https://creatorlyff.com/sitemap.xml
