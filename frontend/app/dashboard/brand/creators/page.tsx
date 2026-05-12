@@ -6,7 +6,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { SendProposalModal } from "@/components/SendProposalModal";
-import { Search, Bell, Send, Instagram, User as UserIcon } from "lucide-react";
+import { Search, Bell, Send, Share2 as Instagram, User as UserIcon } from "lucide-react";
 import { getPublicCreators } from "@/lib/api";
 import { useRouter } from "next/navigation";
 

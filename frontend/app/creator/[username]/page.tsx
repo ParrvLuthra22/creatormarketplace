@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { RouteGuard } from "@/components/RouteGuard";
 import { CREATORS, Creator } from "@/lib/data";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeft, Instagram, MapPin, Star } from "lucide-react";
+import { ArrowLeft, Share2 as Instagram, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 
 export default function CreatorProfileViewPage() {

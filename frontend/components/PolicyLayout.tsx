@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { PublicHeader } from "./PublicHeader";
-import { Footer } from "./Footer";
+import Footer from './Footer';
 import Link from "next/link";
 
 interface PolicyLayoutProps {

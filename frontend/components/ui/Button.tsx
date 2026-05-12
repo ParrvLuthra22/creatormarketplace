@@ -30,7 +30,7 @@ const sizes: Record<Size, string> = {
   lg: "text-base px-8 py-4",
 };
 
-export default function Button({
+function Button({
   variant = "primary",
   size = "md",
   className,
@@ -72,3 +72,7 @@ export default function Button({
     </button>
   );
 }
+
+// Export both ways so legacy `{ Button }` imports and new `import Button` both compile
+export { Button };
+export default Button;
