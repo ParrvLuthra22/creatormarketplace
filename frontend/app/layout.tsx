@@ -8,6 +8,7 @@ import Cursor from "@/components/Cursor";
 import InitialLoader from "@/components/InitialLoader";
 import EasterEgg from "@/components/EasterEgg";
 import Providers from "@/app/providers";
+import LenisController from "@/components/LenisController";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -97,6 +98,8 @@ export default function RootLayout({
             syncTouch: false,
           }}
         >
+          {/* LenisController pauses smooth scroll on /dashboard and /admin routes */}
+          <LenisController />
           <Providers>
             <Cursor />
             <InitialLoader />

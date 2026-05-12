@@ -31,10 +31,24 @@ export default function CreatorOverview() {
         </h1>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Inbound Requests" value={inbound.data?.proposals?.length || 0} trend={0} trendUp />
-        <StatCard label="Active Deals" value={accepted.data?.proposals?.length || 0} trend={0} trendUp />
-        <StatCard label="Profile Completion" value={completion} suffix="%" trend={0} trendUp />
-        <StatCard label="Followers" value={profileData?.combinedFollowerCount || profileData?.instagramFollowerCount || 0} trend={0} trendUp />
+        <Link href="/dashboard/creator/inbox">
+          <StatCard label="Inbound Requests" value={inbound.data?.proposals?.length || 0} trend={0} trendUp />
+        </Link>
+        <Link href="/dashboard/creator/deals">
+          <StatCard label="Active Deals" value={accepted.data?.proposals?.length || 0} trend={0} trendUp />
+        </Link>
+        <Link href="/dashboard/creator/profile">
+          <StatCard label="Profile Completion" value={completion} suffix="%" trend={0} trendUp />
+        </Link>
+        <Link href="/dashboard/creator/settings">
+          <StatCard
+            label="Followers"
+            value={Number(profileData?.combinedFollowerCount || profileData?.instagramFollowerCount || 0)}
+            formatter={(n) => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1_000 ? `${(n / 1_000).toFixed(1)}K` : String(n)}
+            trend={0}
+            trendUp
+          />
+        </Link>
       </div>
       <section className="rounded-2xl border border-(--border) bg-(--bg-secondary) p-5">
         <div className="flex items-center justify-between">

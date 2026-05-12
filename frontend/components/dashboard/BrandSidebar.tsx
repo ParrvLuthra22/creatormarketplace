@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Megaphone, MessageSquare, Settings, LogOut } from "lucide-react";
+import { Home, Search, Megaphone, MessageSquare, Settings, LogOut, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/auth";
 import { useLogout } from "@/lib/hooks/useAuth";
@@ -15,7 +15,11 @@ const NAV = [
   { label: "Settings", href: "/dashboard/brand/settings", icon: Settings },
 ];
 
-export default function BrandSidebar() {
+export default function BrandSidebar({
+  onNewCampaign,
+}: {
+  onNewCampaign?: () => void;
+}) {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const logout = useLogout();
@@ -30,6 +34,21 @@ export default function BrandSidebar() {
           <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">BRAND</p>
         </div>
       </div>
+
+      {/* New Campaign — sidebar top CTA */}
+      {onNewCampaign && (
+        <div className="px-3 pb-2">
+          <button
+            onClick={onNewCampaign}
+            className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-(--accent) text-(--bg-primary) text-sm font-semibold hover:bg-(--accent-hover) transition-colors"
+            data-interactive
+          >
+            <Plus size={14} aria-hidden />
+            New Campaign
+          </button>
+        </div>
+      )}
+
       <nav className="flex-1 px-3 py-2 flex flex-col gap-1">
         {NAV.map(({ label, href, icon: Icon }) => {
           const active = pathname === href || (href !== "/dashboard/brand" && pathname.startsWith(href));
@@ -48,7 +67,7 @@ export default function BrandSidebar() {
             <p className="truncate text-sm font-medium">{user?.fullName || "Brand"}</p>
             <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">BRAND</p>
           </div>
-          <button onClick={() => logout.mutate()} className="text-(--text-tertiary) hover:text-(--text-primary)" aria-label="Log out">
+          <button onClick={() => logout.mutate()} className="text-(--text-tertiary) hover:text-(--text-primary) min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Log out">
             <LogOut size={16} />
           </button>
         </div>

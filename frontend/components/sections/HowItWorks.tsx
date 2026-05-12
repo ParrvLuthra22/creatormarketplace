@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import Container from "@/components/ui/Container";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
 
@@ -16,7 +17,6 @@ function DiscoverIllustration() {
       className="w-full h-full"
       aria-hidden
     >
-      {/* Grid of dots */}
       {Array.from({ length: 6 }).map((_, row) =>
         Array.from({ length: 6 }).map((_, col) => (
           <motion.circle
@@ -41,7 +41,6 @@ function DiscoverIllustration() {
           />
         ))
       )}
-      {/* Search ring */}
       <motion.circle
         cx={120}
         cy={120}
@@ -65,32 +64,10 @@ function ConnectIllustration() {
       className="w-full h-full"
       aria-hidden
     >
-      {/* Connector lines */}
-      <motion.line
-        x1="60" y1="120" x2="120" y2="80"
-        stroke="var(--border-strong)" strokeWidth="1.5"
-        animate={{ opacity: [0.3, 0.8, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.line
-        x1="120" y1="80" x2="180" y2="120"
-        stroke="var(--border-strong)" strokeWidth="1.5"
-        animate={{ opacity: [0.3, 0.8, 0.3] }}
-        transition={{ duration: 2, delay: 0.4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.line
-        x1="60" y1="120" x2="120" y2="160"
-        stroke="var(--border-strong)" strokeWidth="1.5"
-        animate={{ opacity: [0.3, 0.8, 0.3] }}
-        transition={{ duration: 2, delay: 0.8, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.line
-        x1="120" y1="160" x2="180" y2="120"
-        stroke="var(--border-strong)" strokeWidth="1.5"
-        animate={{ opacity: [0.3, 0.8, 0.3] }}
-        transition={{ duration: 2, delay: 1.2, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {/* Nodes */}
+      <motion.line x1="60" y1="120" x2="120" y2="80" stroke="var(--border-strong)" strokeWidth="1.5" animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
+      <motion.line x1="120" y1="80" x2="180" y2="120" stroke="var(--border-strong)" strokeWidth="1.5" animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 2, delay: 0.4, repeat: Infinity, ease: "easeInOut" }} />
+      <motion.line x1="60" y1="120" x2="120" y2="160" stroke="var(--border-strong)" strokeWidth="1.5" animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 2, delay: 0.8, repeat: Infinity, ease: "easeInOut" }} />
+      <motion.line x1="120" y1="160" x2="180" y2="120" stroke="var(--border-strong)" strokeWidth="1.5" animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 2, delay: 1.2, repeat: Infinity, ease: "easeInOut" }} />
       {[
         { cx: 60, cy: 120, accent: false, delay: 0 },
         { cx: 120, cy: 80, accent: true, delay: 0.3 },
@@ -122,22 +99,12 @@ function CollaborateIllustration() {
     { y: 180, w: 80, delay: 0.45 },
   ];
   return (
-    <svg
-      viewBox="0 0 240 240"
-      fill="none"
-      className="w-full h-full"
-      aria-hidden
-    >
+    <svg viewBox="0 0 240 240" fill="none" className="w-full h-full" aria-hidden>
       {bars.map(({ y, w, delay }, i) => (
         <g key={i}>
-          {/* Track */}
           <rect x="30" y={y} width="180" height="18" rx="4" fill="var(--bg-surface)" />
-          {/* Fill */}
           <motion.rect
-            x="30"
-            y={y}
-            height="18"
-            rx="4"
+            x="30" y={y} height="18" rx="4"
             fill={i === 0 ? "var(--accent)" : "var(--border-strong)"}
             initial={{ width: 0 }}
             animate={{ width: w }}
@@ -145,17 +112,8 @@ function CollaborateIllustration() {
           />
         </g>
       ))}
-      {/* Accent dot markers */}
       {[70, 130].map((x, i) => (
-        <motion.circle
-          key={i}
-          cx={x}
-          cy={30}
-          r={4}
-          fill="var(--accent)"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.8, delay: i * 0.5, repeat: Infinity }}
-        />
+        <motion.circle key={i} cx={x} cy={30} r={4} fill="var(--accent)" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.8, delay: i * 0.5, repeat: Infinity }} />
       ))}
       <line x1="70" y1="38" x2="70" y2="200" stroke="var(--border)" strokeWidth="1" strokeDasharray="4 4" />
       <line x1="130" y1="38" x2="130" y2="200" stroke="var(--border)" strokeWidth="1" strokeDasharray="4 4" />
@@ -194,9 +152,20 @@ const steps: Step[] = [
 ];
 
 function StepCard({ step, index }: { step: Step; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  // Trigger when 30% of the card is visible — works reliably with Lenis root mode
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
+
   const { number, title, body, Illustration } = step;
+
   return (
-    <div className="relative rounded-2xl border border-(--border) bg-(--bg-secondary) p-8 md:p-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-8 md:gap-16 items-center overflow-hidden">
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 48 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 48 }}
+      transition={{ duration: 0.7, delay: 0.05 * index, ease: EASE }}
+      className="relative rounded-2xl border border-(--border) bg-(--bg-secondary) p-8 md:p-12 grid grid-cols-1 md:grid-cols-[1fr_260px] gap-8 md:gap-16 items-center overflow-hidden"
+    >
       {/* Content */}
       <div>
         <span className="font-mono-utility text-mono-sm text-(--accent) mb-6 block">
@@ -208,7 +177,7 @@ function StepCard({ step, index }: { step: Step; index: number }) {
         </p>
       </div>
 
-      {/* Illustration with float animation */}
+      {/* Illustration — floats on loop */}
       <motion.div
         className="w-full aspect-square max-w-[200px] mx-auto md:max-w-none opacity-60"
         animate={{ y: [0, -10, 0] }}
@@ -221,22 +190,25 @@ function StepCard({ step, index }: { step: Step; index: number }) {
         <Illustration />
       </motion.div>
 
-      {/* Subtle step number watermark */}
+      {/* Watermark step number */}
       <span
         className="pointer-events-none absolute -right-4 -bottom-8 text-[12rem] font-display font-bold leading-none text-(--border) select-none"
         aria-hidden
       >
         {number}
       </span>
-    </div>
+    </motion.div>
   );
 }
 
 // ─── Section ──────────────────────────────────────────────────────────────────
+// NOTE: Previously used position:sticky + minHeight:120vh per card which caused
+// Lenis root-mode scroll to freeze (virtual scroll desynced from sticky release).
+// Now uses simple vertical stack + useInView reveal — scroll works on all devices.
 
 export default function HowItWorks() {
   return (
-    <section className="bg-(--bg-primary)" aria-labelledby="how-heading">
+    <section id="how-it-works" className="bg-(--bg-primary)" aria-labelledby="how-heading">
       {/* Section header */}
       <Container className="pt-32 pb-16">
         <RevealOnScroll>
@@ -252,28 +224,12 @@ export default function HowItWorks() {
         </RevealOnScroll>
       </Container>
 
-      {/* Sticky card stack */}
-      {steps.map((step, i) => (
-        <div
-          key={step.number}
-          /* Each step gets scroll distance; card sticks on desktop */
-          className="relative md:min-h-[140vh]"
-        >
-          <div
-            className="md:sticky md:top-0 md:min-h-screen flex items-center bg-(--bg-primary) py-8 md:py-16"
-            style={{ zIndex: i + 1 }}
-          >
-            <Container className="w-full">
-              <RevealOnScroll y={40}>
-                <StepCard step={step} index={i} />
-              </RevealOnScroll>
-            </Container>
-          </div>
-        </div>
-      ))}
-
-      {/* Breathing room after last card */}
-      <div className="h-24 md:h-32 bg-(--bg-primary)" />
+      {/* Stacked cards — no sticky, scroll flows through cleanly */}
+      <Container className="pb-32 flex flex-col gap-6 md:gap-10">
+        {steps.map((step, i) => (
+          <StepCard key={step.number} step={step} index={i} />
+        ))}
+      </Container>
     </section>
   );
 }

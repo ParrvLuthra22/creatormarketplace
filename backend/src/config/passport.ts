@@ -297,18 +297,37 @@ const setupSnapchat = async () => {
     }
 
     try {
-        const snapchatIssuer = await Issuer.discover('https://accounts.snapchat.com/.well-known/openid-configuration');
-        snapchatClient = new snapchatIssuer.Client({
-            client_id: clientID,
-            client_secret: clientSecret,
-            redirect_uris: [process.env.SNAPCHAT_CALLBACK_URL || 'http://localhost:5001/api/auth/snapchat/callback'],
-            response_types: ['code'],
-            token_endpoint_auth_method: 'client_secret_post',
-        });
-        console.log(`✅ OAuth: snapchat client initialized via openid-client`);
-    } catch (error: any) {
-        console.warn(`⚠️  OAuth: snapchat strategy SKIPPED — ${error.message}`);
-    }
+  const snapchatIssuer = new Issuer({
+    issuer: 'https://accounts.snapchat.com',
+
+    authorization_endpoint:
+      'https://accounts.snapchat.com/accounts/oauth2/auth',
+
+    token_endpoint:
+      'https://accounts.snapchat.com/accounts/oauth2/token',
+
+    userinfo_endpoint:
+      'https://kit.snapchat.com/v1/me',
+  });
+
+  snapchatClient = new snapchatIssuer.Client({
+    client_id: clientID,
+    client_secret: clientSecret,
+
+    redirect_uris: [
+      process.env.SNAPCHAT_CALLBACK_URL ||
+      'http://localhost:5001/api/auth/snapchat/callback'
+    ],
+
+    response_types: ['code'],
+
+    token_endpoint_auth_method: 'client_secret_post',
+  });
+
+  console.log('✅ OAuth: snapchat client initialized manually');
+} catch (error: any) {
+  console.warn(`⚠️ OAuth: snapchat strategy SKIPPED — ${error.message}`);
+}
 };
 
 setupSnapchat();

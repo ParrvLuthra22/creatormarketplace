@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useLenis } from "lenis/react";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 
@@ -116,6 +117,7 @@ function ScrollIndicator() {
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
+  const lenis = useLenis();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -194,8 +196,19 @@ export default function HeroSection() {
             <Button variant="primary" size="lg" onClick={() => window.location.href = '/login/brand'}>
               Get Started Free
             </Button>
-            <Button variant="ghost" size="lg" className="flex items-center gap-2">
-              Watch Demo
+            <Button
+              variant="ghost"
+              size="lg"
+              className="flex items-center gap-2"
+              onClick={() => {
+                if (lenis) {
+                  lenis.scrollTo("#how-it-works", { offset: -80 });
+                } else {
+                  document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              How It Works
               <ArrowRight size={15} aria-hidden />
             </Button>
           </motion.div>

@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
-import { Bell, Plus, Search, Menu } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Bell, Plus, Search, Menu, Settings, LogOut, ChevronDown } from "lucide-react";
 import { useToast } from "@/components/dashboard/Toast";
 import { useAuthStore } from "@/lib/auth";
 import { useUnreadCount } from "@/lib/socket";
+import { useLogout } from "@/lib/hooks/useAuth";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 
 const PAGE_TITLES: Record<string, string> = {
   "/dashboard/brand": "Overview",
@@ -14,6 +17,12 @@ const PAGE_TITLES: Record<string, string> = {
   "/dashboard/brand/messages": "Messages",
   "/dashboard/brand/analytics": "Analytics",
   "/dashboard/brand/settings": "Settings",
+  "/dashboard/creator": "Overview",
+  "/dashboard/creator/profile": "My Profile",
+  "/dashboard/creator/inbox": "Inbox",
+  "/dashboard/creator/deals": "Active Deals",
+  "/dashboard/creator/earnings": "Earnings",
+  "/dashboard/creator/settings": "Settings",
 };
 
 export default function TopBar({
@@ -22,13 +31,19 @@ export default function TopBar({
   onNewCampaign?: () => void;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const title = PAGE_TITLES[pathname] ?? "Dashboard";
   const { toast } = useToast();
   const searchRef = useRef<HTMLInputElement>(null);
   const user = useAuthStore((state) => state.user);
   const unread = useUnreadCount();
+  const logout = useLogout();
   const notifs = unread.data?.totalUnread || 0;
   const initials = (user?.fullName || "U").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+  const isBrand = pathname.startsWith("/dashboard/brand");
+  const settingsHref = isBrand ? "/dashboard/brand/settings" : "/dashboard/creator/settings";
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   // ⌘K / Ctrl+K focuses search
   useEffect(() => {
@@ -41,6 +56,17 @@ export default function TopBar({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+  // Close profile menu on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    }
+    if (profileMenuOpen) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [profileMenuOpen]);
 
   function openMobileNav() {
     const fn = (window as unknown as Record<string, unknown>).__openMobileNav;
@@ -81,21 +107,21 @@ export default function TopBar({
       </div>
 
       <div className="flex items-center gap-2 ml-auto">
-        {/* New Campaign */}
-        <button
-          onClick={() => {
-            onNewCampaign?.();
-          }}
-          className="hidden sm:flex items-center gap-2 h-9 px-4 rounded-lg bg-(--accent) text-(--bg-primary) text-sm font-semibold hover:bg-(--accent-hover) transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--accent) focus-visible:outline-offset-1"
-          data-interactive
-        >
-          <Plus size={14} aria-hidden />
-          New Campaign
-        </button>
+        {/* New Campaign — only on brand routes */}
+        {onNewCampaign && (
+          <button
+            onClick={onNewCampaign}
+            className="hidden sm:flex items-center gap-2 h-9 px-4 rounded-lg bg-(--accent) text-(--bg-primary) text-sm font-semibold hover:bg-(--accent-hover) transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--accent) focus-visible:outline-offset-1"
+            data-interactive
+          >
+            <Plus size={14} aria-hidden />
+            New Campaign
+          </button>
+        )}
 
         {/* Notifications */}
         <button
-          onClick={() => toast(`You have ${notifs} unread message${notifs === 1 ? "" : "s"}.`, "info")}
+          onClick={() => toast(`${notifs} unread message${notifs === 1 ? "" : "s"}.`, "info")}
           className="relative h-9 w-9 rounded-lg hover:bg-(--bg-surface) text-(--text-secondary) hover:text-(--text-primary) transition-colors duration-150 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-(--accent)"
           aria-label={`${notifs} unread notifications`}
           data-interactive
@@ -109,14 +135,54 @@ export default function TopBar({
           )}
         </button>
 
-        {/* Avatar */}
-        <div
-          className="h-8 w-8 rounded-full bg-(--border-strong) text-(--text-primary) flex items-center justify-center text-xs font-semibold select-none cursor-pointer hover:ring-2 hover:ring-(--accent) transition-all duration-150"
-          title={user?.fullName || "Account"}
-          aria-label="Account menu"
-          data-interactive
-        >
-          {initials}
+        {/* Avatar / profile dropdown */}
+        <div ref={profileMenuRef} className="relative">
+          <button
+            onClick={() => setProfileMenuOpen((v) => !v)}
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-(--bg-surface) transition-colors"
+            aria-label="Account menu"
+            aria-expanded={profileMenuOpen}
+            data-interactive
+          >
+            <div className="h-7 w-7 rounded-full bg-(--border-strong) text-(--text-primary) flex items-center justify-center text-xs font-semibold select-none">
+              {initials}
+            </div>
+            <ChevronDown size={12} className="text-(--text-tertiary) hidden sm:block" />
+          </button>
+
+          <AnimatePresence>
+            {profileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.15 }}
+                className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-(--border) bg-(--bg-secondary) shadow-xl z-50 overflow-hidden"
+              >
+                <div className="px-4 py-3 border-b border-(--border)">
+                  <p className="text-sm font-medium truncate">{user?.fullName || "User"}</p>
+                  <p className="text-xs text-(--text-tertiary) truncate">{user?.email}</p>
+                </div>
+                <div className="py-1">
+                  <Link
+                    href={settingsHref}
+                    onClick={() => setProfileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface) transition-colors"
+                  >
+                    <Settings size={15} />
+                    Settings
+                  </Link>
+                  <button
+                    onClick={() => { logout.mutate(); setProfileMenuOpen(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface) transition-colors"
+                  >
+                    <LogOut size={15} />
+                    Log out
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </header>
