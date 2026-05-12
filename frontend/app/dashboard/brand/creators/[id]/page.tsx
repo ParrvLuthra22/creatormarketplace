@@ -6,7 +6,7 @@ import { RouteGuard } from "@/components/RouteGuard";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { getPublicCreatorStats, PublicCreatorStatsResponse, getProfilePhotoUrl } from "@/lib/api";
-import { ArrowLeft, Check, Instagram, Play, Globe } from "lucide-react";
+import { ArrowLeft, Check, Share2 as Instagram, Play, Globe } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { SendProposalModal } from "@/components/SendProposalModal";
 import "./CreatorProfile.css";

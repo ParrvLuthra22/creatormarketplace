@@ -3,7 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { Check, Lock, User, Instagram, Star } from "lucide-react";
+import { Check, Lock, User, Star } from "lucide-react";
+// Instagram icon was removed from lucide-react v1; use an inline SVG instead
+function InstagramIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+const Instagram = InstagramIcon;
 import { formatNumber } from "@/lib/formatNumber";
 import { getProfilePhotoUrl } from "@/lib/api";
 import "./CreatorCard.css";

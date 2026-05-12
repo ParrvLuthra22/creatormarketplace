@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Instagram, ExternalLink, Play, Pause } from "lucide-react";
+import { X, Share2 as Instagram, ExternalLink, Play, Pause } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Creator, BrandWork } from "@/lib/data";
 
