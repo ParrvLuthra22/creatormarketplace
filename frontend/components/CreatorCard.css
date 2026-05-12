@@ -1,0 +1,123 @@
+.creator-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4.2;
+    background: #FFFFFF;
+    border-radius: 28px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Alternating Slant */
+.creator-card:nth-child(odd) {
+    transform: rotate(-1deg);
+}
+
+.creator-card:nth-child(even) {
+    transform: rotate(1deg);
+}
+
+.creator-card:hover {
+    transform: translateY(-15px) scale(1.02) rotate(0deg) !important;
+    z-index: 20;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+}
+
+/* Background Image */
+.creator-card-bg, .creator-card-bg-placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 800ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.creator-card-bg-placeholder {
+    background: #F4F4F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.creator-card:hover .creator-card-bg {
+    transform: scale(1.1);
+}
+
+/* Badges */
+.creator-card-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #18181B;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Main Overlay (Visible default) */
+.creator-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px 24px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    z-index: 5;
+    transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1), opacity 400ms ease;
+}
+
+.creator-card:hover .creator-card-overlay {
+    transform: translateY(-200px);
+}
+
+/* Expansion Content */
+.creator-card-expansion {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.9) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding-top: 20px;
+    z-index: 6;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 500ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.creator-card:hover .creator-card-expansion {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================ */
+/* LOADING SKELETON STYLES */
+/* ============================================ */
+
+.creator-card-skeleton {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4.2;
+    background: #F4F4F5;
+    border-radius: 28px;
+    overflow: hidden;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
