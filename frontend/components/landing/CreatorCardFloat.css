@@ -1,0 +1,175 @@
+/* Clean, Light Dashboard Card Style */
+
+.creator-card-float {
+    position: absolute;
+    width: 320px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 24px;
+    pointer-events: all;
+    cursor: pointer;
+    transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-lg);
+    z-index: 10;
+}
+
+/* Hover Effect - Subtle float up */
+.creator-card-float:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: #D1D5DB;
+}
+
+/* Cluster Positions - Layered over each other in the hero */
+.card-pos-1 {
+    top: 10%;
+    left: 5%;
+    z-index: 12;
+}
+
+.card-pos-2 {
+    top: 40%;
+    right: 5%;
+    z-index: 11;
+}
+
+.card-pos-3 {
+    bottom: 0%;
+    left: 20%;
+    z-index: 13;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.card-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #F3F4F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.card-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-profile-info {
+    flex: 1;
+}
+
+.card-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.card-handle {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.premium-badge {
+    padding: 4px 10px;
+    background: #ECFDF5;
+    color: #059669;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Stats */
+.card-stats {
+    display: flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat.divider {
+    flex: 0 0 1px;
+    height: 32px;
+    background: var(--border-light);
+    margin: 0 16px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.stat-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Footer Tags */
+.card-footer {
+    display: flex;
+    gap: 8px;
+}
+
+.tag {
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Mobile Adjustments for Cluster */
+@media (max-width: 1024px) {
+    .creator-card-float {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin-bottom: 16px;
+        width: 100%;
+        transform: none !important;
+    }
+
+    .floating-cards-cluster {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 40px;
+    }
+}

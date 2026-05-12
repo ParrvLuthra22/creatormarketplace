@@ -1,0 +1,482 @@
+diff --git a/frontend/components/landing/LandingPage.tsx b/frontend/components/landing/LandingPage.tsx
+index f746a5d..48e7336 100644
+--- a/frontend/components/landing/LandingPage.tsx
++++ b/frontend/components/landing/LandingPage.tsx
+@@ -1,8 +1,9 @@
+ "use client";
+ 
+-import React, { useState, useRef } from 'react';
++import React, { useState, useRef, useEffect } from 'react';
+ import { useRouter } from 'next/navigation';
+ import { AuthModal } from '@/components/AuthModal';
++import { animate, scroll, cubicBezier } from 'motion';
+ import './LandingPage.css';
+ 
+ const LandingPage = () => {
+@@ -21,6 +22,77 @@ const LandingPage = () => {
+         }
+     };
+ 
++    useEffect(() => {
++        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
++
++        if (!prefersReducedMotion) {
++            const image = document.querySelector('.scaler img') as HTMLImageElement;
++            const firstSection = document.querySelector('.hero-section') as HTMLElement;
++            const layers = document.querySelectorAll('.grid > .layer');
++
++            if (image && firstSection && layers.length > 0) {
++                // Measure the natural size before animating
++                const naturalWidth = image.offsetWidth || 300;
++                const naturalHeight = image.offsetHeight || 400;
++
++                // Get viewport dimensions in pixels
++                const viewportWidth = window.innerWidth;
++                const viewportHeight = window.innerHeight;
++
++                // Animate image on scroll - shrink from full screen to natural size
++                scroll(
++                    animate(image, {
++                        width: [`${viewportWidth}px`, `${naturalWidth}px`],
++                        height: [`${viewportHeight}px`, `${naturalHeight}px`]
++                    }, {
++                        width: { easing: cubicBezier(0.65, 0, 0.35, 1) },
++                        height: { easing: cubicBezier(0.42, 0, 0.58, 1) }
++                    }),
++                    {
++                        target: firstSection,
++                        offset: ['start start', '80% end end']
++                    }
++                );
++
++                const scaleEasings = [
++                    cubicBezier(0.42, 0, 0.58, 1),
++                    cubicBezier(0.76, 0, 0.24, 1),
++                    cubicBezier(0.87, 0, 0.13, 1)
++                ];
++
++                layers.forEach((layer, index) => {
++                    const endOffset = `${1 - (index * 0.05)} end` as any;
++
++                    scroll(
++                        animate(layer, {
++                            opacity: [0, 0, 1]
++                        }, {
++                            offset: [0, 0.55, 1],
++                            easing: cubicBezier(0.61, 1, 0.88, 1)
++                        }),
++                        {
++                            target: firstSection,
++                            offset: ['start start', endOffset]
++                        }
++                    );
++
++                    scroll(
++                        animate(layer, {
++                            scale: [0, 0, 1]
++                        }, {
++                            offset: [0, 0.3, 1],
++                            easing: scaleEasings[index]
++                        }),
++                        {
++                            target: firstSection,
++                            offset: ['start start', endOffset]
++                        }
++                    );
++                });
++            }
++        }
++    }, []);
++
+     const handleCreatorSignup = () => {
+         setAuthModalTab('signup');
+         setShowAuthModal(true);
+@@ -44,23 +116,29 @@ const LandingPage = () => {
+     return (
+         <div className="landing-page">
+             {/* Top Navigation */}
+-            <nav className="top-nav">
++            <nav className="top-nav meta-nav">
+                 <div className="logo-container">
+-                    <div className="logo">#CreatorSync</div>
++                    <div className="logo meta-logo">
++                        <svg viewBox="0 0 36 36" width="24" height="24" fill="currentColor" style={{ color: '#0064E0' }}>
++                            <path d="M15 35.8C6.5 34.3 0 26.9 0 18 0 8.1 8.1 0 18 0s18 8.1 18 18c0 8.9-6.5 16.3-15 17.8l-1-8c4.6-1.1 8-5.3 8-10.2 0-5.9-4.7-10.6-10.6-10.6S8.8 11.6 8.8 17.5c0 4.9 3.4 9.1 8 10.2l-1 8.1zM18.8 14.6c2.4 0 4.4 1.9 4.4 4.3 0 2.4-1.9 4.3-4.3 4.3-2.4 0-4.3-1.9-4.3-4.3 0-2.4 1.9-4.3 4.3-4.3zm0-3.3c-4.2 0-7.6 3.4-7.6 7.6s3.4 7.6 7.6 7.6 7.6-3.4 7.6-7.6-3.4-7.6-7.6-7.6z" />
++                        </svg>
++                        CreatorSync
++                    </div>
+                 </div>
+ 
+-                <div className="nav-links">
+-                    <a href="#brands">Brands</a>
+-                    <span className="dot">•</span>
+-                    <a href="#creators">Creators</a>
++                <div className="nav-links meta-links">
++                    <a href="#get-started">Get started</a>
++                    <a href="#advertise">Advertise</a>
++                    <a href="#learn">Learn</a>
++                    <a href="#support">Support</a>
+                 </div>
+ 
+-                <div className="nav-actions">
+-                    <button className="nav-login" onClick={handleLogin}>
+-                        Log In <span className="dot-small">•</span>
++                <div className="nav-actions meta-actions">
++                    <button className="meta-btn-secondary" onClick={handleLogin}>
++                        Log in
+                     </button>
+-                    <button className="nav-cta" onClick={handleGetStarted}>
+-                        Get Started <span className="arrow">→</span>
++                    <button className="meta-btn-primary" onClick={handleCreatorSignup}>
++                        Sign up
+                     </button>
+                 </div>
+             </nav>
+@@ -69,220 +147,78 @@ const LandingPage = () => {
+                 {/* Split Hero Section */}
+                 <section className="hero-section">
+                     <div className="container hero-container">
+-                        <div className="hero-content">
+-                            <div className="hero-badge">A marketplace for creators and brands</div>
+-                            <h1 className="hero-headline">
+-                                Creators<br />
+-                                and brands<br />
+-                                meet here
++                        <div className="hero-content meta-hero-content">
++                            <h1 className="meta-hero-headline">
++                                Creators and Brands Meets here
+                             </h1>
+-                            <p className="hero-subtext">
++                            <p className="meta-hero-subtext">
+                                 Whether you're a creator looking for your next brand deal, or a marketer hiring creators for your next campaign, you'll find them on CreatorSync's creator marketplace.
+                             </p>
+ 
+-                            <button className="primary-button hero-cta" onClick={handleGetStarted}>
+-                                Get Started
+-                            </button>
+-
+-                            <div className="trust-badge">
+-                                <div className="stars" style={{ color: '#FFB800' }}>
+-                                    <span className="star-icon">★</span>
+-                                    <span className="star-icon">★</span>
+-                                    <span className="star-icon">★</span>
+-                                    <span className="star-icon">★</span>
+-                                    <span className="star-icon">★</span>
+-                                </div>
+-                                <span className="trust-text">Trusted by thousands</span>
++                            <div className="meta-hero-actions">
++                                <button className="meta-btn-primary large" onClick={handleGetStarted}>
++                                    Get Started
++                                </button>
+                             </div>
+                         </div>
+ 
+-                        <div className="hero-visual">
+-                            {/* Column 1: Scrolls Up */}
+-                            <div className="collage-column col-up">
+-                                <div className="collage-track">
+-                                    {/* Original Content */}
+-                                    <div className="img-wrapper shape-1" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1544211155-276943fcf3e8?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@doglife</div>
++                        <div className="hero-visual meta-hero-visual">
++                            <div className="content">
++                                <div className="grid">
++                                    {/* Layer 1: Outer edges (6 images) */}
++                                    <div className="layer">
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1463100099107-aa0980c362e6?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjZ8fGZhc2hpb258ZW58MHx8MHx8fDA%3D" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-2" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@styleicon</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1556304044-0699e31c6a34?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTJ8fGZhc2hpb258ZW58MHx8MHx8fDA%3D" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-3" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1510832198440-a52376950479?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@vintagedolls</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1590330297626-d7aff25a0431?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTA3fHxmYXNoaW9ufGVufDB8fDB8fHww" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-4" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@fashionnova</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTk1fHxmYXNoaW9ufGVufDB8fDB8fHww" alt="" />
+                                         </div>
+-                                    </div>
+-
+-                                    {/* Duplicated for infinite scroll illusion */}
+-                                    <div className="img-wrapper shape-1" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1544211155-276943fcf3e8?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@doglife</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzR8fG1vZGVsJTIwZmFzaGlvbiUyMHN0cmVldHxlbnwwfHwwfHx8MA%3D%3D" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-2" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@styleicon</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1565321590372-09331b9dd1eb?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGFpciUyMGpvcmRhbnxlbnwwfHwwfHx8MA%3D%3D" alt="" />
+                                         </div>
+                                     </div>
+-                                    <div className="img-wrapper shape-3" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1510832198440-a52376950479?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@vintagedolls</div>
++                                    {/* Layer 2: Inner columns (6 images) */}
++                                    <div className="layer">
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1531525645387-7f14be1bdbbd?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjM4fHxwcm9kdWN0fGVufDB8fDB8fHww" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-4" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@fashionnova</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1637414165749-9b3cd88b8271?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fHRlY2glMjBwcm9kdWN0fGVufDB8fDB8fHww" alt="" />
+                                         </div>
+-                                    </div>
+-                                </div>
+-                            </div>
+-
+-                            {/* Column 2: Scrolls Down */}
+-                            <div className="collage-column col-down">
+-                                <div className="collage-track">
+-                                    {/* Original Content */}
+-                                    <div className="img-wrapper shape-5" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=500" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@theglife</div>
+-                                        </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-6" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@urbanstyle</div>
+-                                        </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-7" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@dailyglam</div>
+-                                        </div>
+-                                    </div>
+-
+-                                    {/* Duplicated for infinite scroll illusion */}
+-                                    <div className="img-wrapper shape-5" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=500" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@theglife</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1699911251220-8e0de3b5ce88?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8b25ld2hlZWx8ZW58MHx8MHx8fDA%3D" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-6" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@urbanstyle</div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1667483629944-6414ad0648c5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGx1eHVyeSUyMHdhdGNofGVufDB8fDB8fHww" alt="" />
+                                         </div>
+-                                    </div>
+-                                    <div className="img-wrapper shape-7" onClick={handleGetStarted}>
+-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" alt="Creator" />
+-                                        <div className="img-hover-content">
+-                                            <div className="creator-tag">@dailyglam</div>
+-                                        </div>
+-                                    </div>
+-                                </div>
+-                            </div>
+-
+-                        </div>
+-                    </div>
+-                </section>
+-
+-                {/* Centered Banner */}
+-                <section className="centered-banner">
+-                    <div className="container banner-container">
+-                        <h2>
+-                            Find creators and brands to<br />
+-                            collaborate with. It's never<br />
+-                            been easier.
+-                        </h2>
+-                    </div>
+-                </section>
+-
+-                {/* Feature 1: Match (Text Left, Image Right) */}
+-                <section className="feature-section match-feature">
+-                    <div className="container feature-container">
+-                        <div className="feature-content">
+-                            <div className="feature-pill pill-yellow">Match</div>
+-                            <h2>Meet the right<br />partner</h2>
+-                            <p>
+-                                If you're looking for brands and creators to collaborate with, you'll find them on #CreatorSync. We study what makes for a successful match, so finding each other is easy.
+-                            </p>
+-                        </div>
+-                        <div className="feature-visual">
+-                            <div className="feature-image-wrapper">
+-                                <img src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=800" alt="Concert/Event" className="main-feature-img" />
+-                                <div className="ui-mockup list-mockup">
+-                                    <div className="mockup-item">
+-                                        <div className="mockup-avatar avatar-1"></div>
+-                                        <div className="mockup-lines">
+-                                            <div className="line short yellow"></div>
+-                                            <div className="line long"></div>
++                                        <div>
++                                            <img src="https://plus.unsplash.com/premium_photo-1706078438060-d76ced26d8d5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNhbWVyYSUyMHBvbGFyb2lkfGVufDB8fDB8fHww" alt="" />
+                                         </div>
+-                                        <div className="mockup-checkbox checked">✓</div>
+-                                    </div>
+-                                    <div className="mockup-item">
+-                                        <div className="mockup-avatar avatar-2"></div>
+-                                        <div className="mockup-lines">
+-                                            <div className="line medium"></div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1525385444278-b7968e7e28dc?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDZ8fGl0ZW18ZW58MHx8MHx8fDA%3D" alt="" />
+                                         </div>
+-                                        <div className="mockup-checkbox checked">✓</div>
+                                     </div>
+-                                    <div className="mockup-item">
+-                                        <div className="mockup-avatar avatar-3"></div>
+-                                        <div className="mockup-lines">
+-                                            <div className="line medium"></div>
++                                    {/* Layer 3: Center column top and bottom (2 images) */}
++                                    <div className="layer">
++                                        <div>
++                                            <img src="https://images.unsplash.com/reserve/LJIZlzHgQ7WPSh5KVTCB_Typewriter.jpg?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aXRlbXxlbnwwfHwwfHx8MA%3D%3D" alt="" />
+                                         </div>
+-                                        <div className="mockup-checkbox checked">✓</div>
+-                                    </div>
+-                                </div>
+-                            </div>
+-                        </div>
+-                    </div>
+-                </section>
+-
+-                {/* Feature 2: Strategy (Text Right, Image Left) */}
+-                <section className="feature-section reverse-layout strategy-feature">
+-                    <div className="container feature-container">
+-                        <div className="feature-content">
+-                            <div className="feature-pill pill-yellow">Strategy</div>
+-                            <h2>Expert creative</h2>
+-                            <p>
+-                                Brands and creators collaborate with our dedicated team of experts to build winning creative strategy—backed by research, first-party data, and industry benchmarks.
+-                            </p>
+-                        </div>
+-                        <div className="feature-visual">
+-                            <div className="feature-image-wrapper shape-square">
+-                                <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&q=80&w=800" alt="Backpack/Outdoor" className="main-feature-img" />
+-                                <div className="ui-mockup pie-mockup">
+-                                    <div className="mockup-header">
+-                                        <div className="mockup-lines">
+-                                            <div className="line title"></div>
+-                                            <div className="line subtitle"></div>
++                                        <div>
++                                            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D" alt="" />
+                                         </div>
+                                     </div>
+-                                    <div className="pie-chart"></div>
+-                                </div>
+-                                <div className="ui-mockup video-mockup">
+-                                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=300" alt="Creator Video Profile" />
+-                                    <div className="video-tag">
+-                                        <span className="dot-green"></span>
+-                                        Cassie Jung
++                                    {/* Center scaler image */}
++                                    <div className="scaler">
++                                        <img src="https://assets.codepen.io/605876/model-shades.jpg?format=auto&quality=100" alt="" />
+                                     </div>
+                                 </div>
+                             </div>
+@@ -290,78 +226,6 @@ const LandingPage = () => {
+                     </div>
+                 </section>
+ 
+-                {/* Feature 3: Measure (Dark Background, Text Left, Image Right) */}
+-                <section className="feature-section measure-feature dark-section">
+-                    <div className="container feature-container">
+-                        <div className="feature-content dark-content">
+-                            <div className="feature-pill pill-yellow">Measure</div>
+-                            <h2>Understand what's<br />working—and why</h2>
+-                            <p>
+-                                No more guessing. Learn what content and creative elements resonate best with your audience and why. With live reporting and post-campaign insights, you have the tools to make every campaign better.
+-                            </p>
+-                        </div>
+-                        <div className="feature-visual">
+-                            <div className="feature-image-wrapper shape-large-square">
+-                                <img src="https://images.unsplash.com/photo-1601158935942-52255782d322?auto=format&fit=crop&q=80&w=800" alt="Friends laughing" className="main-feature-img" />
+-                                <div className="ui-mockup chart-mockup">
+-                                    <div className="chart-header">
+-                                        <div className="chart-title">Store Traffic</div>
+-                                        <div className="chart-stat">↑ 23%</div>
+-                                    </div>
+-                                    <div className="bar-chart-container">
+-                                        <div className="bar light-blue"></div>
+-                                        <div className="bar accent-blue"></div>
+-                                    </div>
+-                                </div>
+-                            </div>
+-                        </div>
+-                    </div>
+-                </section>
+-
+-                {/* Feature 4: Repurpose (Text Right, Image Left) */}
+-                <section className="feature-section reverse-layout repurpose-feature">
+-                    <div className="container feature-container">
+-                        <div className="feature-content">
+-                            <div className="feature-pill pill-yellow">Repurpose</div>
+-                            <h2>Use your campaign<br />content<br />everywhere</h2>
+-                            <p>
+-                                Take the best-performing creator content and use it across different marketing channels, like out-of-home, print, and in-flight entertainment.
+-                            </p>
+-                        </div>
+-                        <div className="feature-visual">
+-                            <div className="feature-image-wrapper shape-large-square">
+-                                <img src="https://images.unsplash.com/photo-1503376712341-ea4020a59b6b?auto=format&fit=crop&q=80&w=800" alt="Car Headlights" className="main-feature-img" />
+-                                <div className="ui-mockup select-mockup">
+-                                    <div className="mockup-title">Offline Usage</div>
+-                                    <div className="select-item active">
+-                                        <div className="mockup-checkbox checked">✓</div>
+-                                        <span className="label">Print</span>
+-                                    </div>
+-                                    <div className="select-item active">
+-                                        <div className="mockup-checkbox checked">✓</div>
+-                                        <span className="label">Out of Home</span>
+-                                    </div>
+-                                    <div className="select-item active">
+-                                        <div className="mockup-checkbox checked">✓</div>
+-                                        <span className="label">Cinema</span>
+-                                    </div>
+-                                    <div className="select-item active">
+-                                        <div className="mockup-checkbox checked">✓</div>
+-                                        <span className="label">In-Game</span>
+-                                    </div>
+-                                    <div className="select-item disabled">
+-                                        <div className="mockup-checkbox"></div>
+-                                        <div className="line"></div>
+-                                    </div>
+-                                    <div className="select-item disabled">
+-                                        <div className="mockup-checkbox"></div>
+-                                        <div className="line short"></div>
+-                                    </div>
+-                                </div>
+-                            </div>
+-                        </div>
+-                    </div>
+-                </section>
+ 
+                 {/* Testimonial Section Placeholder */}
+                 <section className="testimonials-section">
