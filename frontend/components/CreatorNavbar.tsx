@@ -24,10 +24,12 @@ import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
 import { HelpSupportModal } from "@/components/HelpSupportModal";
 import { getChatSummary, getProposalsSummary, getProfilePhotoUrl } from "@/lib/api";
 
+import type { LucideIcon } from "lucide-react";
+
 interface NavItem {
     name: string;
     href: string;
-    icon: React.ElementType;
+    icon: LucideIcon;
 }
 
 const mainNavItems: NavItem[] = [
