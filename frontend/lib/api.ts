@@ -210,7 +210,7 @@ export interface PublicBrand {
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
 /** Returns the URL as-is if it is already absolute, otherwise prefixes API_URL. */
-export function getProfilePhotoUrl(urlOrId: string): string {
+export function getProfilePhotoUrl(urlOrId: string | undefined | null): string {
   if (!urlOrId) return "";
   if (urlOrId.startsWith("http")) return urlOrId;
   return `${API_URL}${urlOrId.startsWith("/") ? "" : "/"}${urlOrId}`;
@@ -251,8 +251,22 @@ export async function getPublicBrands(): Promise<{ success?: boolean; brands: Pu
   return unwrap(await api.get("/api/profile/brands/public"));
 }
 
-export async function getPublicBrandProfile(userId: string): Promise<{ success?: boolean; profile: BrandProfile }> {
-  return unwrap(await api.get(`/api/profile/brand/${userId}`));
+export interface PublicBrandProfileResponse {
+  success: boolean;
+  brand: {
+    id: string;
+    name: string;
+    companyName: string;
+    industry: string;
+    logoUrl: string | null;
+    website: string | null;
+    brandStory: string | null;
+  };
+  authenticated: boolean;
+}
+
+export async function getPublicBrandProfile(userId: string): Promise<PublicBrandProfileResponse> {
+  return unwrap(await api.get(`/api/profile/brand/${userId}/public`));
 }
 
 export async function getPublicCreatorStats(userId: string): Promise<PublicCreatorStatsResponse> {
