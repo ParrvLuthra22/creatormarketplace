@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { RouteGuard } from "@/components/RouteGuard";
+import { useAuthStore } from "@/lib/auth";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { getPublicCreators } from "@/lib/api";
 
 export default function BrandAnalytics() {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     const [creatorCount, setCreatorCount] = useState(0);
     const [activities, setActivities] = useState<{ text: string; time: string }[]>([]);
 
@@ -37,7 +36,6 @@ export default function BrandAnalytics() {
     ];
 
     return (
-        <RouteGuard allowedRole="brand">
             <BrandDashboardLayout variant="white">
                 <div className="py-8">
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10">Analytics</h1>
@@ -122,6 +120,5 @@ export default function BrandAnalytics() {
                     </div>
                 </div>
             </BrandDashboardLayout>
-        </RouteGuard>
     );
 }

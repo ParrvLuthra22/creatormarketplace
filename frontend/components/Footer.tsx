@@ -7,7 +7,7 @@ const navColumns = [
     heading: "Platform",
     links: [
       { label: "For Brands", href: "/brands" },
-      { label: "For Creators", href: "/creators" },
+      { label: "For Creators", href: "/discover" },
       { label: "How it Works", href: "/how-it-works" },
       { label: "Pricing", href: "/pricing" },
     ],

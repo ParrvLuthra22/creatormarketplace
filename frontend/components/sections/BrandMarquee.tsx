@@ -19,7 +19,7 @@ const brands = [
 
 function BrandLogo({ name }: { name: string }) {
   return (
-    <span className="text-h3 font-display font-semibold text-(--text-tertiary) hover:text-(--text-primary) transition-colors duration-300 cursor-default select-none whitespace-nowrap px-8">
+    <span className="text-h3 font-display font-semibold text-(--text-tertiary) hover:text-(--accent) transition-colors duration-300 cursor-default select-none whitespace-nowrap px-8">
       {name}
     </span>
   );
@@ -34,7 +34,7 @@ export default function BrandMarquee() {
       <RevealOnScroll>
         <Container className="mb-12">
           <p className="font-mono-utility text-mono-sm text-(--text-tertiary) text-center">
-            TRUSTED BY FORWARD-THINKING BRANDS
+            04 — TRUSTED BY FORWARD-THINKING BRANDS
           </p>
         </Container>
       </RevealOnScroll>

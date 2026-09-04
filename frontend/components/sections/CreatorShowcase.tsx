@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion } from "framer-motion";
+import { ShieldCheck } from "lucide-react";
 import Container from "@/components/ui/Container";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
 
@@ -67,9 +68,10 @@ const creators: Creator[] = [
 
 // Card uses variant propagation for hover states
 const cardVariants = {
-  rest: { scale: 1 },
+  rest: { scale: 1, boxShadow: "0 0 0 rgba(212,255,79,0)" },
   hover: {
     scale: 1.02,
+    boxShadow: "0 12px 40px rgba(212,255,79,0.12)",
     transition: { duration: 0.35, ease: [0.65, 0, 0.35, 1] as [number, number, number, number] },
   },
 };
@@ -77,6 +79,15 @@ const cardVariants = {
 const borderVariants = {
   rest: { opacity: 0 },
   hover: { opacity: 1, transition: { duration: 0.3 } },
+};
+
+const badgeVariants = {
+  rest: { scale: 0, opacity: 0 },
+  hover: {
+    scale: 1,
+    opacity: 1,
+    transition: { duration: 0.3, ease: [0.65, 0, 0.35, 1] as [number, number, number, number], delay: 0.05 },
+  },
 };
 
 const infoVariants = {
@@ -99,6 +110,14 @@ function CreatorCard({ creator }: { creator: Creator }) {
         className="absolute inset-0 rounded-xl border-2 border-(--accent) pointer-events-none"
         variants={borderVariants}
       />
+
+      {/* Verified badge — pops in on hover */}
+      <motion.div
+        className="absolute top-4 right-4 h-9 w-9 rounded-full bg-(--accent) flex items-center justify-center"
+        variants={badgeVariants}
+      >
+        <ShieldCheck size={18} className="text-(--bg-primary)" />
+      </motion.div>
 
       {/* Gradient fade to bottom */}
       <div
@@ -153,7 +172,7 @@ export default function CreatorShowcase() {
       <Container className="mb-12">
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            03 — FEATURED CREATORS
+            08 — FEATURED CREATORS
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { create } from "zustand";
-import { api, unwrap } from "@/lib/api";
+import { api, unwrap, API_URL } from "@/lib/api";
 
 export type AccountType = "Brand" | "Creator";
 
@@ -26,6 +26,12 @@ interface AuthState {
   profile: any | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  /** Derived from user.accountType — kept in sync by setUser/refreshUser/logout. */
+  isBrand: boolean;
+  /** Derived from user.accountType — kept in sync by setUser/refreshUser/logout. */
+  isCreator: boolean;
+  /** Raw JWT, fetched alongside the user in refreshUser() — needed by hooks/useSocket.ts's socket.io `auth` handshake. */
+  authToken: string | null;
   setUser: (user: User | null, profile?: any) => void;
   refreshUser: () => Promise<User | null>;
   logout: () => Promise<void>;
@@ -36,8 +42,18 @@ export const useAuthStore = create<AuthState>((set) => ({
   profile: null,
   isLoading: true,
   isAuthenticated: false,
+  isBrand: false,
+  isCreator: false,
+  authToken: null,
   setUser: (user, profile = null) =>
-    set({ user, profile, isAuthenticated: Boolean(user), isLoading: false }),
+    set({
+      user,
+      profile,
+      isAuthenticated: Boolean(user),
+      isLoading: false,
+      isBrand: user?.accountType === "Brand",
+      isCreator: user?.accountType === "Creator",
+    }),
   refreshUser: async () => {
     try {
       const data = unwrap<{ user: User; profile: any }>(
@@ -51,10 +67,24 @@ export const useAuthStore = create<AuthState>((set) => ({
         profile: data.profile,
         isAuthenticated: true,
         isLoading: false,
+        isBrand: data.user?.accountType === "Brand",
+        isCreator: data.user?.accountType === "Creator",
       });
+
+      // Fetch the raw token for socket auth — best-effort, non-fatal.
+      try {
+        const tokenRes = await fetch(`${API_URL}/api/auth/token`, { credentials: "include" });
+        if (tokenRes.ok) {
+          const tokenData = await tokenRes.json();
+          if (tokenData.token) set({ authToken: tokenData.token });
+        }
+      } catch {
+        // Not critical — socket falls back to cookie-based auth.
+      }
+
       return data.user;
     } catch {
-      set({ user: null, profile: null, isAuthenticated: false, isLoading: false });
+      set({ user: null, profile: null, isAuthenticated: false, isLoading: false, isBrand: false, isCreator: false, authToken: null });
       return null;
     }
   },
@@ -65,7 +95,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         skipErrorToast: true,
       } as any);
     } finally {
-      set({ user: null, profile: null, isAuthenticated: false, isLoading: false });
+      set({ user: null, profile: null, isAuthenticated: false, isLoading: false, isBrand: false, isCreator: false, authToken: null });
       if (typeof window !== "undefined") window.location.href = "/login";
     }
   },

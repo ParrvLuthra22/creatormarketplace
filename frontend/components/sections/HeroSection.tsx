@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { Play } from "lucide-react";
 import { useLenis } from "lenis/react";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+
+const ShaderBackground = dynamic(() => import("@/components/three/ShaderBackground"), {
+  ssr: false,
+});
 
 const EASE = [0.65, 0, 0.35, 1] as [number, number, number, number];
 
@@ -118,6 +124,7 @@ function ScrollIndicator() {
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
   const lenis = useLenis();
+  const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -127,12 +134,22 @@ export default function HeroSection() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.93]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
+  function scrollTo(id: string) {
+    if (lenis) {
+      lenis.scrollTo(id, { offset: -80 });
+    } else {
+      document.getElementById(id.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   return (
     <section
       ref={ref}
       className="relative flex h-screen items-center overflow-hidden bg-(--bg-primary)"
       aria-label="Hero"
     >
+      {/* Shader background — skipped entirely under prefers-reduced-motion */}
+      {!reducedMotion && <ShaderBackground />}
       <GrainOverlay />
 
       {/* Top meta labels */}
@@ -183,7 +200,7 @@ export default function HeroSection() {
             transition={{ delay: 1.1, duration: 0.9, ease: EASE }}
           >
             The intelligent marketplace connecting brands with the right
-            creators — by niche, audience, and authenticity. No more cold DMs.
+            creators — by niche, audience, and authenticity.
           </motion.p>
 
           {/* ── CTAs ── */}
@@ -193,23 +210,17 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.25, duration: 0.9, ease: EASE }}
           >
-            <Button variant="primary" size="lg" onClick={() => window.location.href = '/login/brand'}>
-              Get Started Free
+            <Button variant="primary" size="lg" onClick={() => (window.location.href = "/login/brand")}>
+              Join the Waitlist
             </Button>
             <Button
               variant="ghost"
               size="lg"
               className="flex items-center gap-2"
-              onClick={() => {
-                if (lenis) {
-                  lenis.scrollTo("#how-it-works", { offset: -80 });
-                } else {
-                  document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
+              onClick={() => scrollTo("#how-it-works")}
             >
-              How It Works
-              <ArrowRight size={15} aria-hidden />
+              <Play size={14} aria-hidden className="fill-current" />
+              Watch Demo
             </Button>
           </motion.div>
         </motion.div>

@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/lib/auth";
 import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
 import { HelpSupportModal } from "@/components/HelpSupportModal";
 import { getChatSummary, getProposalsSummary, getProfilePhotoUrl } from "@/lib/api";
@@ -41,7 +41,7 @@ const mainNavItems: NavItem[] = [
 export function CreatorNavbar() {
     const pathname = usePathname();
     const router = useRouter();
-    const { logout, user, profile } = useAuth();
+    const { logout, user, profile } = useAuthStore();
     const creatorProfile = profile as any;
     
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);

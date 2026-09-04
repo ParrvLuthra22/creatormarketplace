@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuthStore } from '@/lib/auth';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -10,7 +10,7 @@ let socketInstance: Socket | null = null;
 let connectionCount = 0;
 
 export function useSocket() {
-    const { isAuthenticated, authToken } = useAuth();
+    const { isAuthenticated, authToken } = useAuthStore();
     const [socket, setSocket] = useState<Socket | null>(socketInstance);
     const [connected, setConnected] = useState(socketInstance?.connected || false);
 

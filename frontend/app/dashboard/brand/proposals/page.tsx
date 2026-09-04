@@ -1,18 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
-import { RouteGuard } from "@/components/RouteGuard";
-import { ViewProposalModal } from "@/components/ViewProposalModal";
 import { ArrowRight, Plus, MessageCircle } from "lucide-react";
 import { getProposals, Proposal, createConversation, getProfilePhotoUrl } from "@/lib/api";
 
 const FILTER_TABS = ["All", "Pending", "Accepted", "Declined"];
 
 export default function BrandProposals() {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     const router = useRouter();
     const [selectedFilter, setSelectedFilter] = useState("All");
     const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -65,7 +63,6 @@ export default function BrandProposals() {
     };
 
     return (
-        <RouteGuard allowedRole="brand">
             <BrandDashboardLayout variant="white">
                 <div className="flex justify-between items-center mb-10">
                     <div>
@@ -182,16 +179,5 @@ export default function BrandProposals() {
                     )}
                 </div>
             </BrandDashboardLayout>
-
-            {selectedProposal && (
-                <ViewProposalModal
-                    proposal={selectedProposal}
-                    isOpen={true}
-                    onClose={() => setSelectedProposal(null)}
-                    userRole="brand"
-                    onStatusChange={handleStatusChange}
-                />
-            )}
-        </RouteGuard>
     );
 }
