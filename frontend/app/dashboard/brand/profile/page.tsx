@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
-import { RouteGuard } from "@/components/RouteGuard";
+import { useAuthStore } from "@/lib/auth";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
 import { Plus, Camera, Loader2 } from "lucide-react";
 import { uploadProfilePhoto, showToast, getProfilePhotoUrl, updateBrandProfile } from "@/lib/api";
 
 export default function BrandProfile() {
-    const { user, profile, refreshProfile } = useAuth();
+    const { user, profile, refreshUser } = useAuthStore();
     const router = useRouter();
     const brandProfile = profile as any;
     
@@ -45,7 +44,7 @@ export default function BrandProfile() {
             const res = await uploadProfilePhoto(file);
             if (res.success) {
                 showToast("Logo updated successfully!", "success");
-                await refreshProfile();
+                await refreshUser();
                 router.refresh();
             }
         } catch (err: any) {
@@ -75,7 +74,7 @@ export default function BrandProfile() {
             const res = await updateBrandProfile(payload);
             if (res.success) {
                 showToast("Profile saved successfully!", "success");
-                await refreshProfile();
+                await refreshUser();
             }
         } catch (err: any) {
             showToast(err.message || "Something went wrong", "error");
@@ -85,7 +84,6 @@ export default function BrandProfile() {
     };
 
     return (
-        <RouteGuard allowedRole="brand">
             <BrandDashboardLayout variant="white">
                 <div className="py-8">
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10">Brand Profile</h1>
@@ -225,6 +223,5 @@ export default function BrandProfile() {
                     </div>
                 </div>
             </BrandDashboardLayout>
-        </RouteGuard>
     );
 }

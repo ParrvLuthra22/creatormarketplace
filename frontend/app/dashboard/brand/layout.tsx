@@ -1,16 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import BrandSidebar from "@/components/dashboard/BrandSidebar";
 import TopBar from "@/components/dashboard/TopBar";
 import { ToastProvider } from "@/components/dashboard/Toast";
 import CreateCampaignModal from "@/components/dashboard/CreateCampaignModal";
 import { CampaignModalProvider, useCampaignModal } from "@/lib/CampaignModalContext";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
+import { useAuthStore } from "@/lib/auth";
 
 function BrandDashboardInner({ children }: { children: React.ReactNode }) {
   const { open, openModal, closeModal } = useCampaignModal();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const router = useRouter();
+  const { user, isLoading, refreshUser } = useAuthStore();
+
+  // Middleware only checks that a token cookie exists — re-verify the actual
+  // role here once the store hydrates, and bounce mismatches to the right dashboard.
+  useEffect(() => {
+    void refreshUser();
+  }, [refreshUser]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!user) {
+      router.replace("/login/brand");
+      return;
+    }
+    if (user.accountType !== "Brand") {
+      router.replace("/dashboard/creator");
+    }
+  }, [user, isLoading, router]);
 
   useEffect(() => {
     const nav = document.querySelector("[data-global-nav]") as HTMLElement | null;

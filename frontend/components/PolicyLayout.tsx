@@ -1,8 +1,6 @@
 "use client";
 
 import { ReactNode } from "react";
-import { PublicHeader } from "./PublicHeader";
-import Footer from './Footer';
 import Link from "next/link";
 
 interface PolicyLayoutProps {
@@ -24,9 +22,7 @@ export function PolicyLayout({ title, lastUpdated, children, badge }: PolicyLayo
                 fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
             }}
         >
-            <PublicHeader />
-
-            {/* Hero Header — matches landing page spacing (nav is 100px tall) */}
+            {/* Hero Header — matches landing page spacing (global nav is 100px tall) */}
             <div
                 style={{
                     borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -150,7 +146,6 @@ export function PolicyLayout({ title, lastUpdated, children, badge }: PolicyLayo
                     </a>
                 </div>
             </main>
-
         </div>
     );
 }

@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface MarqueeProps {
@@ -13,6 +11,11 @@ interface MarqueeProps {
   pauseOnHover?: boolean;
 }
 
+/**
+ * Uses a real CSS @keyframes animation (defined in globals.css) rather than a
+ * framer-motion-driven transform, specifically so `pauseOnHover` works —
+ * animation-play-state only affects native CSS animations.
+ */
 export default function Marquee({
   children,
   speed = 40,
@@ -21,45 +24,22 @@ export default function Marquee({
   className,
   pauseOnHover = true,
 }: MarqueeProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const xStart = direction === "left" ? 0 : "-50%";
-  const xEnd = direction === "left" ? "-50%" : 0;
-
   return (
-    <div
-      ref={containerRef}
-      className={cn("overflow-hidden flex", className)}
-      style={{ gap }}
-    >
-      <motion.div
-        className={cn("flex shrink-0 items-center", pauseOnHover && "hover:[animation-play-state:paused]")}
-        style={{ gap }}
-        animate={{ x: [xStart, xEnd] }}
-        transition={{
-          duration: speed,
-          ease: "linear",
-          repeat: Infinity,
-        }}
+    <div className={cn("overflow-hidden flex", className)}>
+      <div
+        className={cn(
+          "flex shrink-0 items-center",
+          direction === "left" ? "animate-[marquee-left_linear_infinite]" : "animate-[marquee-right_linear_infinite]",
+          pauseOnHover && "hover:[animation-play-state:paused]"
+        )}
+        style={{ gap, animationDuration: `${speed}s` }}
       >
         {children}
-        {children}
-      </motion.div>
-      {/* Duplicate for seamless loop */}
-      <motion.div
-        className="flex shrink-0 items-center"
-        style={{ gap }}
-        animate={{ x: [xStart, xEnd] }}
-        transition={{
-          duration: speed,
-          ease: "linear",
-          repeat: Infinity,
-        }}
-        aria-hidden
-      >
-        {children}
-        {children}
-      </motion.div>
+        {/* Duplicate for seamless loop */}
+        <div className="flex shrink-0 items-center" style={{ gap, marginLeft: gap }} aria-hidden>
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

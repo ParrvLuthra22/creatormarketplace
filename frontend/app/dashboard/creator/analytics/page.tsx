@@ -1,7 +1,6 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
-import { RouteGuard } from "@/components/RouteGuard";
+import { useAuthStore } from "@/lib/auth";
 import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 
 const ACTIVITIES = [
@@ -19,10 +18,9 @@ const METRICS = [
 ];
 
 export default function CreatorAnalytics() {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
 
     return (
-        <RouteGuard allowedRole="creator">
             <CreatorDashboardLayout variant="white">
                 <main className="max-w-6xl mx-auto py-8 transition-all duration-300">
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10 lowercase">analytics</h1>
@@ -83,6 +81,5 @@ export default function CreatorAnalytics() {
                     </div>
                 </main>
             </CreatorDashboardLayout>
-        </RouteGuard>
     );
 }

@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react";
  * Refined custom cursor:
  * - Default: 10px solid lime dot
  * - Hover [data-interactive], <a>, <button>: 52px hollow white circle (mix-blend-difference)
+ * - Hover [data-spotlight="true"]: 300px radial lime spotlight (8% opacity) follows the cursor,
+ *   revealing content that section chooses to keep low-contrast until lit
  * - Reads data-cursor attribute for optional label inside expanded circle
  * - Hidden on touch devices (pointer: coarse)
  * - Smooth lerp at 0.15
@@ -14,22 +16,26 @@ export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
 
   const pos = useRef({ x: -200, y: -200 });
   const cur = useRef({ x: -200, y: -200 });
   const expanded = useRef(false);
+  const inSpotlight = useRef(false);
   const raf = useRef<number>(0);
 
   useEffect(() => {
     const dot = dotRef.current!;
     const ring = ringRef.current!;
     const label = labelRef.current!;
-    if (!dot || !ring || !label) return;
+    const spotlight = spotlightRef.current!;
+    if (!dot || !ring || !label || !spotlight) return;
 
     // Bail on touch-primary devices
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       dot.style.display = "none";
       ring.style.display = "none";
+      spotlight.style.display = "none";
       return;
     }
 
@@ -37,6 +43,13 @@ export default function Cursor() {
 
     function move(e: MouseEvent) {
       pos.current = { x: e.clientX, y: e.clientY };
+
+      const el = e.target as Element;
+      const nowInSpotlight = Boolean(el.closest?.('[data-spotlight="true"]'));
+      if (nowInSpotlight !== inSpotlight.current) {
+        inSpotlight.current = nowInSpotlight;
+        spotlight.style.opacity = nowInSpotlight ? "1" : "0";
+      }
     }
 
     function over(e: MouseEvent) {
@@ -87,6 +100,9 @@ export default function Cursor() {
       // Ring — centred (26px radius)
       ring.style.transform = `translate(${x - 26}px, ${y - 26}px)`;
 
+      // Spotlight — centred (150px radius)
+      spotlight.style.transform = `translate(${x - 150}px, ${y - 150}px)`;
+
       raf.current = requestAnimationFrame(loop);
     }
 
@@ -105,6 +121,27 @@ export default function Cursor() {
 
   return (
     <>
+      {/* Spotlight — large soft radial glow, only visible over [data-spotlight] sections */}
+      <div
+        ref={spotlightRef}
+        aria-hidden
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: 300,
+          height: 300,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 1,
+          opacity: 0,
+          willChange: "transform, opacity",
+          transition: "opacity 0.25s ease",
+        }}
+      />
+
       {/* Lime dot */}
       <div
         ref={dotRef}

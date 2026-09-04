@@ -2,17 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { RouteGuard } from "@/components/RouteGuard";
 import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/lib/auth";
 import { getPublicCreatorStats, PublicCreatorStatsResponse, getProfilePhotoUrl } from "@/lib/api";
 import { ArrowLeft, Check, Share2 as Instagram, Play, Globe } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { SendProposalModal } from "@/components/SendProposalModal";
 import "./CreatorProfile.css";
 
 export default function BrandCreatorProfilePage() {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     const router = useRouter();
     const params = useParams();
     const id = params.id as string;
@@ -63,31 +61,26 @@ export default function BrandCreatorProfilePage() {
 
     if (loading) {
         return (
-            <RouteGuard allowedRole="brand">
                 <BrandDashboardLayout variant="white">
                     <div className="flex items-center justify-center min-h-[60vh]">
                         <p className="text-zinc-500 font-bold animate-pulse">Loading Creator Profile...</p>
                     </div>
                 </BrandDashboardLayout>
-            </RouteGuard>
         );
     }
 
     if (error || !creator) {
         return (
-            <RouteGuard allowedRole="brand">
                 <BrandDashboardLayout variant="white">
                     <div className="p-10 text-center">
                         <p className="text-red-500 font-bold">{error || "Creator not found"}</p>
                         <button onClick={() => router.back()} className="mt-4 text-[#FF4D00] font-black underline">Go Back</button>
                     </div>
                 </BrandDashboardLayout>
-            </RouteGuard>
         );
     }
 
     return (
-        <RouteGuard allowedRole="brand">
             <BrandDashboardLayout variant="white">
                 <div className="creator-profile-container">
                     {/* Hero Section */}
@@ -190,26 +183,16 @@ export default function BrandCreatorProfilePage() {
                                 </p>
                             </div>
 
-                            <button 
-                                onClick={() => setIsProposalModalOpen(true)}
-                                className="send-proposal-btn"
+                            {/* TODO: send-proposal flow removed with legacy SendProposalModal — needs a current-gen replacement */}
+                            <button
+                                disabled
+                                className="send-proposal-btn opacity-50 cursor-not-allowed"
                             >
                                 Send Proposal
                             </button>
                         </aside>
                     </div>
-
-                    <SendProposalModal
-                        creatorId={id}
-                        creatorName={creator.name || creator.instagramHandle || 'Creator'}
-                        isOpen={isProposalModalOpen}
-                        onClose={() => setIsProposalModalOpen(false)}
-                        onSent={() => setIsProposalModalOpen(false)}
-                    />
-
-
                 </div>
             </BrandDashboardLayout>
-        </RouteGuard>
     );
 }

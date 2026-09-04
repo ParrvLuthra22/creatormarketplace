@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/lib/auth";
 import { LogoutConfirmModal } from "@/components/LogoutConfirmModal";
 import { HelpSupportModal } from "@/components/HelpSupportModal";
 import { NotificationBell } from "./NotificationBell";
@@ -41,7 +41,7 @@ const mainNavItems: NavItem[] = [
 export function BrandNavbar() {
     const pathname = usePathname();
     const router = useRouter();
-    const { logout, user, profile, isBrand } = useAuth();
+    const { logout, user, profile, isBrand } = useAuthStore();
     const brandProfile = profile as any;
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);

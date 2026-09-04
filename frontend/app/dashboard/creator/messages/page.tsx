@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
-import { RouteGuard } from "@/components/RouteGuard";
+import { useAuthStore } from "@/lib/auth";
 import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
 import { Search, MoreVertical, Send, Paperclip, ArrowLeft, MessageCircle, Check, CheckCheck } from "lucide-react";
 import { useSocket } from "@/hooks/useSocket";
 import { getConversations, getMessages, Conversation, ChatMessage, getProfilePhotoUrl } from "@/lib/api";
 
 export default function CreatorMessagesPage() {
-    const { user, profile } = useAuth();
+    const { user, profile } = useAuthStore();
     const { socket, connected } = useSocket();
 
     const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -152,7 +151,6 @@ export default function CreatorMessagesPage() {
     const chatPartner = selectedConvData?.participants.find(p => p._id !== user?.id);
 
     return (
-        <RouteGuard allowedRole="creator">
             <CreatorDashboardLayout variant="white">
                 <div className="flex h-[calc(100vh-160px)] overflow-hidden rounded-sm border border-zinc-200 bg-white shadow-xl">
                     {/* CONVERSATION LIST PANEL */}
@@ -350,6 +348,5 @@ export default function CreatorMessagesPage() {
                     </div>
                 </div>
             </CreatorDashboardLayout>
-        </RouteGuard>
     );
 }

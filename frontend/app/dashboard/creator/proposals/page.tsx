@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import { RouteGuard } from "@/components/RouteGuard";
 import { CreatorDashboardLayout } from "@/components/CreatorDashboardLayout";
-import { ViewProposalModal } from "@/components/ViewProposalModal";
 import { getProposals, Proposal, createConversation } from "@/lib/api";
 import { Calendar, DollarSign, Package, MessageCircle } from "lucide-react";
 
 export default function CreatorProposals() {
-    const { user, logout } = useAuth();
+    const { user, logout } = useAuthStore();
     const router = useRouter();
     const [selectedFilter, setSelectedFilter] = useState("All");
     const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -76,7 +74,6 @@ export default function CreatorProposals() {
     };
 
     return (
-        <RouteGuard allowedRole="creator">
             <CreatorDashboardLayout variant="white">
                 <main className="max-w-6xl mx-auto py-8 transition-all duration-300">
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10 lowercase">proposals</h1>
@@ -168,16 +165,7 @@ export default function CreatorProposals() {
                         )}
                 </main>
 
-                {selectedProposal && (
-                    <ViewProposalModal
-                        proposal={selectedProposal}
-                        isOpen={true}
-                        onClose={() => setSelectedProposal(null)}
-                        userRole="creator"
-                        onStatusChange={handleStatusChange}
-                    />
-                )}
+                {/* TODO: proposal detail view removed with legacy ViewProposalModal — needs a current-gen replacement */}
             </CreatorDashboardLayout>
-        </RouteGuard>
     );
 }
