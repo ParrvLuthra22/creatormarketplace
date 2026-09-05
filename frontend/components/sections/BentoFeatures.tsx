@@ -2,13 +2,14 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { ShieldCheck, ArrowRight, MessageCircle, Camera, Video, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, ArrowRight, MessageCircle, Camera, Video, TrendingUp, PieChart, Send } from "lucide-react";
 import Container from "@/components/ui/Container";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
+import { BentoGrid, type BentoItem } from "@/components/ui/bento-grid";
 
 const EASE = [0.65, 0, 0.35, 1] as [number, number, number, number];
 
-// ─── Mini visuals ────────────────────────────────────────────────────────
+// ─── Mini visuals (rendered in each card's `visual` slot) ──────────────────
 
 function EngagementChart() {
   const ref = useRef<HTMLDivElement>(null);
@@ -16,7 +17,7 @@ function EngagementChart() {
   const bars = [40, 65, 45, 80, 60, 95, 70];
 
   return (
-    <div ref={ref} className="flex items-end gap-2 h-24 mt-6">
+    <div ref={ref} className="flex items-end gap-2 h-24">
       {bars.map((h, i) => (
         <motion.div
           key={i}
@@ -34,7 +35,7 @@ function EngagementChart() {
 function DonutChart() {
   return (
     <div
-      className="h-20 w-20 rounded-full mt-4"
+      className="h-20 w-20 rounded-full"
       style={{
         background:
           "conic-gradient(var(--accent) 0deg 130deg, var(--border-strong) 130deg 250deg, var(--border) 250deg 360deg)",
@@ -47,7 +48,7 @@ function DonutChart() {
 
 function ShieldVisual() {
   return (
-    <div className="relative mt-4 flex h-20 w-20 items-center justify-center">
+    <div className="relative flex h-20 w-20 items-center justify-center">
       <motion.div
         className="absolute inset-0 rounded-full border border-(--accent)/40"
         animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }}
@@ -61,7 +62,7 @@ function ShieldVisual() {
 function ProposalButtonVisual() {
   return (
     <motion.div
-      className="mt-6 inline-flex items-center gap-2 rounded-full bg-(--accent) text-(--bg-primary) px-4 py-2 text-xs font-semibold"
+      className="inline-flex items-center gap-2 rounded-full bg-(--accent) text-(--bg-primary) px-4 py-2 text-xs font-semibold"
       animate={{ scale: [1, 0.94, 1] }}
       transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
     >
@@ -73,7 +74,7 @@ function ProposalButtonVisual() {
 
 function ChatBubblesVisual() {
   return (
-    <div className="mt-6 flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -99,7 +100,7 @@ function ChatBubblesVisual() {
 
 function CrossPlatformVisual() {
   return (
-    <div className="mt-6 flex items-center justify-center gap-1">
+    <div className="flex items-center justify-center gap-1">
       <motion.div
         initial={{ x: 12, opacity: 0 }}
         whileInView={{ x: 4, opacity: 1 }}
@@ -122,27 +123,53 @@ function CrossPlatformVisual() {
   );
 }
 
-// ─── Card shell ──────────────────────────────────────────────────────────
+// ─── Data ───────────────────────────────────────────────────────────────
 
-interface BentoCard {
-  title: string;
-  body: string;
-  Visual: React.ComponentType;
-  large?: boolean;
-}
-
-const CARDS: BentoCard[] = [
+const ITEMS: BentoItem[] = [
   {
     title: "Verified engagement",
-    body: "Every metric is checked against real platform data — no vanity followers.",
-    Visual: EngagementChart,
-    large: true,
+    description: "Every metric is checked against real platform data — no vanity followers.",
+    icon: <TrendingUp size={16} />,
+    status: "Live",
+    tags: ["Analytics", "Trust"],
+    colSpan: 2,
+    rowSpan: 2,
+    hasPersistentHover: true,
+    visual: <EngagementChart />,
   },
-  { title: "Real audience data", body: "Demographics and reach, not just follower counts.", Visual: DonutChart },
-  { title: "Escrow-safe payments", body: "Funds held securely until deliverables are approved.", Visual: ShieldVisual },
-  { title: "One-click proposals", body: "Send a structured brief in seconds, not emails.", Visual: ProposalButtonVisual },
-  { title: "Real-time collab tools", body: "Chat, share assets, and align — all in one thread.", Visual: ChatBubblesVisual },
-  { title: "Cross-platform stats", body: "Instagram and YouTube performance, combined.", Visual: CrossPlatformVisual },
+  {
+    title: "Real audience data",
+    description: "Demographics and reach, not just follower counts.",
+    icon: <PieChart size={16} />,
+    visual: <DonutChart />,
+  },
+  {
+    title: "Escrow-safe payments",
+    description: "Funds held securely until deliverables are approved.",
+    icon: <ShieldCheck size={16} />,
+    status: "Secure",
+    visual: <ShieldVisual />,
+  },
+  {
+    title: "One-click proposals",
+    description: "Send a structured brief in seconds, not emails.",
+    icon: <Send size={16} />,
+    visual: <ProposalButtonVisual />,
+  },
+  {
+    title: "Real-time collab tools",
+    description: "Chat, share assets, and align — all in one thread.",
+    icon: <MessageCircle size={16} />,
+    tags: ["Chat"],
+    visual: <ChatBubblesVisual />,
+  },
+  {
+    title: "Cross-platform stats",
+    description: "Instagram and YouTube performance, combined.",
+    icon: <Camera size={16} />,
+    tags: ["Instagram", "YouTube"],
+    visual: <CrossPlatformVisual />,
+  },
 ];
 
 export default function BentoFeatures() {
@@ -161,26 +188,9 @@ export default function BentoFeatures() {
           </h2>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:grid-rows-2">
-          {CARDS.map((card, i) => (
-            <RevealOnScroll
-              key={card.title}
-              delay={0.05 * i}
-              className={card.large ? "lg:col-span-2 lg:row-span-2" : ""}
-            >
-              <div className="h-full rounded-2xl border border-(--border) bg-(--bg-secondary) p-7 card-hover flex flex-col">
-                <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 size={14} className="text-(--accent)" />
-                  <h3 className="text-body font-semibold text-(--text-primary)">{card.title}</h3>
-                </div>
-                <p className="text-caption text-(--text-tertiary) leading-relaxed">{card.body}</p>
-                <div className="mt-auto">
-                  <card.Visual />
-                </div>
-              </div>
-            </RevealOnScroll>
-          ))}
-        </div>
+        <RevealOnScroll delay={0.15}>
+          <BentoGrid items={ITEMS} />
+        </RevealOnScroll>
       </Container>
     </section>
   );
