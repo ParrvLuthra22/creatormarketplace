@@ -126,6 +126,7 @@
 html {
   /* Lenis handles smooth scroll — disable native */
   scroll-behavior: auto;
+  overflow-x: hidden;
 }
 
 body {
@@ -136,6 +137,10 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Nothing on the page should ever need horizontal scroll — this is a safety
+     net against a stray wide element (e.g. the creator carousel's drag track)
+     shifting the whole page sideways instead of staying clipped locally. */
+  overflow-x: hidden;
 }
 
 /* Custom cursor only on fine-pointer (mouse) devices */
