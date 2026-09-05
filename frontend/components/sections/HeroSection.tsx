@@ -9,7 +9,7 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 
-const ShaderBackground = dynamic(() => import("@/components/three/ShaderBackground"), {
+const ShaderHeroBackground = dynamic(() => import("@/components/three/ShaderHeroBackground"), {
   ssr: false,
 });
 
@@ -149,7 +149,7 @@ export default function HeroSection() {
       aria-label="Hero"
     >
       {/* Shader background — skipped entirely under prefers-reduced-motion */}
-      {!reducedMotion && <ShaderBackground />}
+      {!reducedMotion && <ShaderHeroBackground />}
       <GrainOverlay />
 
       {/* Top meta labels */}
