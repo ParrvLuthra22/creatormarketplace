@@ -63,3 +63,21 @@ export function useDeclineProposal() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["proposals"] }),
   });
 }
+
+export function useAdvanceDealStage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, stage }: { id: string; stage: string }) =>
+      unwrap<any>(await api.put(`/api/proposals/${id}/stage`, { stage })),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["proposals"] }),
+  });
+}
+
+export function useToggleDeliverable() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, item, completed }: { id: string; item: string; completed: boolean }) =>
+      unwrap<any>(await api.put(`/api/proposals/${id}/deliverables`, { item, completed })),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["proposals"] }),
+  });
+}

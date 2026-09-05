@@ -23,6 +23,14 @@ export interface User {
     newMessage: boolean;
     weeklyDigest: boolean;
   };
+  connectedPlatforms?: {
+    google: boolean;
+    instagram: boolean;
+    youtube: boolean;
+    twitter: boolean;
+    linkedin: boolean;
+    snapchat: boolean;
+  };
   createdAt?: string;
 }
 

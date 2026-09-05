@@ -32,6 +32,18 @@ function addHours(date: Date, hours: number): Date {
     return new Date(date.getTime() + hours * 60 * 60 * 1000);
 }
 
+// Computes which platforms are connected without ever sending the raw tokens to the client.
+function getConnectedPlatforms(user: any) {
+    return {
+        google: Boolean(user.googleId),
+        instagram: Boolean(user.instagramId),
+        youtube: Boolean(user.youtubeId),
+        twitter: Boolean(user.twitterId),
+        linkedin: Boolean(user.linkedinId),
+        snapchat: Boolean(user.snapchatId),
+    };
+}
+
 async function sendAccountEmail(input: { to: string; subject: string; html: string }) {
     try {
         await sendEmail(input);
@@ -187,6 +199,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
                 subscriptionStatus: user.subscriptionStatus,
                 emailVerified: user.emailVerified,
                 notificationPreferences: user.notificationPreferences,
+                connectedPlatforms: getConnectedPlatforms(user),
                 createdAt: user.createdAt,
             },
             profile,
@@ -264,6 +277,7 @@ router.post('/login', authLimiter, async (req: Request, res: Response): Promise<
                 accountType: user.accountType,
                 plan: user.plan,
                 notificationPreferences: user.notificationPreferences,
+                connectedPlatforms: getConnectedPlatforms(user),
                 createdAt: user.createdAt,
             },
             profile,
@@ -301,6 +315,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
                 accountType: user.accountType,
                 plan: user.plan,
                 notificationPreferences: user.notificationPreferences,
+                connectedPlatforms: getConnectedPlatforms(user),
                 createdAt: user.createdAt,
             },
             profile,
@@ -559,6 +574,37 @@ router.put('/password', authMiddleware, async (req: AuthRequest, res: Response):
             success: false,
             message: 'Server error'
         });
+    }
+});
+
+const DISCONNECT_FIELDS: Record<string, string[]> = {
+    instagram: ['instagramId', 'instagramAccessToken', 'instagramHandle'],
+    youtube: ['youtubeId', 'youtubeChannelId', 'youtubeAccessToken', 'youtubeRefreshToken'],
+    twitter: ['twitterId'],
+    linkedin: ['linkedinId'],
+    snapchat: ['snapchatId', 'snapchatAccessToken'],
+    google: ['googleId', 'googleAccessToken', 'googleRefreshToken'],
+};
+
+// POST /api/auth/disconnect - Unlink a connected OAuth platform from the current account
+router.post('/disconnect', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { provider } = req.body;
+        const fields = DISCONNECT_FIELDS[provider];
+        if (!fields) {
+            res.status(400).json({ success: false, message: `Unknown provider: ${provider}` });
+            return;
+        }
+
+        const unset: Record<string, string> = {};
+        for (const field of fields) unset[field] = '';
+
+        await User.findByIdAndUpdate(req.userId, { $unset: unset });
+
+        res.status(200).json({ success: true });
+    } catch (error: any) {
+        console.error('Disconnect provider error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 
