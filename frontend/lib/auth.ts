@@ -18,6 +18,11 @@ export interface User {
   emailVerified?: boolean;
   verificationStatus?: string;
   verificationBadge?: string;
+  notificationPreferences?: {
+    newProposal: boolean;
+    newMessage: boolean;
+    weeklyDigest: boolean;
+  };
   createdAt?: string;
 }
 

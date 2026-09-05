@@ -3,16 +3,17 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function BrandCreators() {
-    const router = useRouter();
+/** Superseded by the redesigned /dashboard/brand/discover page. */
+export default function BrandCreatorsRedirect() {
+  const router = useRouter();
 
-    useEffect(() => {
-        router.push('/dashboard/brand');
-    }, [router]);
+  useEffect(() => {
+    router.replace("/dashboard/brand/discover");
+  }, [router]);
 
-    return (
-        <div className="flex h-screen items-center justify-center bg-zinc-950">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#FF4D00]"></div>
-        </div>
-    );
+  return (
+    <div className="flex h-screen items-center justify-center bg-(--bg-primary)">
+      <div className="h-8 w-8 rounded-full border-2 border-(--border) border-t-(--accent) animate-spin" />
+    </div>
+  );
 }
