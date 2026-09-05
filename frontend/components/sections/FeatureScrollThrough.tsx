@@ -1,19 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useLenis } from "lenis/react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, ShieldCheck, Send, MessageCircle } from "lucide-react";
 import Container from "@/components/ui/Container";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const EASE = [0.65, 0, 0.35, 1] as [number, number, number, number];
 
@@ -165,62 +157,42 @@ function ChatVisual() {
 const VISUALS = [DiscoveryVisual, VerificationVisual, ProposalsVisual, ChatVisual];
 
 // ─── Section ──────────────────────────────────────────────────────────────
+//
+// The left visual tracks which feature is in view as the right column scrolls
+// past. This used to be a GSAP ScrollTrigger pin, but its pin range was tied to
+// the whole section (heading included) while the pinned element only needed to
+// track the feature list's height — the mismatch left a dead scroll range with
+// nothing happening once the last feature was reached. Plain CSS `sticky` needs
+// no manually-computed range: it naturally releases exactly when the taller
+// sibling column (the feature list) runs out, so this class of bug can't happen.
 
 export default function FeatureScrollThrough() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
   const featureRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const lenis = useLenis();
   const reducedMotion = useReducedMotion();
 
-  // Keep GSAP's ScrollTrigger in sync with Lenis's virtual scroll position —
-  // without this, pin+scrub can visibly desync from the actual scroll (see the
-  // note in HowItWorks.tsx about an earlier CSS-sticky attempt freezing for
-  // the same class of reason).
-  useGSAP(
-    () => {
-      if (!lenis || reducedMotion) return;
-
-      const onScroll = () => ScrollTrigger.update();
-      lenis.on("scroll", onScroll);
-
-      const triggers = featureRefs.current.map((el, i) => {
-        if (!el) return null;
-        return ScrollTrigger.create({
-          trigger: el,
-          start: "top center",
-          end: "bottom center",
-          onEnter: () => setActiveIndex(i),
-          onEnterBack: () => setActiveIndex(i),
+  useEffect(() => {
+    if (reducedMotion) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = featureRefs.current.findIndex((el) => el === entry.target);
+            if (index !== -1) setActiveIndex(index);
+          }
         });
-      });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
 
-      if (pinRef.current && sectionRef.current) {
-        ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom bottom",
-          pin: pinRef.current,
-          pinSpacing: false,
-        });
-      }
-
-      ScrollTrigger.refresh();
-
-      return () => {
-        lenis.off("scroll", onScroll);
-        triggers.forEach((t) => t?.kill());
-      };
-    },
-    { scope: sectionRef, dependencies: [lenis, reducedMotion] }
-  );
+    featureRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, [reducedMotion]);
 
   const ActiveVisual = VISUALS[activeIndex];
 
   return (
     <section
-      ref={sectionRef}
       id="how-it-works"
       className="relative bg-(--bg-primary)"
       aria-label="How it works"
@@ -240,11 +212,8 @@ export default function FeatureScrollThrough() {
       </Container>
 
       <Container className="grid md:grid-cols-2 gap-12 pb-32">
-        {/* Left: pinned visual (GSAP pin when motion allowed, static otherwise) */}
-        <div
-          ref={pinRef}
-          className={reducedMotion ? "" : "md:h-screen md:flex md:items-center md:justify-center"}
-        >
+        {/* Left: sticky visual — releases naturally once the feature list (its taller sibling) ends */}
+        <div className={reducedMotion ? "" : "md:sticky md:top-0 md:h-screen md:flex md:items-center md:justify-center"}>
           <div className="flex md:h-auto items-center justify-center py-12 md:py-0">
             {reducedMotion ? (
               (() => {

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
 import Container from "@/components/ui/Container";
@@ -162,8 +161,6 @@ function CreatorCard({ creator }: { creator: Creator }) {
 }
 
 export default function CreatorShowcase() {
-  const constraintsRef = useRef<HTMLDivElement>(null);
-
   return (
     <section
       className="py-24 bg-(--bg-primary) overflow-hidden"
@@ -185,34 +182,25 @@ export default function CreatorShowcase() {
         </RevealOnScroll>
       </Container>
 
-      {/* Drag scroll container */}
+      {/* Native horizontal scroll — a drag="x" gesture region here previously
+          could capture a vertical trackpad/touch scroll meant for the page. */}
       <div
-        ref={constraintsRef}
-        className="overflow-hidden pl-6 md:pl-12"
-        style={{ cursor: "grab" }}
-        aria-label="Creator gallery — drag to scroll"
+        className="overflow-x-auto scrollbar-none pl-6 md:pl-12"
+        aria-label="Creator gallery"
       >
-        <motion.div
-          className="flex gap-5 pb-4 w-max"
-          drag="x"
-          dragConstraints={constraintsRef}
-          dragElastic={0.05}
-          dragTransition={{ bounceStiffness: 300, bounceDamping: 40 }}
-          style={{ cursor: "grab" }}
-          whileDrag={{ cursor: "grabbing" }}
-        >
+        <div className="flex gap-5 pb-4 w-max">
           {creators.map((c) => (
             <CreatorCard key={c.name} creator={c} />
           ))}
           {/* Right padding element */}
           <div className="w-6 md:w-12 flex-none" aria-hidden />
-        </motion.div>
+        </div>
       </div>
 
       {/* Scroll hint */}
       <Container className="mt-6">
         <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">
-          ← DRAG TO EXPLORE →
+          ← SCROLL TO EXPLORE →
         </p>
       </Container>
     </section>
