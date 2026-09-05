@@ -4,7 +4,9 @@ import { createContext, useContext, useState } from "react";
 
 interface CampaignModalContextValue {
   open: boolean;
-  openModal: () => void;
+  /** Creator id to pre-select when the modal opens via an "Invite" action. */
+  prefilledCreatorId?: string;
+  openModal: (creatorId?: string) => void;
   closeModal: () => void;
 }
 
@@ -20,9 +22,22 @@ export function CampaignModalProvider({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [prefilledCreatorId, setPrefilledCreatorId] = useState<string | undefined>(undefined);
+
   return (
     <CampaignModalContext.Provider
-      value={{ open, openModal: () => setOpen(true), closeModal: () => setOpen(false) }}
+      value={{
+        open,
+        prefilledCreatorId,
+        openModal: (creatorId) => {
+          setPrefilledCreatorId(creatorId);
+          setOpen(true);
+        },
+        closeModal: () => {
+          setOpen(false);
+          setPrefilledCreatorId(undefined);
+        },
+      }}
     >
       {children}
     </CampaignModalContext.Provider>

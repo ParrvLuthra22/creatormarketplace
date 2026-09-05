@@ -266,6 +266,8 @@ router.get('/creator/:userId', authMiddleware, async (req: AuthRequest, res: Res
 });
 
 // GET /api/profile/creators/public - Get public creator list (with optional auth)
+// Authenticated callers (the brand dashboard) get real filtering, sorting, and
+// pagination; unauthenticated callers get a small teaser list as before.
 router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, res: Response): Promise<void> => {
     try {
         const isAuthenticated = !!req.userId;
@@ -285,77 +287,165 @@ router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, re
             }
         }
 
-        // Fetch all creators
-        const creators = await User.find({
-            accountType: 'Creator',
-            ...(excludeCreatorIds.size ? { _id: { $nin: Array.from(excludeCreatorIds) } } : {}),
-        })
-            .select('_id fullName email')
-            .limit(20);
-
-        if (!creators || creators.length === 0) {
-            res.status(200).json({
-                success: true,
-                creators: [],
-                authenticated: isAuthenticated
-            });
-            return;
-        }
-
-        // Get creator profiles
-        const creatorIds = creators.map(c => c._id);
-        const profiles = await CreatorProfile.find({ userId: { $in: creatorIds } });
-
-        // Create a map of userId to profile
-        const profileMap = new Map();
-        profiles.forEach(profile => {
-            profileMap.set(profile.userId.toString(), profile);
-        });
-
         if (!isAuthenticated) {
-            // Return only profile pictures for unauthenticated users
-            const limitedData = creators.map(creator => {
-                const profile = profileMap.get(creator._id.toString());
-                return {
-                    id: creator._id,
-                    profilePicture: profile?.profilePhoto || null,
-                };
-            });
+            const creators = await User.find({
+                accountType: 'Creator',
+                ...(excludeCreatorIds.size ? { _id: { $nin: Array.from(excludeCreatorIds) } } : {}),
+            })
+                .select('_id fullName email')
+                .limit(20);
 
-            res.status(200).json({
-                success: true,
-                creators: limitedData,
-                authenticated: false
-            });
+            const creatorIds = creators.map(c => c._id);
+            const profiles = await CreatorProfile.find({ userId: { $in: creatorIds } });
+            const profileMap = new Map(profiles.map(p => [p.userId.toString(), p]));
+
+            const limitedData = creators.map(creator => ({
+                id: creator._id,
+                profilePicture: profileMap.get(creator._id.toString())?.profilePhoto || null,
+            }));
+
+            res.status(200).json({ success: true, creators: limitedData, authenticated: false });
             return;
         }
 
-        // Return full data for authenticated users
-        const fullData = creators.map(creator => {
-            const profile = profileMap.get(creator._id.toString());
+        // ── Authenticated (dashboard) path — real filtering/sort/pagination ──
 
-            const rawHandle = profile?.instagramHandle || '';
-            const normalizedHandle = rawHandle.replace(/^@+/, '');
-            return {
-                id: creator._id,
-                name: creator.fullName, // Map fullName to name for frontend
-                instagramHandle: normalizedHandle || 'unknown',
-                profilePicture: profile?.profilePhoto || null,
-                followers: profile?.followers || '0',
-                following: '0', // Not in schema yet
-                bio: '', // Not in schema yet  
-                verified: false, // Not in schema yet
-                featured: false,
-                isActive: true,
-                openToWork: true,
-                category: profile?.niches?.[0] || 'Other'
-            };
-        });
+        const {
+            search = '',
+            niches = '',
+            minFollowers,
+            maxFollowers,
+            minEngagement,
+            maxEngagement,
+            platforms = '',
+            location = '',
+            verified,
+            available,
+            sort = 'match',
+            page = '1',
+            limit = '12',
+        } = req.query as Record<string, string>;
+
+        const profileFilter: any = {};
+
+        const nicheList = niches.split(',').map(n => n.trim()).filter(Boolean);
+        if (nicheList.length) profileFilter.niches = { $in: nicheList };
+
+        if (minFollowers || maxFollowers) {
+            profileFilter.combinedFollowerCount = {};
+            if (minFollowers) profileFilter.combinedFollowerCount.$gte = Number(minFollowers);
+            if (maxFollowers) profileFilter.combinedFollowerCount.$lte = Number(maxFollowers);
+        }
+
+        if (location) profileFilter.location = { $regex: location, $options: 'i' };
+        if (available === 'true') profileFilter.availability = 'available';
+
+        const platformList = platforms.split(',').map(p => p.trim()).filter(Boolean);
+        const platformFieldMap: Record<string, any> = {
+            instagram: { instagramHandle: { $exists: true, $nin: [null, ''] } },
+            youtube: { youtubeChannelId: { $exists: true, $nin: [null, ''] } },
+            twitter: { twitterHandle: { $exists: true, $nin: [null, ''] } },
+            linkedin: { linkedinHandle: { $exists: true, $nin: [null, ''] } },
+            snapchat: { snapchatHandle: { $exists: true, $nin: [null, ''] } },
+        };
+        if (platformList.length) {
+            profileFilter.$or = platformList.map(p => platformFieldMap[p]).filter(Boolean);
+        }
+
+        // Cap at 500 candidates before in-memory refinement (engagement range + text
+        // search span both User and CreatorProfile, so a single Mongo query can't
+        // express them cleanly at this schema's current size).
+        const profiles = await CreatorProfile.find(profileFilter).limit(500).lean();
+        const profileUserIds = profiles.map(p => p.userId.toString());
+
+        const userQuery: any = {
+            accountType: 'Creator',
+            _id: { $in: profileUserIds },
+        };
+        if (excludeCreatorIds.size) userQuery._id.$nin = Array.from(excludeCreatorIds);
+
+        const users = await User.find(userQuery).select('_id fullName verificationBadge').lean();
+        const userMap = new Map(users.map(u => [u._id.toString(), u]));
+
+        let combined = profiles
+            .map((profile: any) => {
+                const user = userMap.get(profile.userId.toString());
+                if (!user) return null;
+                const handle = (profile.instagramHandle || '').replace(/^@+/, '') || 'creator';
+                return {
+                    id: user._id,
+                    name: user.fullName,
+                    instagramHandle: handle,
+                    profilePicture: profile.profilePhoto || null,
+                    followers: profile.combinedFollowerCount || 0,
+                    engagement: profile.engagement || null,
+                    niches: profile.niches || [],
+                    location: profile.location || null,
+                    availability: profile.availability || 'available',
+                    verificationBadge: user.verificationBadge || 'none',
+                    createdAt: profile.createdAt,
+                };
+            })
+            .filter(Boolean) as any[];
+
+        if (search) {
+            const q = search.toLowerCase();
+            combined = combined.filter(
+                c =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.instagramHandle.toLowerCase().includes(q) ||
+                    c.niches.some((n: string) => n.toLowerCase().includes(q))
+            );
+        }
+
+        if (verified === 'true') {
+            combined = combined.filter(c => c.verificationBadge && c.verificationBadge !== 'none');
+        }
+
+        if (minEngagement || maxEngagement) {
+            combined = combined.filter(c => {
+                const value = parseFloat(String(c.engagement || ''));
+                if (Number.isNaN(value)) return false;
+                if (minEngagement && value < Number(minEngagement)) return false;
+                if (maxEngagement && value > Number(maxEngagement)) return false;
+                return true;
+            });
+        }
+
+        // Distinct locations across the filtered-but-unpaginated set, for the location dropdown.
+        const distinctLocations = Array.from(
+            new Set(combined.map(c => c.location).filter((loc): loc is string => Boolean(loc)))
+        ).sort();
+
+        if (sort === 'followers') {
+            combined.sort((a, b) => b.followers - a.followers);
+        } else if (sort === 'engagement') {
+            combined.sort((a, b) => (parseFloat(b.engagement) || 0) - (parseFloat(a.engagement) || 0));
+        } else if (sort === 'recent') {
+            combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        } else {
+            // "Best match" proxy: verified + higher engagement + higher followers first.
+            combined.sort((a, b) => {
+                const aScore = (a.verificationBadge !== 'none' ? 1000 : 0) + (parseFloat(a.engagement) || 0) * 10 + Math.log10(a.followers + 1);
+                const bScore = (b.verificationBadge !== 'none' ? 1000 : 0) + (parseFloat(b.engagement) || 0) * 10 + Math.log10(b.followers + 1);
+                return bScore - aScore;
+            });
+        }
+
+        const pageNum = Math.max(1, parseInt(page, 10) || 1);
+        const limitNum = Math.min(48, Math.max(1, parseInt(limit, 10) || 12));
+        const total = combined.length;
+        const pageItems = combined.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+        const hasMore = pageNum * limitNum < total;
 
         res.status(200).json({
             success: true,
-            creators: fullData,
-            authenticated: true
+            creators: pageItems,
+            authenticated: true,
+            page: pageNum,
+            hasMore,
+            total,
+            distinctLocations,
         });
     } catch (error: any) {
         console.error('Get public creators error:', error);

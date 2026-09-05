@@ -15,6 +15,7 @@ import instagramRoutes from './routes/instagram';
 import youtubeRoutes from './routes/youtube';
 import adminRoutes from './routes/admin';
 import verificationRoutes from './routes/verification';
+import activityRoutes from './routes/activity';
 import path from 'path';
 import './config/passport'; // Initialize Passport strategies
 import passport from 'passport';
@@ -100,6 +101,7 @@ app.use('/api/instagram', instagramRoutes);
 app.use('/api/youtube', youtubeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/verification', verificationRoutes);
+app.use('/api/activity', activityRoutes);
 // app.use('/api/payments', paymentsRoutes);
 
 // Serve uploaded files (local dev)

@@ -62,7 +62,7 @@ function BrandDashboardInner({ children }: { children: React.ReactNode }) {
           <TopBar onNewCampaign={openModal} />
           {/* data-lenis-prevent: tells Lenis not to call e.preventDefault() on
               wheel events inside here, so native overflow-y-auto scroll works. */}
-          <main className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>
+          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>
             {children}
           </main>
         </div>

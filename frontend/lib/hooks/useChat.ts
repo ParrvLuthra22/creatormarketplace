@@ -72,3 +72,64 @@ export function useMarkAsRead() {
     },
   });
 }
+
+export function useAddReaction() {
+  return useMutation({
+    mutationFn: async (payload: { messageId: string; emoji: string }) =>
+      new Promise<any>((resolve, reject) => {
+        getSocket().emit("addReaction", payload, (response: any) => {
+          if (response?.success) resolve(response);
+          else reject(new Error(response?.error || "Failed to add reaction"));
+        });
+      }),
+  });
+}
+
+export function useRemoveReaction() {
+  return useMutation({
+    mutationFn: async (payload: { messageId: string }) =>
+      new Promise<any>((resolve, reject) => {
+        getSocket().emit("removeReaction", payload, (response: any) => {
+          if (response?.success) resolve(response);
+          else reject(new Error(response?.error || "Failed to remove reaction"));
+        });
+      }),
+  });
+}
+
+/** Listens for reactionAdded/reactionRemoved socket events and returns a live map of messageId -> reactions. */
+export function useMessageReactions(messages: any[]) {
+  const socket = useSocket();
+  const [reactions, setReactions] = useState<Map<string, { userId: string; emoji: string }[]>>(new Map());
+
+  useEffect(() => {
+    setReactions(new Map(messages.map((m) => [String(m._id), m.reactions || []])));
+  }, [messages]);
+
+  useEffect(() => {
+    function onAdded(payload: { messageId: string; userId: string; emoji: string }) {
+      setReactions((prev) => {
+        const next = new Map(prev);
+        const existing = (next.get(payload.messageId) || []).filter((r) => r.userId !== payload.userId);
+        next.set(payload.messageId, [...existing, { userId: payload.userId, emoji: payload.emoji }]);
+        return next;
+      });
+    }
+    function onRemoved(payload: { messageId: string; userId: string }) {
+      setReactions((prev) => {
+        const next = new Map(prev);
+        const existing = (next.get(payload.messageId) || []).filter((r) => r.userId !== payload.userId);
+        next.set(payload.messageId, existing);
+        return next;
+      });
+    }
+    socket.on("reactionAdded", onAdded);
+    socket.on("reactionRemoved", onRemoved);
+    return () => {
+      socket.off("reactionAdded", onAdded);
+      socket.off("reactionRemoved", onRemoved);
+    };
+  }, [socket]);
+
+  return reactions;
+}
