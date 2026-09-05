@@ -19,12 +19,39 @@ function FallbackBg() {
   );
 }
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
+
+/** Caps a useFrame callback to ~targetFps — cheap mobile GPU/battery guard. */
+function useFrameCapped(targetFps: number, cb: (state: Parameters<Parameters<typeof useFrame>[0]>[0], delta: number) => void) {
+  const last = useRef(0);
+  const interval = 1 / targetFps;
+  useFrame((state, delta) => {
+    last.current += delta;
+    if (last.current < interval) return;
+    cb(state, last.current);
+    last.current = 0;
+  });
+}
+
 // ─── Wireframe mesh ───────────────────────────────────────────────────────────
 
-function WireframeMesh({ shape }: { shape: "icosahedron" | "torusKnot" }) {
-  const ref = useRef<THREE.Mesh>(null!);
+type Shape = "icosahedron" | "torusKnot" | "distortedSphere";
 
-  useFrame((_, delta) => {
+function WireframeMesh({ shape, isMobile }: { shape: Shape; isMobile: boolean }) {
+  const ref = useRef<THREE.Mesh>(null!);
+  const fps = isMobile ? 30 : 60;
+
+  useFrameCapped(fps, (_, delta) => {
     if (!ref.current) return;
     ref.current.rotation.x += delta * 0.07;
     ref.current.rotation.y += delta * 0.11;
@@ -32,11 +59,9 @@ function WireframeMesh({ shape }: { shape: "icosahedron" | "torusKnot" }) {
 
   return (
     <mesh ref={ref}>
-      {shape === "icosahedron" ? (
-        <icosahedronGeometry args={[2.4, 1]} />
-      ) : (
-        <torusKnotGeometry args={[1.6, 0.45, 64, 7]} />
-      )}
+      {shape === "icosahedron" && <icosahedronGeometry args={[2.4, 1]} />}
+      {shape === "torusKnot" && <torusKnotGeometry args={[1.6, 0.45, 64, 7]} />}
+      {shape === "distortedSphere" && <icosahedronGeometry args={[2.2, isMobile ? 2 : 4]} />}
       <meshBasicMaterial
         color="#d4ff4f"
         wireframe
@@ -47,15 +72,49 @@ function WireframeMesh({ shape }: { shape: "icosahedron" | "torusKnot" }) {
   );
 }
 
+/** Sphere geometry perturbed per-vertex along its normal — reads as an organic, "distorted" blob. */
+function DistortedSphereMesh({ isMobile }: { isMobile: boolean }) {
+  const ref = useRef<THREE.Mesh>(null!);
+  const fps = isMobile ? 30 : 60;
+
+  const geometry = useMemo(() => {
+    const geo = new THREE.IcosahedronGeometry(2.2, isMobile ? 2 : 4);
+    const pos = geo.attributes.position;
+    const v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i);
+      const noise = 0.18 * Math.sin(v.x * 2.3) * Math.cos(v.y * 1.7) * Math.sin(v.z * 2.1);
+      v.multiplyScalar(1 + noise);
+      pos.setXYZ(i, v.x, v.y, v.z);
+    }
+    geo.computeVertexNormals();
+    return geo;
+  }, [isMobile]);
+
+  useFrameCapped(fps, (_, delta) => {
+    if (!ref.current) return;
+    ref.current.rotation.x += delta * 0.06;
+    ref.current.rotation.y += delta * 0.09;
+  });
+
+  return (
+    <mesh ref={ref} geometry={geometry}>
+      <meshBasicMaterial color="#d4ff4f" wireframe transparent opacity={0.14} />
+    </mesh>
+  );
+}
+
 // ─── Particle field ───────────────────────────────────────────────────────────
 
-function ParticleField() {
+function ParticleField({ isMobile }: { isMobile: boolean }) {
   const ref = useRef<THREE.Points>(null!);
+  const count = isMobile ? 60 : 200;
+  const fps = isMobile ? 30 : 60;
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
-    const positions = new Float32Array(200 * 3);
-    for (let i = 0; i < 200; i++) {
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
       // Distribute in a shell around the scene
       const r = 5 + Math.random() * 7;
       const theta = Math.random() * Math.PI * 2;
@@ -66,9 +125,9 @@ function ParticleField() {
     }
     geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     return geo;
-  }, []);
+  }, [count]);
 
-  useFrame((_, delta) => {
+  useFrameCapped(fps, (_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.025;
   });
 
@@ -87,11 +146,15 @@ function ParticleField() {
 
 // ─── Scene ────────────────────────────────────────────────────────────────────
 
-function Scene({ shape }: { shape: "icosahedron" | "torusKnot" }) {
+function Scene({ shape, isMobile }: { shape: Shape; isMobile: boolean }) {
   return (
     <>
-      <WireframeMesh shape={shape} />
-      <ParticleField />
+      {shape === "distortedSphere" ? (
+        <DistortedSphereMesh isMobile={isMobile} />
+      ) : (
+        <WireframeMesh shape={shape} isMobile={isMobile} />
+      )}
+      <ParticleField isMobile={isMobile} />
     </>
   );
 }
@@ -99,7 +162,7 @@ function Scene({ shape }: { shape: "icosahedron" | "torusKnot" }) {
 // ─── Main exported component ──────────────────────────────────────────────────
 
 interface AuthBackgroundProps {
-  shape?: "icosahedron" | "torusKnot";
+  shape?: Shape;
 }
 
 export default function AuthBackground({
@@ -107,6 +170,7 @@ export default function AuthBackground({
 }: AuthBackgroundProps) {
   const [mounted, setMounted] = useState(false);
   const [hasWebGL, setHasWebGL] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setMounted(true);
@@ -132,10 +196,10 @@ export default function AuthBackground({
             powerPreference: "low-power",
           }}
           camera={{ position: [0, 0, 6], fov: 50 }}
-          dpr={[1, 1.5]}
+          dpr={isMobile ? 1 : [1, 1.5]}
           style={{ position: "absolute", inset: 0 }}
         >
-          <Scene shape={shape} />
+          <Scene shape={shape} isMobile={isMobile} />
         </Canvas>
       </Suspense>
     </div>
