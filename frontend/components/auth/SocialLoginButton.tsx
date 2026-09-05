@@ -18,6 +18,7 @@ export default function SocialLoginButton({
   className,
 }: SocialLoginButtonProps) {
   const [loading, setLoading] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   async function handleClick() {
     if (loading) return;
@@ -35,21 +36,27 @@ export default function SocialLoginButton({
       whileHover={loading ? {} : { scale: 1.05 }}
       whileTap={loading ? {} : { scale: 0.96 }}
       onClick={handleClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       disabled={loading}
       aria-label={`Sign in with ${provider}`}
       title={provider}
+      data-interactive
+      data-cursor={`Sign in with ${provider}`}
       className={cn(
-        "relative flex h-20 w-full items-center justify-center rounded-xl",
+        "relative flex h-20 w-20 items-center justify-center rounded-xl shrink-0",
         "border bg-(--bg-surface) text-(--text-secondary)",
         "transition-colors duration-200",
         "hover:border-(--accent) hover:text-(--text-primary)",
         "disabled:cursor-not-allowed disabled:opacity-60",
         "focus-visible:outline-2 focus-visible:outline-(--accent) focus-visible:outline-offset-2",
-        // Hover glow
-        "hover:shadow-[0_0_20px_rgba(212,255,79,0.08)]",
         className
       )}
-      style={{ borderColor: "var(--border)" }}
+      style={{
+        borderColor: "var(--border)",
+        boxShadow: hovered && !loading ? "0 0 24px rgba(212,255,79,0.15)" : "none",
+        transition: "box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease",
+      }}
     >
       {loading ? (
         <span
@@ -57,9 +64,13 @@ export default function SocialLoginButton({
           aria-hidden
         />
       ) : (
-        <span className="flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
+        <motion.span
+          className="flex items-center justify-center"
+          animate={{ scale: hovered ? 1.1 : 1 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+        >
           {icon}
-        </span>
+        </motion.span>
       )}
     </motion.button>
   );

@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+
+const AuthBackground = dynamic(() => import("@/components/auth/AuthBackground"), {
+  ssr: false,
+});
 
 const EASE = [0.65, 0, 0.35, 1] as [number, number, number, number];
 
@@ -32,6 +37,9 @@ const config = {
     accentColor: "var(--accent)",
     subText: "Discover and hire world-class creators for your next campaign.",
     metaLabel: "01 / BRAND ACCESS",
+    preview: "→ 500+ brands trust CreatorLyff",
+    cursorLabel: "Continue as brand",
+    watermarkColor: "rgba(212,255,79,0.05)",
   },
   creators: {
     href: "/login/creator",
@@ -43,6 +51,9 @@ const config = {
     accentColor: "var(--bg-primary)",
     subText: "Build your portfolio, get inbound brand deals, earn fairly.",
     metaLabel: "02 / CREATOR ACCESS",
+    preview: "→ 10K+ creators earning",
+    cursorLabel: "Continue as creator",
+    watermarkColor: "rgba(255,255,255,0.10)",
   },
 } as const;
 
@@ -62,7 +73,7 @@ function Half({ side, hovered, isDesktop, onEnter, onLeave }: HalfProps) {
   const isShrunk = hovered !== null && hovered !== side;
 
   // On mobile: full width, 50vh height. On desktop: animated horizontal split.
-  const desktopWidth = isHovered ? "62%" : isShrunk ? "38%" : "50%";
+  const desktopWidth = isHovered ? "65%" : isShrunk ? "35%" : "50%";
 
   return (
     <div
@@ -72,7 +83,7 @@ function Half({ side, hovered, isDesktop, onEnter, onLeave }: HalfProps) {
         ...(isDesktop
           ? {
               width: desktopWidth,
-              minWidth: "38%",
+              minWidth: "35%",
               height: "100%",
               transition: "width 0.6s cubic-bezier(0.65,0,0.35,1)",
             }
@@ -86,6 +97,8 @@ function Half({ side, hovered, isDesktop, onEnter, onLeave }: HalfProps) {
       }}
       onMouseEnter={isDesktop ? onEnter : undefined}
       onMouseLeave={isDesktop ? onLeave : undefined}
+      data-interactive
+      data-cursor={c.cursorLabel}
     >
       {/* Meta label */}
       <div className="flex items-start justify-between">
@@ -152,9 +165,21 @@ function Half({ side, hovered, isDesktop, onEnter, onLeave }: HalfProps) {
             />
           </Link>
         </div>
+
+        {/* Preview snippet — fades in on hover */}
+        <motion.p
+          className="font-mono-utility text-mono-sm mt-6"
+          style={{
+            color: side === "creators" ? "rgba(0,0,0,0.5)" : "var(--accent)",
+          }}
+          animate={{ opacity: isDesktop && isHovered ? 1 : 0, y: isDesktop && isHovered ? 0 : 6 }}
+          transition={{ duration: 0.3, ease: EASE }}
+        >
+          {c.preview}
+        </motion.p>
       </div>
 
-      {/* Massive background word — distorts on hover (desktop only) */}
+      {/* Massive background word — spring scale + rotate on hover (desktop only) */}
       <motion.span
         className="pointer-events-none absolute select-none font-serif"
         aria-hidden
@@ -164,19 +189,16 @@ function Half({ side, hovered, isDesktop, onEnter, onLeave }: HalfProps) {
           bottom: "-0.1em",
           right: side === "brands" ? "-0.05em" : undefined,
           left: side === "creators" ? "-0.05em" : undefined,
-          color:
-            side === "brands"
-              ? "rgba(255,255,255,0.04)"
-              : "rgba(0,0,0,0.07)",
+          color: c.watermarkColor,
           transformOrigin:
             side === "brands" ? "bottom right" : "bottom left",
         }}
         animate={
           isDesktop && isHovered
-            ? { scale: 1.15, skewX: side === "brands" ? -4 : 4 }
-            : { scale: 1, skewX: 0 }
+            ? { scale: 1.2, rotate: side === "brands" ? -3 : 3 }
+            : { scale: 1, rotate: 0 }
         }
-        transition={{ duration: 0.7, ease: EASE }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
       >
         {c.word}
       </motion.span>
@@ -210,13 +232,23 @@ export default function LoginRoleSelect() {
 
   return (
     <motion.div
-      className="flex flex-col md:flex-row h-screen overflow-hidden"
+      className="relative flex flex-col md:flex-row h-screen overflow-hidden"
       style={{ background: "var(--bg-primary)" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, ease: EASE }}
       aria-label="Choose your role"
     >
+      {/* Full-screen WebGL wireframe icosahedron — sits above panel colors via
+          mix-blend-mode so it reads on both the dark and lime panels */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{ mixBlendMode: "overlay", opacity: 0.6 }}
+        aria-hidden
+      >
+        <AuthBackground shape="icosahedron" />
+      </div>
+
       {/* Logo — centred at top */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
         <Link
@@ -228,20 +260,22 @@ export default function LoginRoleSelect() {
         </Link>
       </div>
 
-      <Half
-        side="brands"
-        hovered={hovered}
-        isDesktop={isDesktop}
-        onEnter={() => setHovered("brands")}
-        onLeave={() => setHovered(null)}
-      />
-      <Half
-        side="creators"
-        hovered={hovered}
-        isDesktop={isDesktop}
-        onEnter={() => setHovered("creators")}
-        onLeave={() => setHovered(null)}
-      />
+      <div className="relative z-10 flex flex-col md:flex-row w-full h-full">
+        <Half
+          side="brands"
+          hovered={hovered}
+          isDesktop={isDesktop}
+          onEnter={() => setHovered("brands")}
+          onLeave={() => setHovered(null)}
+        />
+        <Half
+          side="creators"
+          hovered={hovered}
+          isDesktop={isDesktop}
+          onEnter={() => setHovered("creators")}
+          onLeave={() => setHovered(null)}
+        />
+      </div>
     </motion.div>
   );
 }

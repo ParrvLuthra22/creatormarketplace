@@ -18,18 +18,18 @@ import {
 
 const EASE = [0.65, 0, 0.35, 1] as [number, number, number, number];
 
-// ─── Content stagger ──────────────────────────────────────────────────────────
+// ─── Content stagger — total sequence stays under 800ms ──────────────────────
 
 const container = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.6 },
+    transition: { staggerChildren: 0.08 },
   },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
 };
 
 // ─── Side panel data ──────────────────────────────────────────────────────────
@@ -73,6 +73,20 @@ const PROVIDERS = [
   { id: "snapchat", label: "Snapchat", icon: <SnapchatIcon /> },
 ];
 
+// ─── Grain overlay ────────────────────────────────────────────────────────────
+
+function GrainOverlay() {
+  return (
+    <svg className="pointer-events-none absolute inset-0 h-full w-full" style={{ opacity: 0.05 }} aria-hidden>
+      <filter id="auth-grain-brand">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#auth-grain-brand)" />
+    </svg>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function BrandLogin() {
@@ -97,14 +111,15 @@ export default function BrandLogin() {
 
       {/* ── Right: background + form ── */}
       <div className="relative flex-1 flex items-center justify-center overflow-hidden px-6 py-10 md:px-12">
-        {/* Three.js background — fades in */}
+        {/* Three.js background — distorted rotating sphere, fades in */}
         <motion.div
           className="absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <AuthBackground shape="icosahedron" />
+          <AuthBackground shape="distortedSphere" />
+          <GrainOverlay />
           {/* Vignette overlay */}
           <div
             className="absolute inset-0"
@@ -154,9 +169,9 @@ export default function BrandLogin() {
             </p>
           </motion.div>
 
-          {/* Social grid */}
+          {/* Social grid — 2 cols × 3 rows desktop, 3 cols × 2 rows mobile, 80×80 buttons */}
           <motion.div variants={item}>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-2 gap-3 justify-items-center md:justify-items-start">
               {PROVIDERS.map((p) => (
                 <SocialLoginButton
                   key={p.id}
