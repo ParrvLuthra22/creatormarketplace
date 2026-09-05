@@ -113,6 +113,17 @@ Navigate to `http://localhost:3000`
 - Clear authentication cookie
 - Returns: Success message
 
+### Admin Access
+
+Admin access (`/dashboard/admin`) is granted via a seed script, not through the UI:
+
+1. Set `ADMIN_EMAILS` in the backend's environment to a comma-separated list of email
+   addresses. Each one must already have a CreatorLyff account.
+2. From `backend/`, run `npm run seed:admin`.
+3. Log out and back in so the session picks up `isAdmin`, then visit `/dashboard/admin`.
+
+See `/dashboard/admin/setup` in the app for the same steps with copyable commands.
+
 ## Project Structure
 
 ```

@@ -14,6 +14,7 @@ import {
   LogOut,
   ExternalLink,
   BadgeCheck,
+  ShieldCheck,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -198,6 +199,16 @@ export default function CreatorSidebar() {
               transition={{ duration: 0.15 }}
               className="absolute bottom-full left-3 right-3 mb-2 rounded-xl border border-(--border) bg-(--bg-secondary) shadow-xl overflow-hidden"
             >
+              {user?.isAdmin && (
+                <Link
+                  href="/dashboard/admin"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface) transition-colors"
+                  data-interactive
+                >
+                  <ShieldCheck size={15} />
+                  Admin Panel
+                </Link>
+              )}
               <button
                 onClick={() => logout.mutate()}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface) transition-colors"
