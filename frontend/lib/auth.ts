@@ -31,6 +31,7 @@ export interface User {
     linkedin: boolean;
     snapchat: boolean;
   };
+  isAdmin?: boolean;
   createdAt?: string;
 }
 

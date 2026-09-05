@@ -64,6 +64,7 @@ router.get('/stats', async (_req: AuthRequest, res: Response): Promise<void> => 
             acceptedProposals,
             declinedProposals,
             totalMessagesSent,
+            dailySignupsAgg,
         ] = await Promise.all([
             User.countDocuments(),
             User.countDocuments({ accountType: 'Brand' }),
@@ -77,7 +78,20 @@ router.get('/stats', async (_req: AuthRequest, res: Response): Promise<void> => 
             Proposal.countDocuments({ status: 'accepted' }),
             Proposal.countDocuments({ status: 'declined' }),
             Message.countDocuments(),
+            User.aggregate([
+                { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+                { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+                { $sort: { _id: 1 } },
+            ]),
         ]);
+
+        // Fill in zero-count days so the line chart has a continuous 30-day series.
+        const dailySignupsMap = new Map(dailySignupsAgg.map((d: any) => [d._id, d.count]));
+        const dailySignups = Array.from({ length: 30 }, (_, i) => {
+            const date = new Date(thirtyDaysAgo.getTime() + i * 24 * 60 * 60 * 1000);
+            const key = date.toISOString().slice(0, 10);
+            return { date: key, count: dailySignupsMap.get(key) || 0 };
+        });
 
         res.status(200).json({
             success: true,
@@ -88,6 +102,7 @@ router.get('/stats', async (_req: AuthRequest, res: Response): Promise<void> => 
                 newSignups7d,
                 newSignups30d,
                 activeUsers7d,
+                dailySignups,
             },
             verification: {
                 pendingRequests: pendingVerificationRequests,
@@ -118,10 +133,22 @@ router.get('/users', async (req: AuthRequest, res: Response): Promise<void> => {
             query.accountType = req.query.role;
         }
 
-        if (req.query.verified === 'true') {
+        if (req.query.verificationStatus && ['unverified', 'pending', 'verified', 'rejected'].includes(req.query.verificationStatus as string)) {
+            query.verificationStatus = req.query.verificationStatus;
+        } else if (req.query.verified === 'true') {
             query.verificationStatus = 'verified';
         } else if (req.query.verified === 'false') {
             query.verificationStatus = { $ne: 'verified' };
+        }
+
+        if (req.query.suspended === 'true') {
+            query.suspended = true;
+        } else if (req.query.suspended === 'false') {
+            query.suspended = { $ne: true };
+        }
+
+        if (req.query.plan && ['free', 'basic', 'pro'].includes(req.query.plan as string)) {
+            query.plan = req.query.plan;
         }
 
         if (req.query.search) {
@@ -170,7 +197,7 @@ router.get('/users/:id', async (req: AuthRequest, res: Response): Promise<void> 
         }
 
         const userId = toObjectId(req.params.id);
-        const [profile, recentProposals, recentMessages, proposalCounts, messageCount] = await Promise.all([
+        const [profile, recentProposals, recentMessages, proposalCounts, messageCount, verificationRequests] = await Promise.all([
             getProfileForUser(user),
             Proposal.find({ $or: [{ brandId: userId }, { creatorId: userId }] })
                 .sort({ createdAt: -1 })
@@ -182,12 +209,14 @@ router.get('/users/:id', async (req: AuthRequest, res: Response): Promise<void> 
                 { $group: { _id: '$status', count: { $sum: 1 } } },
             ]),
             Message.countDocuments({ senderId: userId }),
+            VerificationRequest.find({ userId }).sort({ createdAt: -1 }).lean(),
         ]);
 
         res.status(200).json({
             success: true,
             user,
             profile,
+            verificationRequests,
             activity: {
                 proposalsByStatus: proposalCounts,
                 messagesSent: messageCount,
@@ -239,8 +268,11 @@ router.patch('/users/:id', async (req: AuthRequest, res: Response): Promise<void
 
 router.post('/users/:id/suspend', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, { $set: { suspended: true } }, { new: true })
-            .select('-password -emailVerificationToken -passwordResetToken');
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { $set: { suspended: true, suspendedAt: new Date() } },
+            { new: true }
+        ).select('-password -emailVerificationToken -passwordResetToken');
 
         if (!user) {
             res.status(404).json({ error: 'User not found' });
@@ -256,8 +288,11 @@ router.post('/users/:id/suspend', async (req: AuthRequest, res: Response): Promi
 
 router.post('/users/:id/unsuspend', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, { $set: { suspended: false } }, { new: true })
-            .select('-password -emailVerificationToken -passwordResetToken');
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { $set: { suspended: false }, $unset: { suspendedAt: '' } },
+            { new: true }
+        ).select('-password -emailVerificationToken -passwordResetToken');
 
         if (!user) {
             res.status(404).json({ error: 'User not found' });
@@ -267,6 +302,41 @@ router.post('/users/:id/unsuspend', async (req: AuthRequest, res: Response): Pro
         res.status(200).json({ success: true, user });
     } catch (error: any) {
         console.error('Admin unsuspend user error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// DELETE /api/admin/users/:id - Permanently delete a user and their profile
+// (same cascade as the user's own self-delete in /api/auth/account)
+router.delete('/users/:id', async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        if (user._id.toString() === req.userId) {
+            res.status(400).json({ error: 'Use the account settings page to delete your own account' });
+            return;
+        }
+
+        if (user.accountType === 'Brand') {
+            await BrandProfile.deleteOne({ userId: user._id });
+        } else if (user.accountType === 'Creator') {
+            await CreatorProfile.deleteOne({ userId: user._id });
+        }
+
+        await User.deleteOne({ _id: user._id });
+
+        trackEvent(req.userId as string, 'admin_user_deleted', {
+            deletedUserId: user._id.toString(),
+            accountType: user.accountType,
+        });
+
+        res.status(200).json({ success: true });
+    } catch (error: any) {
+        console.error('Admin delete user error:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -452,6 +522,74 @@ router.post('/verification-requests/:id/reject', async (req: AuthRequest, res: R
         res.status(200).json({ success: true, verificationRequest, user });
     } catch (error: any) {
         console.error('Admin reject verification error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+interface AdminActivityItem {
+    id: string;
+    type: 'signup' | 'verification_approved' | 'verification_rejected' | 'suspended';
+    text: string;
+    timestamp: string;
+    href?: string;
+}
+
+// GET /api/admin/activity - Last 10 admin-relevant events (signups, verification
+// decisions, suspensions), aggregated from existing collections — no dedicated log exists.
+router.get('/activity', async (_req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const [recentSignups, reviewedRequests, recentSuspensions] = await Promise.all([
+            User.find().sort({ createdAt: -1 }).limit(10).select('fullName accountType createdAt').lean(),
+            VerificationRequest.find({ status: { $in: ['approved', 'rejected'] } })
+                .sort({ reviewedAt: -1 })
+                .limit(10)
+                .populate('userId', 'fullName')
+                .lean(),
+            User.find({ suspended: true, suspendedAt: { $exists: true } })
+                .sort({ suspendedAt: -1 })
+                .limit(10)
+                .select('fullName suspendedAt')
+                .lean(),
+        ]);
+
+        const items: AdminActivityItem[] = [];
+
+        recentSignups.forEach((u: any) => {
+            items.push({
+                id: `signup-${u._id}`,
+                type: 'signup',
+                text: `${u.fullName} signed up as a ${u.accountType}`,
+                timestamp: u.createdAt,
+                href: `/dashboard/admin/users/${u._id}`,
+            });
+        });
+
+        reviewedRequests.forEach((r: any) => {
+            const name = r.userId?.fullName || 'A creator';
+            items.push({
+                id: `verification-${r._id}`,
+                type: r.status === 'approved' ? 'verification_approved' : 'verification_rejected',
+                text: r.status === 'approved' ? `${name}'s verification was approved` : `${name}'s verification was rejected`,
+                timestamp: r.reviewedAt,
+                href: r.userId?._id ? `/dashboard/admin/users/${r.userId._id}` : undefined,
+            });
+        });
+
+        recentSuspensions.forEach((u: any) => {
+            items.push({
+                id: `suspend-${u._id}`,
+                type: 'suspended',
+                text: `${u.fullName} was suspended`,
+                timestamp: u.suspendedAt,
+                href: `/dashboard/admin/users/${u._id}`,
+            });
+        });
+
+        items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+        res.status(200).json({ success: true, activity: items.slice(0, 10) });
+    } catch (error: any) {
+        console.error('Admin activity error:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

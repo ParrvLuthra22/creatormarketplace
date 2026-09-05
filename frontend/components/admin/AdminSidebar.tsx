@@ -3,54 +3,32 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  Search,
-  Megaphone,
-  MessageSquare,
-  BarChart3,
-  Settings,
-  LogOut,
-  Plus,
-  BadgeCheck,
-  ShieldCheck,
-} from "lucide-react";
+import { Home, Users, ShieldCheck, FileBarChart, Settings, LogOut, ArrowLeftRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/auth";
 import { useLogout } from "@/lib/hooks/useAuth";
-import { useUnreadCount } from "@/lib/socket";
-import MagneticButton from "./MagneticButton";
+import { useAdminStats } from "@/lib/hooks/useAdmin";
 
 const NAV = [
-  { label: "Overview", href: "/dashboard/brand", icon: Home },
-  { label: "Discover", href: "/dashboard/brand/discover", icon: Search },
-  { label: "Campaigns", href: "/dashboard/brand/campaigns", icon: Megaphone },
-  { label: "Messages", href: "/dashboard/brand/messages", icon: MessageSquare, badge: true },
-  { label: "Analytics", href: "/dashboard/brand/analytics", icon: BarChart3 },
-  { label: "Settings", href: "/dashboard/brand/settings", icon: Settings },
+  { label: "Overview", href: "/dashboard/admin", icon: Home },
+  { label: "Users", href: "/dashboard/admin/users", icon: Users },
+  { label: "Verification Queue", href: "/dashboard/admin/verification-queue", icon: ShieldCheck, badge: true },
+  { label: "Reports", href: "/dashboard/admin/reports", icon: FileBarChart },
+  { label: "Settings", href: "/dashboard/admin/settings", icon: Settings },
 ];
 
-export default function BrandSidebar({
-  onNewCampaign,
-}: {
-  onNewCampaign?: () => void;
-}) {
+export default function AdminSidebar() {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const logout = useLogout();
-  const unread = useUnreadCount();
-  const unreadCount = unread.data?.totalUnread || 0;
+  const stats = useAdminStats();
   const [expanded, setExpanded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const initials = (user?.fullName || "B")
-    .split(" ")
-    .map((p) => p[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-  const isVerified = Boolean(user?.verificationBadge && user.verificationBadge !== "none");
+  const initials = (user?.fullName || "A").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+  const pendingVerifications = stats.data?.verification?.pendingRequests || 0;
+  const exitHref = user?.accountType === "Brand" ? "/dashboard/brand" : "/dashboard/creator";
 
   return (
     <motion.aside
@@ -61,11 +39,12 @@ export default function BrandSidebar({
       }}
       animate={{ width: expanded ? 260 : 72 }}
       transition={{ duration: 0.25, ease: [0.65, 0, 0.35, 1] }}
-      className="hidden md:flex shrink-0 flex-col border-r border-(--border) bg-(--bg-secondary) overflow-hidden relative z-30"
+      className="hidden md:flex shrink-0 flex-col border-r overflow-hidden relative z-30"
+      style={{ borderColor: "rgba(251,191,36,0.25)", background: "var(--bg-secondary)" }}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6 h-[76px] shrink-0">
-        <div className="h-8 w-8 rounded-lg bg-(--accent) text-(--bg-primary) flex items-center justify-center font-bold text-sm shrink-0">
+        <div className="h-8 w-8 rounded-lg text-(--bg-primary) flex items-center justify-center font-bold text-sm shrink-0" style={{ background: "var(--warning)" }}>
           C
         </div>
         <AnimatePresence>
@@ -78,43 +57,16 @@ export default function BrandSidebar({
               className="min-w-0 whitespace-nowrap"
             >
               <p className="font-display font-semibold text-sm">CreatorLyff</p>
-              <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">BRAND</p>
+              <p className="font-mono-utility text-mono-sm" style={{ color: "var(--warning)" }}>ADMIN</p>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* New Campaign CTA */}
-      {onNewCampaign && (
-        <div className="px-3 pb-2 shrink-0">
-          <MagneticButton
-            variant="primary"
-            onClick={onNewCampaign}
-            className="w-full justify-center"
-            data-cursor="New campaign"
-          >
-            <Plus size={14} aria-hidden className="shrink-0" />
-            <AnimatePresence>
-              {expanded && (
-                <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="whitespace-nowrap overflow-hidden"
-                >
-                  New Campaign
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </MagneticButton>
-        </div>
-      )}
-
       {/* Nav */}
       <nav className="flex-1 px-3 py-2 flex flex-col gap-1">
         {NAV.map(({ label, href, icon: Icon, badge }) => {
-          const active = pathname === href || (href !== "/dashboard/brand" && pathname.startsWith(href));
+          const active = pathname === href || (href !== "/dashboard/admin" && pathname.startsWith(href));
           return (
             <Link
               key={href}
@@ -123,21 +75,24 @@ export default function BrandSidebar({
               data-cursor={label}
               className={cn(
                 "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors duration-150",
-                active ? "bg-(--bg-surface) text-(--accent)" : "text-(--text-secondary) hover:bg-(--bg-surface)"
+                active ? "bg-(--bg-surface)" : "text-(--text-secondary) hover:bg-(--bg-surface)"
               )}
+              style={active ? { color: "var(--warning)" } : undefined}
             >
               {active && (
                 <motion.span
-                  layoutId="sidebar-active-bar"
-                  className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-(--accent)"
+                  layoutId="admin-sidebar-active-bar"
+                  className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full"
+                  style={{ background: "var(--warning)" }}
                   transition={{ duration: 0.25, ease: [0.65, 0, 0.35, 1] }}
                 />
               )}
               <span className="relative shrink-0">
                 <Icon size={18} />
-                {badge && unreadCount > 0 && (
+                {badge && pendingVerifications > 5 && (
                   <span
-                    className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-(--accent)"
+                    className="absolute -top-1 -right-1 h-2 w-2 rounded-full animate-pulse"
+                    style={{ background: "var(--warning)" }}
                     aria-hidden
                   />
                 )}
@@ -155,33 +110,43 @@ export default function BrandSidebar({
                   </motion.span>
                 )}
               </AnimatePresence>
-              {badge && unreadCount > 0 && expanded && (
-                <span className="font-mono-utility text-mono-sm text-(--accent) shrink-0">
-                  {unreadCount}
-                </span>
+              {badge && pendingVerifications > 0 && expanded && (
+                <span className="font-mono-utility text-mono-sm" style={{ color: "var(--warning)" }}>{pendingVerifications}</span>
               )}
             </Link>
           );
         })}
       </nav>
 
+      {/* Exit admin mode */}
+      <div className="px-3 pb-2 shrink-0">
+        <Link
+          href={exitHref}
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-(--text-secondary) hover:bg-(--bg-surface) hover:text-(--text-primary) transition-colors duration-150"
+          data-interactive
+          data-cursor="Exit admin mode"
+        >
+          <ArrowLeftRight size={18} className="shrink-0" />
+          <AnimatePresence>
+            {expanded && (
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="whitespace-nowrap overflow-hidden">
+                Exit Admin Mode
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Link>
+      </div>
+
       {/* User + logout */}
-      <div className="border-t border-(--border) p-3 relative shrink-0">
+      <div className="border-t p-3 relative shrink-0" style={{ borderColor: "rgba(251,191,36,0.15)" }}>
         <button
           onClick={() => setMenuOpen((v) => !v)}
           className="w-full flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-(--bg-surface) transition-colors duration-150"
           data-interactive
           aria-label="Account menu"
         >
-          <div className="relative h-8 w-8 rounded-full bg-(--border-strong) flex items-center justify-center text-xs font-semibold shrink-0">
+          <div className="h-8 w-8 rounded-full text-(--bg-primary) flex items-center justify-center text-xs font-semibold shrink-0" style={{ background: "var(--warning)" }}>
             {initials}
-            {isVerified && (
-              <BadgeCheck
-                size={13}
-                className="absolute -bottom-0.5 -right-0.5 text-(--accent) bg-(--bg-secondary) rounded-full"
-                aria-label="Verified"
-              />
-            )}
           </div>
           <AnimatePresence>
             {expanded && (
@@ -192,8 +157,8 @@ export default function BrandSidebar({
                 transition={{ duration: 0.15 }}
                 className="min-w-0 flex-1 text-left overflow-hidden"
               >
-                <p className="truncate text-sm font-medium">{user?.fullName || "Brand"}</p>
-                <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">BRAND</p>
+                <p className="truncate text-sm font-medium">{user?.fullName || "Admin"}</p>
+                <p className="font-mono-utility text-mono-sm" style={{ color: "var(--warning)" }}>ADMIN</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -208,16 +173,6 @@ export default function BrandSidebar({
               transition={{ duration: 0.15 }}
               className="absolute bottom-full left-3 right-3 mb-2 rounded-xl border border-(--border) bg-(--bg-secondary) shadow-xl overflow-hidden"
             >
-              {user?.isAdmin && (
-                <Link
-                  href="/dashboard/admin"
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface) transition-colors"
-                  data-interactive
-                >
-                  <ShieldCheck size={15} />
-                  Admin Panel
-                </Link>
-              )}
               <button
                 onClick={() => logout.mutate()}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface) transition-colors"

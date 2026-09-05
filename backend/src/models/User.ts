@@ -15,6 +15,7 @@ export interface IUser extends Document {
     profilePicture?: string;
     isAdmin: boolean;
     suspended: boolean;
+    suspendedAt?: Date;
     emailVerified: boolean;
     emailVerificationToken?: string;
     emailVerificationExpires?: Date;
@@ -84,6 +85,9 @@ const UserSchema = new Schema<IUser>({
     suspended: {
         type: Boolean,
         default: false,
+    },
+    suspendedAt: {
+        type: Date,
     },
     emailVerified: {
         type: Boolean,
