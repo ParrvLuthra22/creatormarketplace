@@ -47,11 +47,15 @@ router.put('/creator', authMiddleware, async (req: AuthRequest, res: Response): 
             'profilePhoto',
             'coverImage',
             'niches',
+            'contentStyle',
             'followers',
             'engagement',
             'location',
             'availability',
             'pricing',
+            'openToNegotiation',
+            'profilePublic',
+            'pricingPublic',
             'brandWork',
         ] as const;
 
@@ -226,7 +230,25 @@ router.get('/creator/by-handle/:handle', optionalAuth, async (req: OptionalAuthR
             return;
         }
 
-        res.status(200).json({ success: true, creator: { user, profile }, authenticated: !!req.userId });
+        const isOwner = req.userId === profile.userId.toString();
+
+        if (profile.profilePublic === false && !isOwner) {
+            res.status(404).json({ error: 'Creator profile not found' });
+            return;
+        }
+
+        // Track a real profile view (skip the creator viewing their own profile).
+        if (!isOwner) {
+            const now = new Date();
+            await CreatorProfile.findByIdAndUpdate(profile._id, {
+                $inc: { profileViews: 1 },
+                $push: { profileViewLog: { $each: [now], $slice: -500 } },
+            });
+        }
+
+        const visibleProfile = profile.pricingPublic === false && !isOwner ? { ...profile, pricing: undefined } : profile;
+
+        res.status(200).json({ success: true, creator: { user, profile: visibleProfile }, authenticated: !!req.userId });
     } catch (error: any) {
         console.error('Get creator by handle error:', error);
         res.status(500).json({ error: 'Server error' });
@@ -326,7 +348,10 @@ router.get('/creators/public', optionalAuth, async (req: OptionalAuthRequest, re
             limit = '12',
         } = req.query as Record<string, string>;
 
-        const profileFilter: any = {};
+        // Exclude creators who have opted out of public discovery. Documents saved
+        // before this field existed have no value stored, so $ne: false (not a
+        // strict equality check) keeps them visible, matching the schema default.
+        const profileFilter: any = { profilePublic: { $ne: false } };
 
         const nicheList = niches.split(',').map(n => n.trim()).filter(Boolean);
         if (nicheList.length) profileFilter.niches = { $in: nicheList };
@@ -475,6 +500,12 @@ router.get('/creators/:userId/public', optionalAuth, async (req: OptionalAuthReq
             return;
         }
 
+        const isOwner = req.userId === user._id.toString();
+        if (profile.profilePublic === false && !isOwner) {
+            res.status(404).json({ error: 'Creator profile not found' });
+            return;
+        }
+
         const normalizedHandle = (profile.instagramHandle || '').replace(/^@+/, '');
 
         // Consider accepted proposals as “past collaborations” (lightweight proxy).
@@ -485,6 +516,7 @@ router.get('/creators/:userId/public', optionalAuth, async (req: OptionalAuthReq
 
         // NOTE: avgReach isn't modeled yet. Return null so frontend can handle nicely.
         const avgReach = null;
+        const showPricing = profile.pricingPublic !== false || isOwner;
 
         res.status(200).json({
             success: true,
@@ -497,7 +529,7 @@ router.get('/creators/:userId/public', optionalAuth, async (req: OptionalAuthReq
                 followers: profile.followers || '0',
                 engagement: profile.engagement || null,
                 availability: profile.availability,
-                pricing: profile.pricing || null,
+                pricing: showPricing ? profile.pricing || null : null,
                 brandWork: profile.brandWork || [],
             },
             stats: {

@@ -9,6 +9,8 @@ export interface IProposal extends Document {
   deliverables: string;
   deadline: Date;
   status: 'pending' | 'accepted' | 'declined';
+  dealStage: 'brief' | 'content_creation' | 'review' | 'approved' | 'posted' | 'paid';
+  completedDeliverables: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -53,6 +55,18 @@ const proposalSchema = new Schema<IProposal>(
       type: String,
       enum: ['pending', 'accepted', 'declined'],
       default: 'pending',
+    },
+    // Creator-tracked progress through an accepted deal. Advanced by the creator
+    // via PUT /api/proposals/:id/stage — self-reported, since no payment/posting
+    // integration exists yet to detect these transitions automatically.
+    dealStage: {
+      type: String,
+      enum: ['brief', 'content_creation', 'review', 'approved', 'posted', 'paid'],
+      default: 'brief',
+    },
+    completedDeliverables: {
+      type: [String],
+      default: [],
     },
   },
   {

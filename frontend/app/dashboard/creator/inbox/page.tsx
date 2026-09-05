@@ -1,113 +1,184 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Package } from "lucide-react";
+import { useProposals } from "@/lib/hooks/useProposals";
+import { useConversations } from "@/lib/hooks/useChat";
+import { useAuthStore } from "@/lib/auth";
+import { getProfilePhotoUrl, type Proposal } from "@/lib/api";
+import SectionLabel from "@/components/dashboard/SectionLabel";
+import MagneticButton from "@/components/dashboard/MagneticButton";
+import ProposalDrawer from "@/components/dashboard/ProposalDrawer";
+import { SkeletonCard } from "@/components/dashboard/Skeleton";
 
-import { useAcceptProposal, useDeclineProposal, useProposals } from "@/lib/hooks/useProposals";
-import { showToast } from "@/lib/toast";
-import { Check, X } from "lucide-react";
+const TABS = ["New", "Negotiating", "Declined", "Archived"] as const;
+type Tab = (typeof TABS)[number];
+
+function deadlineColor(deadline: string) {
+  const days = (new Date(deadline).getTime() - Date.now()) / 86_400_000;
+  if (days < 3) return "var(--warning)";
+  if (days < 7) return "var(--warning)";
+  return "var(--success)";
+}
+
+function parseDeliverables(text: string) {
+  return text.split("\n").map((l) => l.trim()).filter(Boolean);
+}
 
 export default function CreatorInboxPage() {
-  const proposals = useProposals("pending");
-  const accept = useAcceptProposal();
-  const decline = useDeclineProposal();
-  const list = proposals.data?.proposals || [];
+  const user = useAuthStore((state) => state.user);
+  const myId = String(user?.id || (user as { _id?: string })?._id || "");
+  const proposals = useProposals();
+  const conversations = useConversations();
+  const [tab, setTab] = useState<Tab>("New");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [openProposal, setOpenProposal] = useState<Proposal | null>(null);
 
-  async function handleAccept(id: string) {
-    try {
-      await accept.mutateAsync(id);
-      showToast("Proposal accepted! Check Active Deals.", "success");
-    } catch {
-      showToast("Could not accept — please try again.", "error");
-    }
+  const all: Proposal[] = proposals.data?.proposals || [];
+
+  const brandIdsWithConversation = useMemo(() => {
+    const list = conversations.data?.conversations || [];
+    const ids = new Set<string>();
+    list.forEach((c: { participants: { _id: string }[] }) => {
+      const other = c.participants?.find((p) => String(p._id) !== myId);
+      if (other) ids.add(String(other._id));
+    });
+    return ids;
+  }, [conversations.data, myId]);
+
+  function tabFor(p: Proposal): Tab {
+    if (p.status === "declined") return "Declined";
+    if (p.status === "accepted") return "Archived";
+    const brandId = (p.brandId as { _id?: string })?._id || (p.brandId as string);
+    return brandIdsWithConversation.has(String(brandId)) ? "Negotiating" : "New";
   }
 
-  async function handleDecline(id: string) {
-    try {
-      await decline.mutateAsync(id);
-      showToast("Proposal declined.", "info");
-    } catch {
-      showToast("Could not decline — please try again.", "error");
-    }
-  }
+  const withTab = useMemo(() => all.map((p) => ({ ...p, _tab: tabFor(p) })), [all, brandIdsWithConversation]);
+  const filtered = withTab.filter((p) => p._tab === tab);
 
-  if (proposals.isLoading) {
-    return (
-      <div className="max-w-[1000px] space-y-4">
-        <h1 className="text-h2 font-display">Inbox</h1>
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="rounded-2xl border border-(--border) bg-(--bg-secondary) p-5 animate-pulse h-32" />
-        ))}
-      </div>
-    );
-  }
+  const counts = useMemo(() => {
+    const c: Record<Tab, number> = { New: 0, Negotiating: 0, Declined: 0, Archived: 0 };
+    withTab.forEach((p) => c[p._tab]++);
+    return c;
+  }, [withTab]);
+
+  const isLoading = proposals.isLoading;
 
   return (
-    <div className="max-w-[1000px] space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-h2 font-display">Inbox</h1>
-        {list.length > 0 && (
-          <span className="font-mono-utility text-mono-sm text-(--text-tertiary)">
-            {list.length} PENDING
-          </span>
-        )}
+    <div className="max-w-[1000px] mx-auto space-y-6">
+      <div>
+        <SectionLabel index="01" label="INBOX" />
+        <h1 className="text-h2 font-display mt-2">Your inbox.</h1>
       </div>
 
-      <div className="grid gap-4">
-        {list.map((proposal: any) => (
-          <div
-            key={proposal._id}
-            className="rounded-2xl border border-(--border) bg-(--bg-secondary) p-5 transition-colors hover:border-(--border-strong)"
+      <div className="relative flex gap-6 border-b border-(--border)">
+        {TABS.map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className="relative pb-3 text-sm font-medium transition-colors duration-150"
+            style={{ color: tab === t ? "var(--text-primary)" : "var(--text-tertiary)" }}
+            data-interactive
           >
-            <div className="flex items-start gap-4">
-              <div className="flex-1 min-w-0">
-                {proposal.brandProfile?.companyName && (
-                  <p className="font-mono-utility text-mono-sm text-(--accent) mb-1">
-                    {proposal.brandProfile.companyName.toUpperCase()}
-                  </p>
-                )}
-                <h2 className="font-semibold truncate">{proposal.title}</h2>
-                <p className="mt-1.5 text-sm text-(--text-secondary) line-clamp-2">
-                  {proposal.description}
-                </p>
-              </div>
-              <span className="font-mono-utility text-sm shrink-0">
-                ${proposal.budget.toLocaleString()}
-              </span>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between gap-4">
-              <p className="text-xs text-(--text-tertiary)">
-                Deadline: {new Date(proposal.deadline).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleDecline(proposal._id)}
-                  disabled={decline.isPending || accept.isPending}
-                  className="h-9 rounded-lg border border-(--border) px-3 text-sm text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong) transition-colors disabled:opacity-40 flex items-center gap-1.5"
-                >
-                  <X size={13} aria-hidden />
-                  Decline
-                </button>
-                <button
-                  onClick={() => handleAccept(proposal._id)}
-                  disabled={accept.isPending || decline.isPending}
-                  className="h-9 rounded-lg bg-(--accent) px-3 text-sm font-semibold text-(--bg-primary) hover:bg-(--accent-hover) transition-colors disabled:opacity-50 flex items-center gap-1.5"
-                >
-                  <Check size={13} aria-hidden />
-                  Accept
-                </button>
-              </div>
-            </div>
-          </div>
+            {t} <span className="font-mono-utility text-mono-sm">({counts[t]})</span>
+            {tab === t && (
+              <motion.div
+                layoutId="inbox-tab-underline"
+                className="absolute left-0 right-0 -bottom-px h-[2px] bg-(--accent)"
+                transition={{ duration: 0.25, ease: [0.65, 0, 0.35, 1] }}
+              />
+            )}
+          </button>
         ))}
-
-        {list.length === 0 && !proposals.isLoading && (
-          <div className="rounded-2xl border border-dashed border-(--border-strong) bg-(--bg-secondary) p-12 text-center">
-            <p className="text-h3 font-display mb-2">All clear 🎉</p>
-            <p className="text-sm text-(--text-tertiary)">No pending proposals. Brands will reach out when there&apos;s a match.</p>
-          </div>
-        )}
       </div>
+
+      {isLoading ? (
+        <SkeletonCard />
+      ) : filtered.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-(--border-strong) bg-(--bg-secondary) p-16 text-center">
+          <p className="text-(--text-tertiary)">
+            {tab === "New" && "No new proposals right now."}
+            {tab === "Negotiating" && "No proposals currently in conversation."}
+            {tab === "Declined" && "You haven't declined any proposals."}
+            {tab === "Archived" && "No accepted deals yet — they'll show up here once you accept a proposal."}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filtered.map((p) => {
+            const brandName = p.brandProfile?.companyName || (p.brandId as { fullName?: string })?.fullName || "Brand";
+            const deliverables = parseDeliverables(p.deliverables);
+            const expanded = expandedId === p._id;
+            return (
+              <div key={p._id} className="card-accent rounded-xl border border-(--border) bg-(--bg-secondary) p-6">
+                <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-full overflow-hidden bg-(--accent) text-(--bg-primary) grid place-items-center font-bold shrink-0">
+                      {p.brandProfile?.logoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={getProfilePhotoUrl(p.brandProfile.logoUrl)} alt={brandName} className="h-full w-full object-cover" />
+                      ) : (
+                        brandName.charAt(0)
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-semibold">{brandName}</p>
+                      <h3 className="font-display text-lg">{p.title}</h3>
+                    </div>
+                  </div>
+                  <p className="text-h3 font-display text-(--accent) shrink-0">₹{p.budget?.toLocaleString("en-IN")}</p>
+                </div>
+
+                <p className={`text-sm text-(--text-secondary) leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>{p.description}</p>
+                {p.description && p.description.length > 160 && (
+                  <button
+                    onClick={() => setExpandedId(expanded ? null : p._id)}
+                    className="text-xs font-medium text-(--accent) hover:opacity-80 transition-opacity mt-1"
+                    data-interactive
+                  >
+                    {expanded ? "Show less" : "Read more"}
+                  </button>
+                )}
+
+                <div className="flex items-center gap-4 flex-wrap mt-4 mb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-(--text-tertiary)">
+                    <Package size={13} /> {deliverables.length} deliverable{deliverables.length === 1 ? "" : "s"}
+                  </span>
+                  <span className="text-xs font-mono-utility" style={{ color: deadlineColor(p.deadline) }}>
+                    DUE {new Date(p.deadline).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setOpenProposal(p)}
+                    className="h-9 px-4 rounded-lg border border-(--border) text-sm font-medium hover:border-(--accent) transition-colors"
+                    data-interactive
+                  >
+                    View Full Brief
+                  </button>
+                  {p.status === "pending" && (
+                    <>
+                      <MagneticButton variant="primary" className="h-9" onClick={() => setOpenProposal(p)}>
+                        Accept
+                      </MagneticButton>
+                      <MagneticButton variant="secondary" className="h-9" onClick={() => setOpenProposal(p)}>
+                        Decline
+                      </MagneticButton>
+                      <MagneticButton variant="ghost" className="h-9" onClick={() => setOpenProposal(p)}>
+                        Negotiate
+                      </MagneticButton>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <ProposalDrawer proposal={openProposal} onClose={() => setOpenProposal(null)} />
     </div>
   );
 }

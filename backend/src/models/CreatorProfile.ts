@@ -13,6 +13,7 @@ interface PricingInfo {
     reel?: number;
     story?: number;
     post?: number;
+    youtube?: number;
 }
 
 interface RecentYouTubeVideo {
@@ -34,11 +35,17 @@ export interface ICreatorProfile extends Document {
     bio?: string;
     location?: string;
     niches: string[];
+    contentStyle: string[];
     pricing?: PricingInfo;
+    openToNegotiation: boolean;
+    profilePublic: boolean;
+    pricingPublic: boolean;
     availability: 'available' | 'limited' | 'unavailable';
     followers?: string;
     engagement?: string;
     brandWork: BrandWorkItem[];
+    profileViews: number;
+    profileViewLog: Date[];
     // Instagram Graph API data (cached after OAuth)
     instagramUserId?: string;
     instagramBio?: string;
@@ -115,6 +122,10 @@ const CreatorProfileSchema = new Schema<ICreatorProfile>({
         type: [String],
         default: [],
     },
+    contentStyle: {
+        type: [String],
+        default: [],
+    },
     pricing: {
         starting: {
             type: Number,
@@ -135,6 +146,22 @@ const CreatorProfileSchema = new Schema<ICreatorProfile>({
             type: Number,
             min: 0,
         },
+        youtube: {
+            type: Number,
+            min: 0,
+        },
+    },
+    openToNegotiation: {
+        type: Boolean,
+        default: true,
+    },
+    profilePublic: {
+        type: Boolean,
+        default: true,
+    },
+    pricingPublic: {
+        type: Boolean,
+        default: true,
     },
     availability: {
         type: String,
@@ -215,6 +242,16 @@ const CreatorProfileSchema = new Schema<ICreatorProfile>({
     combinedFollowerCount: {
         type: Number,
         default: 0,
+    },
+    profileViews: {
+        type: Number,
+        default: 0,
+    },
+    // Capped rolling log of recent public-profile view timestamps, used to compute
+    // a real "views in the last 30 days" figure without a full analytics pipeline.
+    profileViewLog: {
+        type: [Date],
+        default: [],
     },
     primaryPlatform: {
         type: String,

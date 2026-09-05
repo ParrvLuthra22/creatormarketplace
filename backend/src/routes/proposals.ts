@@ -293,6 +293,7 @@ router.put('/:id/accept', authMiddleware, async (req: AuthRequest, res: Response
         }
 
         proposal.status = 'accepted';
+        proposal.dealStage = 'content_creation';
         await proposal.save();
 
         await proposal.populate('brandId', 'fullName email');
@@ -352,6 +353,91 @@ router.put('/:id/decline', authMiddleware, async (req: AuthRequest, res: Respons
         res.status(200).json({ success: true, proposal });
     } catch (error: any) {
         console.error('Decline proposal error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+const DEAL_STAGES = ['brief', 'content_creation', 'review', 'approved', 'posted', 'paid'] as const;
+
+// PUT /api/proposals/:id/stage - Advance an accepted deal's stage (Creator only, self-reported)
+router.put('/:id/stage', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { stage } = req.body;
+        const userId = req.userId;
+
+        if (!DEAL_STAGES.includes(stage)) {
+            res.status(400).json({ error: `stage must be one of: ${DEAL_STAGES.join(', ')}` });
+            return;
+        }
+
+        const proposal = await Proposal.findById(id);
+        if (!proposal) {
+            res.status(404).json({ error: 'Proposal not found' });
+            return;
+        }
+
+        if (proposal.creatorId.toString() !== userId) {
+            res.status(403).json({ error: 'Only the creator can update this deal\'s stage' });
+            return;
+        }
+
+        if (proposal.status !== 'accepted') {
+            res.status(400).json({ error: 'Only accepted deals have a stage' });
+            return;
+        }
+
+        const currentIndex = DEAL_STAGES.indexOf(proposal.dealStage);
+        const nextIndex = DEAL_STAGES.indexOf(stage);
+        if (nextIndex < currentIndex) {
+            res.status(400).json({ error: 'Cannot move a deal stage backward' });
+            return;
+        }
+
+        proposal.dealStage = stage;
+        await proposal.save();
+        await proposal.populate('brandId', 'fullName email');
+        await proposal.populate('creatorId', 'fullName email');
+
+        res.status(200).json({ success: true, proposal });
+    } catch (error: any) {
+        console.error('Update deal stage error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// PUT /api/proposals/:id/deliverables - Toggle one deliverable line as complete/incomplete (Creator only)
+router.put('/:id/deliverables', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { item, completed } = req.body;
+        const userId = req.userId;
+
+        if (typeof item !== 'string' || !item.trim()) {
+            res.status(400).json({ error: 'item is required' });
+            return;
+        }
+
+        const proposal = await Proposal.findById(id);
+        if (!proposal) {
+            res.status(404).json({ error: 'Proposal not found' });
+            return;
+        }
+
+        if (proposal.creatorId.toString() !== userId) {
+            res.status(403).json({ error: 'Only the creator can update deliverables' });
+            return;
+        }
+
+        const set = new Set(proposal.completedDeliverables);
+        if (completed) set.add(item);
+        else set.delete(item);
+        proposal.completedDeliverables = Array.from(set);
+        await proposal.save();
+
+        res.status(200).json({ success: true, completedDeliverables: proposal.completedDeliverables });
+    } catch (error: any) {
+        console.error('Update deliverables error:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

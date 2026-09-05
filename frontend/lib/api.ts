@@ -122,12 +122,26 @@ export interface CreatorProfile {
   profilePhoto?: string;
   coverImage?: string;
   niches?: string[];
+  contentStyle?: string[];
   followers?: string;
   engagement?: string | null;
   availability?: string;
-  pricing?: Record<string, number | undefined>;
+  pricing?: Record<string, number | undefined> & { per?: string };
+  openToNegotiation?: boolean;
   brandWork?: Array<{ title: string; type: string; url: string }>;
   location?: string;
+  combinedFollowerCount?: number;
+  instagramFollowerCount?: number;
+  youtubeSubscriberCount?: number;
+  twitterFollowerCount?: number;
+  twitterHandle?: string;
+  linkedinHandle?: string;
+  linkedinHeadline?: string;
+  snapchatHandle?: string;
+  instagramDataUpdatedAt?: string;
+  youtubeDataUpdatedAt?: string;
+  profileViews?: number;
+  profileViewLog?: string[];
 }
 
 export interface BrandProfile {
@@ -150,9 +164,12 @@ export interface Proposal {
   deliverables: string;
   deadline: string;
   status: "pending" | "accepted" | "declined";
+  dealStage?: "brief" | "content_creation" | "review" | "approved" | "posted" | "paid";
+  completedDeliverables?: string[];
   createdAt: string;
+  updatedAt?: string;
   brandProfile?: { companyName?: string; logoUrl?: string };
-  creatorProfile?: { profilePhoto?: string; instagramHandle?: string; niches?: string[] };
+  creatorProfile?: { profilePhoto?: string; instagramHandle?: string; niches?: string[]; combinedFollowerCount?: number; engagement?: string | null };
 }
 
 export interface Conversation {

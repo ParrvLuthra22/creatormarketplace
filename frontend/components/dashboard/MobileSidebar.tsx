@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Search, Megaphone, MessageSquare, BarChart3, Settings, User, Inbox, Briefcase, TrendingUp, Plus, LogOut } from "lucide-react";
+import { X, Home, Search, Megaphone, MessageSquare, BarChart3, Settings, User, Inbox, Briefcase, TrendingUp, ExternalLink, Plus, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/auth";
 import { useLogout } from "@/lib/hooks/useAuth";
@@ -23,6 +23,7 @@ const CREATOR_NAV = [
   { label: "Inbox", href: "/dashboard/creator/inbox", icon: Inbox },
   { label: "Active Deals", href: "/dashboard/creator/deals", icon: Briefcase },
   { label: "Earnings", href: "/dashboard/creator/earnings", icon: TrendingUp },
+  { label: "Analytics", href: "/dashboard/creator/analytics", icon: BarChart3 },
   { label: "Settings", href: "/dashboard/creator/settings", icon: Settings },
 ];
 
@@ -36,9 +37,11 @@ interface MobileSidebarProps {
 export default function MobileSidebar({ type, open, onClose, onNewCampaign }: MobileSidebarProps) {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
+  const profile = useAuthStore((state) => state.profile);
   const logout = useLogout();
   const nav = type === "brand" ? BRAND_NAV : CREATOR_NAV;
   const initials = (user?.fullName || "U").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+  const handle = String((profile as { instagramHandle?: string } | null)?.instagramHandle || "").replace(/^@+/, "");
 
   return (
     <AnimatePresence>
@@ -111,6 +114,22 @@ export default function MobileSidebar({ type, open, onClose, onNewCampaign }: Mo
                 );
               })}
             </nav>
+
+            {/* View Public Profile (creator only) */}
+            {type === "creator" && handle && (
+              <div className="px-3 pb-2">
+                <a
+                  href={`/c/${handle}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={onClose}
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-(--text-secondary) hover:bg-(--bg-surface) hover:text-(--text-primary) transition-colors min-h-[44px]"
+                >
+                  <ExternalLink size={18} />
+                  View Public Profile
+                </a>
+              </div>
+            )}
 
             {/* User + Logout */}
             <div className="border-t border-(--border) p-3">
