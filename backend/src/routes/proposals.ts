@@ -202,7 +202,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         );
 
         const creatorProfiles = await CreatorProfile.find({ userId: { $in: creatorIds } })
-            .select('userId profilePhoto')
+            .select('userId profilePhoto niches combinedFollowerCount engagement')
             .lean();
 
         const creatorProfileByUserId = new Map<string, any>(
@@ -227,6 +227,9 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
                 creatorProfile: creatorProfile
                     ? {
                         profilePhoto: creatorProfile.profilePhoto,
+                        niches: creatorProfile.niches,
+                        combinedFollowerCount: creatorProfile.combinedFollowerCount,
+                        engagement: creatorProfile.engagement,
                     }
                     : null,
             };

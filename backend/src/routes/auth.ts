@@ -186,6 +186,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response): Promise
                 plan: user.plan,
                 subscriptionStatus: user.subscriptionStatus,
                 emailVerified: user.emailVerified,
+                notificationPreferences: user.notificationPreferences,
                 createdAt: user.createdAt,
             },
             profile,
@@ -262,6 +263,7 @@ router.post('/login', authLimiter, async (req: Request, res: Response): Promise<
                 email: user.email,
                 accountType: user.accountType,
                 plan: user.plan,
+                notificationPreferences: user.notificationPreferences,
                 createdAt: user.createdAt,
             },
             profile,
@@ -298,6 +300,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
                 email: user.email,
                 accountType: user.accountType,
                 plan: user.plan,
+                notificationPreferences: user.notificationPreferences,
                 createdAt: user.createdAt,
             },
             profile,
@@ -556,6 +559,29 @@ router.put('/password', authMiddleware, async (req: AuthRequest, res: Response):
             success: false,
             message: 'Server error'
         });
+    }
+});
+
+// PUT /api/auth/notification-preferences - Update the current user's email notification preferences
+router.put('/notification-preferences', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { newProposal, newMessage, weeklyDigest } = req.body;
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            res.status(404).json({ success: false, message: 'User not found' });
+            return;
+        }
+
+        if (typeof newProposal === 'boolean') user.notificationPreferences.newProposal = newProposal;
+        if (typeof newMessage === 'boolean') user.notificationPreferences.newMessage = newMessage;
+        if (typeof weeklyDigest === 'boolean') user.notificationPreferences.weeklyDigest = weeklyDigest;
+        await user.save();
+
+        res.status(200).json({ success: true, notificationPreferences: user.notificationPreferences });
+    } catch (error: any) {
+        console.error('Update notification preferences error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 

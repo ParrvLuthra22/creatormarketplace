@@ -46,6 +46,11 @@ export interface IUser extends Document {
     googleRefreshToken?: string;
     instagramHandle?: string;
     isNewOAuthUser?: boolean; // transient flag, not persisted
+    notificationPreferences: {
+        newProposal: boolean;
+        newMessage: boolean;
+        weeklyDigest: boolean;
+    };
     createdAt: Date;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -220,6 +225,11 @@ const UserSchema = new Schema<IUser>({
     },
     subscriptionEndDate: {
         type: Date,
+    },
+    notificationPreferences: {
+        newProposal: { type: Boolean, default: true },
+        newMessage: { type: Boolean, default: true },
+        weeklyDigest: { type: Boolean, default: false },
     },
     createdAt: {
         type: Date,

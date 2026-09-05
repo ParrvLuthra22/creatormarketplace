@@ -18,7 +18,6 @@ import {
   Cell,
 } from "recharts";
 import { useProposals, useDashboardSummary } from "@/lib/hooks/useProposals";
-import { usePublicCreators } from "@/lib/hooks/useCreators";
 import SectionLabel from "@/components/dashboard/SectionLabel";
 import StatCard from "@/components/dashboard/StatCard";
 import { SkeletonCard } from "@/components/dashboard/Skeleton";
@@ -63,10 +62,15 @@ function buildSpendSeries(proposals: any[], rangeDays: number) {
   return buckets.map((b) => ({ label: bucketLabel(b.date, granularity), spend: b.spend }));
 }
 
+function formatReach(n: number) {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
+  return String(n);
+}
+
 export default function BrandAnalytics() {
   const proposals = useProposals();
   const summary = useDashboardSummary();
-  const creators = usePublicCreators();
   const [range, setRange] = useState<(typeof RANGES)[number]["id"]>("30d");
 
   const all = proposals.data?.proposals || [];
@@ -88,38 +92,59 @@ export default function BrandAnalytics() {
   }, [accepted]);
 
   const nicheDistribution = useMemo(() => {
-    const creatorNicheMap = new Map<string, string>();
-    (creators.data?.creators || []).forEach((c: any) => {
-      creatorNicheMap.set(c.id, (c.niches && c.niches[0]) || "Other");
-    });
     const byNiche = new Map<string, number>();
     accepted.forEach((p: any) => {
-      const id = String(p.creatorId?._id || p.creatorId);
-      const niche = creatorNicheMap.get(id) || "Other";
+      const niche = p.creatorProfile?.niches?.[0] || "Other";
       byNiche.set(niche, (byNiche.get(niche) || 0) + (p.budget || 0));
     });
     return Array.from(byNiche.entries()).map(([name, value]) => ({ name, value }));
-  }, [accepted, creators.data]);
+  }, [accepted]);
+
+  // Unique hired creators, deduped across multiple campaigns with the same creator.
+  const hiredCreatorStats = useMemo(() => {
+    const map = new Map<string, { followers: number; engagement: number }>();
+    accepted.forEach((p: any) => {
+      const id = String(p.creatorId?._id || p.creatorId);
+      if (map.has(id)) return;
+      map.set(id, {
+        followers: p.creatorProfile?.combinedFollowerCount || 0,
+        engagement: parseFloat(p.creatorProfile?.engagement || "0") || 0,
+      });
+    });
+    return Array.from(map.values());
+  }, [accepted]);
+
+  const totalReach = hiredCreatorStats.reduce((sum, c) => sum + c.followers, 0);
+  const avgEngagementRate = hiredCreatorStats.length
+    ? hiredCreatorStats.reduce((sum, c) => sum + c.engagement, 0) / hiredCreatorStats.length
+    : 0;
+  const conversionRate = all.length ? (accepted.length / all.length) * 100 : 0;
+  const totalAcceptedSpend = accepted.reduce((sum: number, p: any) => sum + (p.budget || 0), 0);
+  const costPer1kReach = totalReach > 0 ? totalAcceptedSpend / (totalReach / 1000) : 0;
 
   const isLoading = proposals.isLoading || summary.isLoading;
 
   return (
     <div className="max-w-[1240px] mx-auto space-y-10">
       <div>
-        <SectionLabel index="05" label="ANALYTICS" />
+        <SectionLabel index="01" label="ANALYTICS" />
         <h1 className="text-h2 font-display mt-2">Your campaign performance.</h1>
       </div>
 
-      {/* Sample KPIs — no reach/engagement/ROI tracking exists on the backend yet */}
+      {/* KPIs — computed from real accepted-campaign data (hired creators' combined
+          follower count + engagement rate, proposal conversion, spend efficiency).
+          No revenue/attribution data exists yet, so "ROI" is expressed as a real,
+          computable cost-efficiency metric (cost per 1K reach) rather than a guess. */}
       <section>
-        <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-3">
-          SAMPLE DATA FOR PREVIEW — REACH, ENGAGEMENT &amp; ROI TRACKING ARE NOT YET WIRED TO A BACKEND METRIC
-        </p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard label="Total Reach" value={482_000} suffix="" formatter={(n) => `${(n / 1000).toFixed(0)}K`} trend={12} trendUp />
-          <StatCard label="Total Engagement" value={38_400} trend={8} trendUp />
-          <StatCard label="Conversion Rate" value={3.2} formatter={(n) => `${n.toFixed(1)}%`} trend={2} trendUp />
-          <StatCard label="ROI" value={2.4} formatter={(n) => `${n.toFixed(1)}x`} trend={5} trendUp />
+          <StatCard label="Total Reach" value={totalReach} formatter={formatReach} />
+          <StatCard label="Avg. Engagement Rate" value={avgEngagementRate} formatter={(n) => `${n.toFixed(1)}%`} />
+          <StatCard label="Conversion Rate" value={conversionRate} formatter={(n) => `${n.toFixed(1)}%`} />
+          <StatCard
+            label="Cost per 1K Reach"
+            value={costPer1kReach}
+            formatter={(n) => (totalReach > 0 ? `₹${n.toLocaleString("en-IN", { maximumFractionDigits: 0 })}` : "—")}
+          />
         </div>
       </section>
 
@@ -127,11 +152,10 @@ export default function BrandAnalytics() {
         <SkeletonCard />
       ) : (
         <>
-          {/* Spend over time — real, from accepted proposal budgets */}
           <section>
             <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
               <div>
-                <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">REAL DATA</p>
+                <SectionLabel index="02" label="SPEND OVER TIME" />
                 <h2 className="text-h3 font-display mt-1">Spend over time.</h2>
               </div>
               <div className="flex gap-1 rounded-lg border border-(--border) p-1">
@@ -168,10 +192,8 @@ export default function BrandAnalytics() {
           </section>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Top creators by spend — real proxy for "top-performing", since per-campaign
-                engagement isn't tracked by the backend yet */}
             <section>
-              <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1">REAL DATA</p>
+              <SectionLabel index="03" label="TOP CREATORS" className="mb-1" />
               <h2 className="text-h3 font-display mb-4">Top creators by spend.</h2>
               <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6 h-[280px]">
                 {topCreators.length === 0 ? (
@@ -192,9 +214,8 @@ export default function BrandAnalytics() {
               </div>
             </section>
 
-            {/* Budget distribution by niche — real, joined from creator profiles */}
             <section>
-              <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1">REAL DATA</p>
+              <SectionLabel index="04" label="BUDGET BY NICHE" className="mb-1" />
               <h2 className="text-h3 font-display mb-4">Budget by niche.</h2>
               <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6 h-[280px]">
                 {nicheDistribution.length === 0 ? (
@@ -218,9 +239,8 @@ export default function BrandAnalytics() {
             </section>
           </div>
 
-          {/* Campaign performance breakdown — real */}
           <section>
-            <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1">REAL DATA</p>
+            <SectionLabel index="05" label="CAMPAIGN BREAKDOWN" className="mb-1" />
             <h2 className="text-h3 font-display mb-4">Campaign breakdown.</h2>
             <div className="rounded-xl border border-(--border) bg-(--bg-secondary) overflow-hidden">
               <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-5 py-3 border-b border-(--border) font-mono-utility text-mono-sm text-(--text-tertiary)">

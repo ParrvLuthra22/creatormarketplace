@@ -1,198 +1,151 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
-import { useAuthStore } from "@/lib/auth";
-import { getPublicCreatorStats, PublicCreatorStatsResponse, getProfilePhotoUrl } from "@/lib/api";
-import { ArrowLeft, Check, Share2 as Instagram, Play, Globe } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import "./CreatorProfile.css";
+import { ArrowLeft } from "lucide-react";
+import { getPublicCreatorStats, getProfilePhotoUrl, apiErrorMessage, type PublicCreatorStatsResponse } from "@/lib/api";
+import { useCampaignModal } from "@/lib/CampaignModalContext";
+import MagneticButton from "@/components/dashboard/MagneticButton";
+import { SkeletonCard } from "@/components/dashboard/Skeleton";
 
 export default function BrandCreatorProfilePage() {
-    const { user } = useAuthStore();
-    const router = useRouter();
-    const params = useParams();
-    const id = params.id as string;
+  const router = useRouter();
+  const { id } = useParams<{ id: string }>();
+  const { openModal } = useCampaignModal();
 
-    const [data, setData] = useState<PublicCreatorStatsResponse | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
-    const searchParams = useSearchParams();
+  const [data, setData] = useState<PublicCreatorStatsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    useEffect(() => {
-        if (searchParams.get('action') === 'proposal') {
-            setIsProposalModalOpen(true);
-        }
-    }, [searchParams]);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const run = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const res = await getPublicCreatorStats(id);
-                if (!cancelled) setData(res);
-            } catch (e: unknown) {
-                const message = e instanceof Error ? e.message : "Failed to load creator";
-                if (!cancelled) setError(message);
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
-        };
-
-        if (id) run();
-        return () => {
-            cancelled = true;
-        };
-    }, [id]);
-
-    const creator = data?.creator;
-
-    const pastWork = creator?.brandWork?.length ? creator.brandWork.map(w => ({
-        brand: w.title || "Brand Partnership",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
-        image: w.url || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop",
-        stats: ["N/A"]
-    })) : [];
-
-    if (loading) {
-        return (
-                <BrandDashboardLayout variant="white">
-                    <div className="flex items-center justify-center min-h-[60vh]">
-                        <p className="text-zinc-500 font-bold animate-pulse">Loading Creator Profile...</p>
-                    </div>
-                </BrandDashboardLayout>
-        );
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await getPublicCreatorStats(id);
+        if (!cancelled) setData(res);
+      } catch (err) {
+        if (!cancelled) setError(apiErrorMessage(err));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
+    if (id) void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
-    if (error || !creator) {
-        return (
-                <BrandDashboardLayout variant="white">
-                    <div className="p-10 text-center">
-                        <p className="text-red-500 font-bold">{error || "Creator not found"}</p>
-                        <button onClick={() => router.back()} className="mt-4 text-[#FF4D00] font-black underline">Go Back</button>
-                    </div>
-                </BrandDashboardLayout>
-        );
-    }
-
+  if (loading) {
     return (
-            <BrandDashboardLayout variant="white">
-                <div className="creator-profile-container">
-                    {/* Hero Section */}
-                    <div className="profile-hero">
-                        <img 
-                            src={getProfilePhotoUrl(creator.profilePicture) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop"} 
-                            alt={creator.name} 
-                            className="profile-hero-img" 
-                        />
-                        <div className="profile-hero-overlay">
-                            <button 
-                                onClick={() => router.back()}
-                                className="absolute top-10 left-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all"
-                            >
-                                <ArrowLeft className="w-6 h-6 text-white" />
-                            </button>
-
-                            <p className="premium-label">Premium Creator Profile</p>
-                            <h1 className="creator-name">
-                                {creator.name} 
-                                <span className="verified-badge">
-                                    <Check className="w-4 h-4 text-[#4e96f8]" /> Verified
-                                </span>
-                            </h1>
-                            
-                            <div className="mt-4">
-                                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/50 mb-4">Curated Niche Tags</p>
-                                <div className="niche-tags">
-                                    {(creator.niches?.length ? creator.niches : ["Fashion", "Lifestyle", "Travel", "Sustainability"]).map(niche => (
-                                        <span key={niche} className="niche-tag">{niche}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Main Content */}
-                    <div className="profile-content-grid">
-                        {/* Left Column: Brand Work */}
-                        <div className="brand-work-section">
-                            <h2 className="section-title">Past Brand Work</h2>
-                            
-                            {pastWork.length > 0 ? (
-                                <div className="brand-work-grid">
-                                    {pastWork.map((work, idx) => (
-                                        <div key={idx} className="brand-work-card group cursor-pointer">
-                                            <img src={work.image} alt={work.brand} className="brand-work-img" />
-                                            <div className="brand-logo-container transition-transform group-hover:scale-110">
-                                                <img src={work.logo} alt={work.brand} />
-                                            </div>
-                                            <div className="brand-work-info">
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <h3 className="brand-work-title">{work.brand}</h3>
-                                                    <Play className="w-4 h-4 text-white/40 group-hover:text-white" />
-                                                </div>
-                                                <div className="brand-work-stats">
-                                                    {work.stats.map((stat, sIdx) => (
-                                                        <p key={sIdx} className="brand-work-stat">
-                                                            <span>•</span> {stat}
-                                                        </p>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-12 text-center text-zinc-500 italic bg-zinc-50 rounded-md border border-zinc-100">
-                                    This creator hasn't uploaded any past brand work yet.
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Right Column: Collaboration Info */}
-                        <aside className="collaboration-sidebar">
-                            <h2 className="sidebar-title">Collaboration Info</h2>
-
-                            <div className="sidebar-section">
-                                <h3 className="sidebar-label">Services Offered:</h3>
-                                <p className="sidebar-content">
-                                    Sponsored Posts, Brand Ambassadorship, Content Creation, Event Appearances
-                                </p>
-                            </div>
-
-                            <div className="sidebar-section">
-                                <h3 className="sidebar-label">Pricing Tiers:</h3>
-                                <div className="pricing-list">
-                                    {creator?.pricing ? (
-                                        <p className="pricing-item"><span>Starting from ₹{creator.pricing.starting} per {creator.pricing.per || 'post'}</span></p>
-                                    ) : (
-                                        <p className="pricing-item"><span>Custom Pricing (Request Proposal)</span></p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="sidebar-section">
-                                <h3 className="sidebar-label">Availability:</h3>
-                                <p className={`sidebar-content font-black ${creator?.availability === 'unavailable' ? 'text-red-500' : 'text-emerald-600'}`}>
-                                    {creator?.availability ? creator.availability.toUpperCase() : "OPEN TO WORK"}
-                                </p>
-                            </div>
-
-                            {/* TODO: send-proposal flow removed with legacy SendProposalModal — needs a current-gen replacement */}
-                            <button
-                                disabled
-                                className="send-proposal-btn opacity-50 cursor-not-allowed"
-                            >
-                                Send Proposal
-                            </button>
-                        </aside>
-                    </div>
-                </div>
-            </BrandDashboardLayout>
+      <div className="max-w-3xl mx-auto">
+        <SkeletonCard />
+      </div>
     );
+  }
+
+  if (error || !data?.creator) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-20">
+        <p className="text-(--text-tertiary) mb-4">{error || "Creator not found."}</p>
+        <button onClick={() => router.back()} className="text-(--accent) text-sm font-medium" data-interactive>
+          ← Go back
+        </button>
+      </div>
+    );
+  }
+
+  const { creator, stats } = data;
+  const initial = (creator.name || "C").charAt(0).toUpperCase();
+
+  return (
+    <div className="max-w-3xl mx-auto space-y-8">
+      <button
+        onClick={() => router.back()}
+        className="inline-flex items-center gap-2 font-mono-utility text-mono-sm text-(--text-tertiary) hover:text-(--text-primary) transition-colors"
+        data-interactive
+      >
+        <ArrowLeft size={13} /> BACK
+      </button>
+
+      <div className="flex items-start gap-5 flex-wrap">
+        <div className="h-20 w-20 rounded-full overflow-hidden bg-(--accent) text-(--bg-primary) grid place-items-center font-bold text-2xl shrink-0">
+          {creator.profilePicture ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={getProfilePhotoUrl(creator.profilePicture)} alt={creator.name} className="h-full w-full object-cover" />
+          ) : (
+            initial
+          )}
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <h1 className="text-h2 font-display">{creator.name}</h1>
+          <p className="text-sm text-(--text-tertiary) mt-1">@{creator.instagramHandle || "creator"}</p>
+          <div className="flex flex-wrap gap-2 mt-3">
+            {(creator.niches?.length ? creator.niches : ["Open to collaborations"]).map((n) => (
+              <span key={n} className="rounded-full border border-(--border) px-3 py-1 text-xs text-(--text-secondary)">
+                {n}
+              </span>
+            ))}
+          </div>
+        </div>
+        <MagneticButton variant="primary" onClick={() => openModal(creator.id)} className="shrink-0">
+          Send Proposal
+        </MagneticButton>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="card-accent rounded-xl border border-(--border) bg-(--bg-secondary) p-5">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1.5">FOLLOWERS</p>
+          <p className="text-h3 font-display">{stats.followers || "—"}</p>
+        </div>
+        <div className="card-accent rounded-xl border border-(--border) bg-(--bg-secondary) p-5">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1.5">ENGAGEMENT</p>
+          <p className="text-h3 font-display">{stats.engagement || "—"}</p>
+        </div>
+        <div className="card-accent rounded-xl border border-(--border) bg-(--bg-secondary) p-5">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1.5">AVG. REACH</p>
+          <p className="text-h3 font-display">{stats.avgReach ?? "—"}</p>
+        </div>
+        <div className="card-accent rounded-xl border border-(--border) bg-(--bg-secondary) p-5">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1.5">PAST DEALS</p>
+          <p className="text-h3 font-display">{stats.pastBrandCollaborations}</p>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2">PRICING</p>
+          <p className="text-sm text-(--text-secondary)">
+            {creator.pricing?.starting
+              ? `Starting from ₹${creator.pricing.starting.toLocaleString("en-IN")} per ${creator.pricing.per || "post"}`
+              : "Custom pricing — request a proposal."}
+          </p>
+        </div>
+        <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2">AVAILABILITY</p>
+          <p className="text-sm capitalize" style={{ color: creator.availability === "unavailable" ? "var(--warning)" : "var(--success)" }}>
+            {creator.availability || "Available"}
+          </p>
+        </div>
+      </div>
+
+      {creator.brandWork && creator.brandWork.length > 0 && (
+        <div>
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-3">PAST BRAND WORK</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {creator.brandWork.map((work: any, i: number) => (
+              <div key={i} className="rounded-xl border border-(--border) bg-(--bg-secondary) overflow-hidden">
+                {work.url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={work.url} alt={work.title} className="h-36 w-full object-cover" />
+                )}
+                <p className="p-4 text-sm font-medium">{work.title || "Brand partnership"}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

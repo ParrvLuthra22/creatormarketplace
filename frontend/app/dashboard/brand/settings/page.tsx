@@ -12,18 +12,7 @@ import SectionLabel from "@/components/dashboard/SectionLabel";
 import MagneticButton from "@/components/dashboard/MagneticButton";
 import LimeToggle from "@/components/dashboard/LimeToggle";
 
-const NOTIF_PREFS_KEY = "creatorlyff:notification-prefs";
 const DEFAULT_PREFS = { newProposal: true, newMessage: true, weeklyDigest: false };
-
-function loadPrefs() {
-  if (typeof window === "undefined") return DEFAULT_PREFS;
-  try {
-    const raw = localStorage.getItem(NOTIF_PREFS_KEY);
-    return raw ? { ...DEFAULT_PREFS, ...JSON.parse(raw) } : DEFAULT_PREFS;
-  } catch {
-    return DEFAULT_PREFS;
-  }
-}
 
 function SettingsCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -162,21 +151,24 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
 
 export default function BrandSettingsPage() {
   const user = useAuthStore((state) => state.user);
+  const refreshUser = useAuthStore((state) => state.refreshUser);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [prefs, setPrefs] = useState(DEFAULT_PREFS);
 
   useEffect(() => {
-    setPrefs(loadPrefs());
-  }, []);
+    if (user?.notificationPreferences) setPrefs(user.notificationPreferences);
+  }, [user?.notificationPreferences]);
 
-  function updatePref(key: keyof typeof DEFAULT_PREFS, value: boolean) {
-    const next = { ...prefs, [key]: value };
-    setPrefs(next);
+  async function updatePref(key: keyof typeof DEFAULT_PREFS, value: boolean) {
+    const prev = prefs;
+    setPrefs((p) => ({ ...p, [key]: value }));
     try {
-      localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(next));
-    } catch {
-      // best-effort — non-fatal if storage is unavailable
+      await api.put("/api/auth/notification-preferences", { [key]: value });
+      await refreshUser();
+    } catch (err) {
+      setPrefs(prev);
+      showToast(apiErrorMessage(err), "error");
     }
   }
 
