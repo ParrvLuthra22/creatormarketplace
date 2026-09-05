@@ -62,7 +62,7 @@ export default function CreatorDashboardLayout({
           <TopBar />
           {/* data-lenis-prevent: lets Lenis pass wheel events through so native
               overflow-y-auto scroll works without Lenis intercepting */}
-          <main className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>{children}</main>
+          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>{children}</main>
         </div>
       </div>
       <MobileSidebar

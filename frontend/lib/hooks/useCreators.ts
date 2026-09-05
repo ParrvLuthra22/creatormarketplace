@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { api, unwrap } from "@/lib/api";
 
 export function normalizeCreator(item: any) {
@@ -36,6 +36,24 @@ export function usePublicCreators(filters: Record<string, any> = {}) {
         creators: (data.creators || []).map(normalizeCreator),
       };
     },
+  });
+}
+
+/** Discover page — real backend filtering/sort + infinite-scroll pagination. */
+export function useInfiniteCreators(filters: Record<string, any> = {}) {
+  return useInfiniteQuery({
+    queryKey: ["creators", "public", "infinite", filters],
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) => {
+      const data = unwrap<any>(
+        await api.get("/api/profile/creators/public", { params: { ...filters, page: pageParam, limit: 12 } })
+      );
+      return {
+        ...data,
+        creators: (data.creators || []).map(normalizeCreator),
+      };
+    },
+    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.page + 1 : undefined),
   });
 }
 

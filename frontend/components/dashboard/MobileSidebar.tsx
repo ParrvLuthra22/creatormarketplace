@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Search, Megaphone, MessageSquare, Settings, User, Inbox, Briefcase, TrendingUp, Plus, LogOut } from "lucide-react";
+import { X, Home, Search, Megaphone, MessageSquare, BarChart3, Settings, User, Inbox, Briefcase, TrendingUp, Plus, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/auth";
 import { useLogout } from "@/lib/hooks/useAuth";
@@ -13,6 +13,7 @@ const BRAND_NAV = [
   { label: "Discover", href: "/dashboard/brand/discover", icon: Search },
   { label: "Campaigns", href: "/dashboard/brand/campaigns", icon: Megaphone },
   { label: "Messages", href: "/dashboard/brand/messages", icon: MessageSquare },
+  { label: "Analytics", href: "/dashboard/brand/analytics", icon: BarChart3 },
   { label: "Settings", href: "/dashboard/brand/settings", icon: Settings },
 ];
 

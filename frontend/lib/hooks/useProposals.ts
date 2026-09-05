@@ -14,6 +14,22 @@ export function useProposals(status?: string) {
   });
 }
 
+/** Real backend aggregation: totalSpend, creatorsHired, pendingProposals (brand-only). */
+export function useDashboardSummary() {
+  return useQuery({
+    queryKey: ["proposals", "dashboard-summary"],
+    queryFn: async () => unwrap<any>(await api.get("/api/proposals/dashboard-summary")),
+  });
+}
+
+export function useProposal(id?: string) {
+  return useQuery({
+    queryKey: ["proposals", "detail", id],
+    enabled: Boolean(id),
+    queryFn: async () => unwrap<any>(await api.get(`/api/proposals/${id}`)),
+  });
+}
+
 export function useCreateProposal() {
   const queryClient = useQueryClient();
   return useMutation({

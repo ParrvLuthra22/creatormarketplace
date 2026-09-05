@@ -1,124 +1,250 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAuthStore } from "@/lib/auth";
-import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
-import { getPublicCreators } from "@/lib/api";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { useMemo, useState } from "react";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import { useProposals, useDashboardSummary } from "@/lib/hooks/useProposals";
+import { usePublicCreators } from "@/lib/hooks/useCreators";
+import SectionLabel from "@/components/dashboard/SectionLabel";
+import StatCard from "@/components/dashboard/StatCard";
+import { SkeletonCard } from "@/components/dashboard/Skeleton";
+
+const RANGES = [
+  { id: "7d", label: "7D", days: 7 },
+  { id: "30d", label: "30D", days: 30 },
+  { id: "90d", label: "90D", days: 90 },
+  { id: "1y", label: "1Y", days: 365 },
+] as const;
+
+const DONUT_COLORS = ["#d4ff4f", "#8fce3f", "#5a9e2f", "#3d7a1f", "#2a5c14", "#1a3d0c"];
+
+function bucketLabel(date: Date, granularity: "day" | "week" | "month") {
+  if (granularity === "month") return date.toLocaleDateString("en-US", { month: "short" });
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function buildSpendSeries(proposals: any[], rangeDays: number) {
+  const granularity: "day" | "week" | "month" = rangeDays <= 30 ? "day" : rangeDays <= 90 ? "week" : "month";
+  const bucketMs = granularity === "day" ? 86_400_000 : granularity === "week" ? 7 * 86_400_000 : 30 * 86_400_000;
+  const bucketCount = granularity === "month" ? 12 : Math.ceil(rangeDays / (bucketMs / 86_400_000));
+
+  const now = Date.now();
+  const buckets = Array.from({ length: bucketCount }, (_, i) => {
+    const t = now - (bucketCount - 1 - i) * bucketMs;
+    return { date: new Date(t), spend: 0 };
+  });
+
+  proposals
+    .filter((p) => p.status === "accepted")
+    .forEach((p) => {
+      const t = new Date(p.updatedAt || p.createdAt).getTime();
+      if (t < now - rangeDays * 86_400_000) return;
+      const idx = buckets.findIndex((b, i) => {
+        const next = i < buckets.length - 1 ? buckets[i + 1].date.getTime() : now + 1;
+        return t >= b.date.getTime() && t < next;
+      });
+      if (idx >= 0) buckets[idx].spend += p.budget || 0;
+    });
+
+  return buckets.map((b) => ({ label: bucketLabel(b.date, granularity), spend: b.spend }));
+}
 
 export default function BrandAnalytics() {
-    const { user } = useAuthStore();
-    const [creatorCount, setCreatorCount] = useState(0);
-    const [activities, setActivities] = useState<{ text: string; time: string }[]>([]);
+  const proposals = useProposals();
+  const summary = useDashboardSummary();
+  const creators = usePublicCreators();
+  const [range, setRange] = useState<(typeof RANGES)[number]["id"]>("30d");
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await getPublicCreators();
-                if (res.success && res.creators) {
-                    setCreatorCount(res.creators.length);
-                    setActivities(res.creators.slice(0, 4).map((c, i) => ({
-                        text: `Viewed profile: ${c.name || c.instagramHandle || 'Creator'}`,
-                        time: `${i + 1} day${i > 0 ? 's' : ''} ago`,
-                    })));
-                }
-            } catch (err) {
-                console.error("Failed to fetch analytics data:", err);
-            }
-        };
-        fetchData();
-    }, []);
+  const all = proposals.data?.proposals || [];
+  const accepted = all.filter((p: any) => p.status === "accepted");
+  const rangeDays = RANGES.find((r) => r.id === range)!.days;
 
-    const metrics = [
-        { label: "Total Creators Available", value: String(creatorCount) },
-        { label: "Successful Collaborations", value: "0" },
-        { label: "Pending Responses", value: "0" },
-        { label: "Average Response Time", value: "—" },
-    ];
+  const spendSeries = useMemo(() => buildSpendSeries(all, rangeDays), [all, rangeDays]);
 
-    return (
-            <BrandDashboardLayout variant="white">
-                <div className="py-8">
-                    <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10">Analytics</h1>
+  const topCreators = useMemo(() => {
+    const byCreator = new Map<string, { name: string; spend: number }>();
+    accepted.forEach((p: any) => {
+      const id = p.creatorId?._id || p.creatorId;
+      const name = p.creatorId?.fullName || "Creator";
+      const existing = byCreator.get(id) || { name, spend: 0 };
+      existing.spend += p.budget || 0;
+      byCreator.set(id, existing);
+    });
+    return Array.from(byCreator.values()).sort((a, b) => b.spend - a.spend).slice(0, 6);
+  }, [accepted]);
 
-                    {/* TOP ROW - 4 Mini Stat Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
-                            <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">TOTAL SPEND</p>
-                            <p className="text-4xl text-zinc-900 font-black tracking-tight">₹0</p>
-                            <p className="text-xs text-zinc-400 font-bold mt-3">This month</p>
-                        </div>
+  const nicheDistribution = useMemo(() => {
+    const creatorNicheMap = new Map<string, string>();
+    (creators.data?.creators || []).forEach((c: any) => {
+      creatorNicheMap.set(c.id, (c.niches && c.niches[0]) || "Other");
+    });
+    const byNiche = new Map<string, number>();
+    accepted.forEach((p: any) => {
+      const id = String(p.creatorId?._id || p.creatorId);
+      const niche = creatorNicheMap.get(id) || "Other";
+      byNiche.set(niche, (byNiche.get(niche) || 0) + (p.budget || 0));
+    });
+    return Array.from(byNiche.entries()).map(([name, value]) => ({ name, value }));
+  }, [accepted, creators.data]);
 
-                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
-                            <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">PROPOSALS SENT</p>
-                            <p className="text-4xl text-zinc-900 font-black tracking-tight">0</p>
-                            <p className="text-xs text-zinc-400 font-bold mt-3">This month</p>
-                        </div>
+  const isLoading = proposals.isLoading || summary.isLoading;
 
-                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
-                            <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">RESPONSE RATE</p>
-                            <p className="text-4xl text-zinc-900 font-black tracking-tight">0%</p>
-                            <p className="text-xs text-zinc-400 font-bold mt-3">Last 30 days</p>
-                        </div>
+  return (
+    <div className="max-w-[1240px] mx-auto space-y-10">
+      <div>
+        <SectionLabel index="05" label="ANALYTICS" />
+        <h1 className="text-h2 font-display mt-2">Your campaign performance.</h1>
+      </div>
 
-                        <div className="bg-white border border-zinc-100 rounded-sm p-8 shadow-sm">
-                            <p className="text-[10px] uppercase text-zinc-400 font-black tracking-widest mb-4">CREATORS AVAILABLE</p>
-                            <p className="text-4xl text-zinc-900 font-black tracking-tight">{creatorCount}</p>
-                            <p className="text-xs text-zinc-400 font-bold mt-3">On the platform</p>
-                        </div>
-                    </div>
+      {/* Sample KPIs — no reach/engagement/ROI tracking exists on the backend yet */}
+      <section>
+        <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-3">
+          SAMPLE DATA FOR PREVIEW — REACH, ENGAGEMENT &amp; ROI TRACKING ARE NOT YET WIRED TO A BACKEND METRIC
+        </p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard label="Total Reach" value={482_000} suffix="" formatter={(n) => `${(n / 1000).toFixed(0)}K`} trend={12} trendUp />
+          <StatCard label="Total Engagement" value={38_400} trend={8} trendUp />
+          <StatCard label="Conversion Rate" value={3.2} formatter={(n) => `${n.toFixed(1)}%`} trend={2} trendUp />
+          <StatCard label="ROI" value={2.4} formatter={(n) => `${n.toFixed(1)}x`} trend={5} trendUp />
+        </div>
+      </section>
 
-                    {/* CHART PLACEHOLDER */}
-                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm">
-                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Performance</h2>
-                        <div className="aspect-[21/9] w-full border border-zinc-50 bg-zinc-50/50 rounded-md flex flex-col items-center justify-center p-8">
-                            <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-sm border border-zinc-100">
-                                <div className="w-10 h-10 rounded-full border-2 border-dashed border-zinc-200 animate-spin-slow" />
-                            </div>
-                            <p className="text-lg text-zinc-900 font-black">Generating Insights</p>
-                            <p className="text-zinc-500 font-medium text-sm mt-1">Detailed performance charts will appear once you start campaigns.</p>
-                        </div>
-                    </div>
+      {isLoading ? (
+        <SkeletonCard />
+      ) : (
+        <>
+          {/* Spend over time — real, from accepted proposal budgets */}
+          <section>
+            <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+              <div>
+                <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">REAL DATA</p>
+                <h2 className="text-h3 font-display mt-1">Spend over time.</h2>
+              </div>
+              <div className="flex gap-1 rounded-lg border border-(--border) p-1">
+                {RANGES.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setRange(r.id)}
+                    className="px-3 py-1.5 rounded-md text-xs font-mono-utility transition-colors"
+                    style={{
+                      color: range === r.id ? "var(--bg-primary)" : "var(--text-tertiary)",
+                      background: range === r.id ? "var(--accent)" : "transparent",
+                    }}
+                    data-interactive
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6 h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={spendSeries}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="label" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--text-tertiary)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${v >= 1000 ? `${v / 1000}k` : v}`} />
+                  <Tooltip
+                    contentStyle={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+                    formatter={(v: any) => [`₹${Number(v).toLocaleString("en-IN")}`, "Spend"]}
+                  />
+                  <Line type="monotone" dataKey="spend" stroke="var(--accent)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </section>
 
-                    {/* BOTTOM ROW - Two Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        {/* Recent Activity */}
-                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm">
-                            <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Recent Activity</h2>
-                            <div className="space-y-4">
-                                {activities.length === 0 ? (
-                                    <div className="py-10 text-center">
-                                        <p className="text-sm text-zinc-400 font-bold italic">No recent activity detected.</p>
-                                    </div>
-                                ) : (
-                                    activities.map((activity, index) => (
-                                        <div key={index} className="flex items-center gap-5 py-5 border-b border-zinc-50 last:border-b-0 group">
-                                            <div className="w-12 h-12 rounded-md bg-zinc-50 border border-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-zinc-300 group-hover:bg-[#FF4D00] transition-colors" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm text-zinc-900 font-black group-hover:text-[#FF4D00] transition-colors truncate">{activity.text}</p>
-                                                <p className="text-[10px] text-zinc-400 font-black mt-1 uppercase tracking-widest">{activity.time}</p>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Top creators by spend — real proxy for "top-performing", since per-campaign
+                engagement isn't tracked by the backend yet */}
+            <section>
+              <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1">REAL DATA</p>
+              <h2 className="text-h3 font-display mb-4">Top creators by spend.</h2>
+              <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6 h-[280px]">
+                {topCreators.length === 0 ? (
+                  <div className="h-full grid place-items-center text-sm text-(--text-tertiary)">No accepted campaigns yet.</div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={topCreators} layout="vertical" margin={{ left: 8 }}>
+                      <XAxis type="number" hide />
+                      <YAxis dataKey="name" type="category" width={100} stroke="var(--text-tertiary)" fontSize={11} tickLine={false} axisLine={false} />
+                      <Tooltip
+                        contentStyle={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+                        formatter={(v: any) => [`₹${Number(v).toLocaleString("en-IN")}`, "Spend"]}
+                      />
+                      <Bar dataKey="spend" fill="var(--accent)" radius={[0, 4, 4, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </section>
 
-                        {/* Top Metrics */}
-                        <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm">
-                            <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-8">Key Metrics</h2>
-                            <div className="space-y-2">
-                                {metrics.map((metric, index) => (
-                                    <div key={index} className="flex justify-between items-center py-5 px-6 hover:bg-zinc-50 rounded-md transition-all border border-transparent hover:border-zinc-100">
-                                        <p className="text-sm text-zinc-600 font-bold">{metric.label}</p>
-                                        <p className="text-xl text-zinc-900 font-black tracking-tight">{metric.value}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </BrandDashboardLayout>
-    );
+            {/* Budget distribution by niche — real, joined from creator profiles */}
+            <section>
+              <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1">REAL DATA</p>
+              <h2 className="text-h3 font-display mb-4">Budget by niche.</h2>
+              <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6 h-[280px]">
+                {nicheDistribution.length === 0 ? (
+                  <div className="h-full grid place-items-center text-sm text-(--text-tertiary)">No accepted campaigns yet.</div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={nicheDistribution} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} paddingAngle={2}>
+                        {nicheDistribution.map((_, i) => (
+                          <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+                        formatter={(v: any) => `₹${Number(v).toLocaleString("en-IN")}`}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </section>
+          </div>
+
+          {/* Campaign performance breakdown — real */}
+          <section>
+            <p className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1">REAL DATA</p>
+            <h2 className="text-h3 font-display mb-4">Campaign breakdown.</h2>
+            <div className="rounded-xl border border-(--border) bg-(--bg-secondary) overflow-hidden">
+              <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-5 py-3 border-b border-(--border) font-mono-utility text-mono-sm text-(--text-tertiary)">
+                <span>CAMPAIGN</span>
+                <span>CREATOR</span>
+                <span>STATUS</span>
+                <span>BUDGET</span>
+              </div>
+              {all.length === 0 ? (
+                <p className="p-8 text-center text-sm text-(--text-tertiary)">No campaigns yet.</p>
+              ) : (
+                all.slice(0, 10).map((p: any) => (
+                  <div key={p._id} className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-2 md:gap-4 px-5 py-4 border-b border-(--border) last:border-b-0 text-sm">
+                    <span className="font-medium truncate col-span-2 md:col-span-1">{p.title}</span>
+                    <span className="text-(--text-secondary) truncate">{p.creatorId?.fullName || "Creator"}</span>
+                    <span className="text-(--text-secondary) capitalize">{p.status}</span>
+                    <span className="font-mono-utility">₹{p.budget?.toLocaleString("en-IN")}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        </>
+      )}
+    </div>
+  );
 }

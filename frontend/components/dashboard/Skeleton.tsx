@@ -7,10 +7,7 @@ interface SkeletonProps {
 export default function Skeleton({ className }: SkeletonProps) {
   return (
     <div
-      className={cn(
-        "bg-(--bg-surface) rounded-lg animate-pulse",
-        className
-      )}
+      className={cn("skeleton-shimmer rounded-lg", className)}
       aria-hidden
     />
   );

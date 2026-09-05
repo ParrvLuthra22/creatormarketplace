@@ -1,227 +1,226 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect */
+
+import { useEffect, useRef, useState } from "react";
+import { Camera, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
-import { BrandDashboardLayout } from "@/components/BrandDashboardLayout";
-import { Plus, Camera, Loader2 } from "lucide-react";
-import { uploadProfilePhoto, showToast, getProfilePhotoUrl, updateBrandProfile } from "@/lib/api";
+import { useBrandProfile, useUpdateBrandProfile } from "@/lib/hooks/useProfile";
+import { uploadProfilePhoto, getProfilePhotoUrl, apiErrorMessage } from "@/lib/api";
+import { showToast } from "@/lib/toast";
+import SectionLabel from "@/components/dashboard/SectionLabel";
+import MagneticButton from "@/components/dashboard/MagneticButton";
+import { SkeletonCard } from "@/components/dashboard/Skeleton";
 
-export default function BrandProfile() {
-    const { user, profile, refreshUser } = useAuthStore();
-    const router = useRouter();
-    const brandProfile = profile as any;
-    
-    const [companyName, setCompanyName] = useState(brandProfile?.companyName || "");
-    const [industry, setIndustry] = useState(brandProfile?.industry || "Fashion & Lifestyle");
-    const [website, setWebsite] = useState(brandProfile?.website || "");
-    const [brandStory, setBrandStory] = useState(brandProfile?.brandStory || "");
-    
-    const [uploading, setUploading] = useState(false);
-    const [saving, setSaving] = useState(false);
+const INDUSTRIES = [
+  "Fashion & Apparel",
+  "Beauty & Cosmetics",
+  "Tech & SaaS",
+  "Food & Beverage",
+  "Fitness & Wellness",
+  "Travel & Hospitality",
+  "Finance",
+  "Gaming & Entertainment",
+  "Other",
+];
 
-    useEffect(() => {
-        if (brandProfile) {
-            setCompanyName(brandProfile.companyName || "");
-            setIndustry(brandProfile.industry || "Fashion & Lifestyle");
-            setWebsite(brandProfile.website || "");
-            setBrandStory(brandProfile.brandStory || "");
-        }
-    }, [brandProfile]);
+export default function BrandProfilePage() {
+  const user = useAuthStore((state) => state.user);
+  const profile = useBrandProfile();
+  const update = useUpdateBrandProfile();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+  const [companyName, setCompanyName] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [website, setWebsite] = useState("");
+  const [brandStory, setBrandStory] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
-        // Basic validation
-        if (file.size > 5 * 1024 * 1024) {
-            showToast("File is too large (max 5MB)", "error");
-            return;
-        }
+  useEffect(() => {
+    const value = profile.data?.profile || profile.data;
+    if (!value) return;
+    setCompanyName(value.companyName || "");
+    setIndustry(value.industry || "");
+    setWebsite(value.website || "");
+    setBrandStory(value.brandStory || "");
+    setLogoUrl(value.logoUrl || "");
+    setDirty(false);
+  }, [profile.data]);
 
-        try {
-            setUploading(true);
-            const res = await uploadProfilePhoto(file);
-            if (res.success) {
-                showToast("Logo updated successfully!", "success");
-                await refreshUser();
-                router.refresh();
-            }
-        } catch (err: any) {
-            showToast(err.message || "Upload failed", "error");
-        } finally {
-            setUploading(false);
-        }
+  function markDirty<T>(setter: (v: T) => void) {
+    return (v: T) => {
+      setter(v);
+      setDirty(true);
     };
+  }
 
-    const handleSave = async () => {
-        try {
-            setSaving(true);
-            
-            if (!companyName.trim()) {
-                showToast("Company name is required", "error");
-                setSaving(false);
-                return;
-            }
+  async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("File is too large (max 5MB)", "error");
+      return;
+    }
+    setUploading(true);
+    try {
+      const res = await uploadProfilePhoto(file);
+      setLogoUrl(res.url);
+      setDirty(true);
+      showToast("Logo uploaded — save to apply.", "success");
+    } catch (err) {
+      showToast(apiErrorMessage(err), "error");
+    } finally {
+      setUploading(false);
+    }
+  }
 
-            const payload = {
-                companyName,
-                industry,
-                website,
-                brandStory
-            };
-
-            const res = await updateBrandProfile(payload);
-            if (res.success) {
-                showToast("Profile saved successfully!", "success");
-                await refreshUser();
-            }
-        } catch (err: any) {
-            showToast(err.message || "Something went wrong", "error");
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    return (
-            <BrandDashboardLayout variant="white">
-                <div className="py-8">
-                    <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-none mb-10">Brand Profile</h1>
-
-                    {/* CARD 1 - Brand Info */}
-                    <div className="bg-white border border-zinc-100 rounded-sm p-10 mb-10 shadow-sm">
-                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10">Brand Information</h2>
-
-                        {/* Logo Upload */}
-                        <div className="flex flex-col items-center mb-12 group">
-                            <label className="relative w-32 h-32 rounded-sm border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-[#FF4D00] hover:bg-orange-50 transition-all shadow-sm group-hover:scale-105 group-hover:shadow-lg overflow-hidden">
-                                {uploading ? (
-                                    <Loader2 className="w-10 h-10 text-[#FF4D00] animate-spin" />
-                                ) : brandProfile?.logoUrl ? (
-                                    <>
-                                        <img 
-                                            src={getProfilePhotoUrl(brandProfile.logoUrl)} 
-                                            alt="Brand Logo" 
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Camera className="w-8 h-8 text-white" />
-                                        </div>
-                                    </>
-                                ) : (
-                                    <Plus className="w-10 h-10 text-zinc-300 group-hover:text-[#FF4D00] transition-colors" />
-                                )}
-                                <input 
-                                    type="file" 
-                                    className="hidden" 
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                    disabled={uploading}
-                                />
-                            </label>
-                            <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mt-6 group-hover:text-zinc-600 transition-colors">
-                                {uploading ? "Uploading..." : brandProfile?.logoUrl ? "Change Brand Identity" : "Update Brand Identity"}
-                            </p>
-                        </div>
-
-                        <div className="space-y-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                {/* Company Name */}
-                                <div>
-                                    <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Company Name</label>
-                                    <input
-                                        type="text"
-                                        value={companyName}
-                                        onChange={(e) => setCompanyName(e.target.value)}
-                                        placeholder="Enter company name"
-                                        className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
-                                    />
-                                </div>
-
-                                {/* Industry */}
-                                <div>
-                                    <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Industry</label>
-                                    <div className="relative">
-                                        <select 
-                                            value={industry}
-                                            onChange={(e) => setIndustry(e.target.value)}
-                                            className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-all appearance-none cursor-pointer shadow-inner"
-                                        >
-                                            <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
-                                            <option value="Technology & SaaS">Technology & SaaS</option>
-                                            <option value="Food & Beverage">Food & Beverage</option>
-                                            <option value="Health & Beauty">Health & Beauty</option>
-                                            <option value="Fitness & Wellness">Fitness & Wellness</option>
-                                            <option value="Fintech & Finance">Fintech & Finance</option>
-                                            <option value="Other Industry">Other Industry</option>
-                                        </select>
-                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
-                                            <Plus className="w-4 h-4 rotate-45" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Website */}
-                            <div>
-                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Official Website</label>
-                                <input
-                                    type="url"
-                                    value={website}
-                                    onChange={(e) => setWebsite(e.target.value)}
-                                    placeholder="https://yourbrand.com"
-                                    className="w-full h-15 bg-zinc-50 border border-zinc-100 rounded-md px-6 text-zinc-900 text-[15px] font-black focus:outline-none focus:border-[#FF4D00] transition-colors shadow-inner"
-                                />
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-4">Brand Story</label>
-                                <textarea
-                                    rows={4}
-                                    value={brandStory}
-                                    onChange={(e) => setBrandStory(e.target.value)}
-                                    placeholder="Tell creators what your brand is about..."
-                                    className="w-full px-8 py-5 bg-zinc-50 border border-zinc-100 rounded-md text-zinc-900 text-[15px] font-medium focus:outline-none focus:border-[#FF4D00] transition-colors resize-none leading-relaxed shadow-inner"
-                                />
-                            </div>
-
-                            <div className="pt-6">
-                                <button 
-                                    onClick={handleSave}
-                                    disabled={saving}
-                                    className="h-15 px-14 flex items-center justify-center min-w-[200px] bg-[#FF4D00] text-white rounded-md font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-500/10 disabled:opacity-50 disabled:pointer-events-none"
-                                >
-                                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Profile"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* CARD 2 - Collaboration Stats */}
-                    <div className="bg-white border border-zinc-100 rounded-sm p-10 shadow-sm">
-                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-10">Performance Snapshot</h2>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-md flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
-                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Total Campaign Spend</p>
-                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">₹{brandProfile?.totalRevenue?.toLocaleString() || "0"}</p>
-                            </div>
-                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-md flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
-                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Creator Partnerships</p>
-                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">{brandProfile?.creatorsHired?.length || 0}</p>
-                            </div>
-                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-md flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
-                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Active Collaborations</p>
-                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">0</p>
-                            </div>
-                            <div className="bg-zinc-50 border border-zinc-100 p-8 rounded-md flex justify-between items-center hover:bg-orange-50 hover:border-orange-100 transition-all group">
-                                <p className="text-sm text-zinc-500 font-bold group-hover:text-zinc-600">Avg. Response Time</p>
-                                <p className="text-2xl text-zinc-900 font-black tracking-tight group-hover:text-[#FF4D00]">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </BrandDashboardLayout>
+  function handleSave() {
+    update.mutate(
+      { companyName, industry, website, brandStory },
+      { onSuccess: () => setDirty(false) }
     );
+  }
+
+  if (profile.isLoading) {
+    return (
+      <div className="max-w-[1000px] mx-auto">
+        <SkeletonCard />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-[1000px] mx-auto">
+      <div className="mb-8">
+        <SectionLabel index="01" label="PROFILE" />
+        <h1 className="text-h2 font-display mt-2">Your brand profile.</h1>
+        <p className="text-sm text-(--text-secondary) mt-1">{user?.email}</p>
+      </div>
+
+      <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
+        {/* Form */}
+        <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6 space-y-6">
+          <div className="flex items-center gap-5">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="relative h-20 w-20 rounded-xl border-2 border-dashed border-(--border) bg-(--bg-surface) overflow-hidden flex items-center justify-center hover:border-(--accent) transition-colors duration-200 shrink-0"
+              data-interactive
+              data-cursor="Upload logo"
+              aria-label="Upload logo"
+            >
+              {uploading ? (
+                <Loader2 size={20} className="animate-spin text-(--accent)" />
+              ) : logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={getProfilePhotoUrl(logoUrl)} alt="Brand logo" className="h-full w-full object-cover" />
+              ) : (
+                <Camera size={22} className="text-(--text-tertiary)" />
+              )}
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoChange} className="sr-only" />
+            </button>
+            <div>
+              <p className="text-sm font-medium">Brand logo</p>
+              <p className="text-xs text-(--text-tertiary) mt-0.5">PNG or JPG, up to 5MB</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="p-company" className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2 block">
+                COMPANY NAME
+              </label>
+              <input
+                id="p-company"
+                value={companyName}
+                onChange={(e) => markDirty(setCompanyName)(e.target.value)}
+                placeholder="Acme Inc."
+                data-interactive
+                className="h-11 w-full rounded-xl bg-(--bg-surface) border border-(--border) px-4 outline-none focus-visible:ring-2 focus-visible:ring-(--accent)"
+              />
+            </div>
+            <div>
+              <label htmlFor="p-industry" className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2 block">
+                INDUSTRY
+              </label>
+              <select
+                id="p-industry"
+                value={industry}
+                onChange={(e) => markDirty(setIndustry)(e.target.value)}
+                data-interactive
+                className="h-11 w-full rounded-xl bg-(--bg-surface) border border-(--border) px-4 outline-none focus-visible:ring-2 focus-visible:ring-(--accent)"
+              >
+                <option value="">Select an industry</option>
+                {INDUSTRIES.map((ind) => (
+                  <option key={ind} value={ind}>{ind}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="p-website" className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2 block">
+              WEBSITE
+            </label>
+            <input
+              id="p-website"
+              value={website}
+              onChange={(e) => markDirty(setWebsite)(e.target.value)}
+              placeholder="https://yourbrand.com"
+              data-interactive
+              className="h-11 w-full rounded-xl bg-(--bg-surface) border border-(--border) px-4 outline-none focus-visible:ring-2 focus-visible:ring-(--accent)"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="p-story" className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2 block">
+              BRAND STORY
+            </label>
+            <textarea
+              id="p-story"
+              value={brandStory}
+              onChange={(e) => markDirty(setBrandStory)(e.target.value)}
+              placeholder="Tell creators what your brand is about…"
+              rows={5}
+              data-interactive
+              className="w-full rounded-xl bg-(--bg-surface) border border-(--border) px-4 py-3 outline-none resize-none focus-visible:ring-2 focus-visible:ring-(--accent)"
+            />
+          </div>
+
+          <div
+            className="flex justify-end sticky bottom-0 pt-2 -mb-6 pb-6 bg-(--bg-secondary) transition-opacity duration-200"
+            style={{ opacity: dirty ? 1 : 0.4, pointerEvents: dirty ? "auto" : "none" }}
+          >
+            <MagneticButton variant="primary" onClick={handleSave} disabled={update.isPending || !dirty}>
+              {update.isPending ? "Saving…" : "Save changes"}
+            </MagneticButton>
+          </div>
+        </div>
+
+        {/* Live preview */}
+        <div className="lg:sticky lg:top-20 space-y-3">
+          <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">PREVIEW</p>
+          <div className="rounded-xl border border-(--border) bg-(--bg-secondary) p-6">
+            <div className="h-14 w-14 rounded-xl overflow-hidden bg-(--accent) text-(--bg-primary) grid place-items-center font-bold text-lg mb-4">
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={getProfilePhotoUrl(logoUrl)} alt="" className="h-full w-full object-cover" />
+              ) : (
+                (companyName || "B").charAt(0)
+              )}
+            </div>
+            <p className="font-display font-semibold text-lg truncate">{companyName || "Your company name"}</p>
+            <p className="text-sm text-(--text-tertiary) mt-0.5">{industry || "Industry"}</p>
+            {website && (
+              <p className="text-xs text-(--accent) mt-2 truncate">{website}</p>
+            )}
+            <p className="text-sm text-(--text-secondary) mt-4 leading-relaxed line-clamp-4">
+              {brandStory || "Your brand story will appear here — this is what creators see when reviewing your campaigns."}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
