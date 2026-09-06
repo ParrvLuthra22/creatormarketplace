@@ -169,7 +169,7 @@ export default function CreatorShowcase() {
       <Container className="mb-12">
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            08 — FEATURED CREATORS
+            07 — FEATURED CREATORS
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>

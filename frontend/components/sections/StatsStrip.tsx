@@ -69,7 +69,7 @@ export default function StatsStrip() {
       <Container>
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-8 block">
-            11 — PLATFORM AT A GLANCE
+            09 — PLATFORM AT A GLANCE
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.05}>

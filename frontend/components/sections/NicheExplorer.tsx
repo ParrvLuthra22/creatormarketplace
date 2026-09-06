@@ -154,7 +154,7 @@ export default function NicheExplorer() {
       <Container>
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            06 — EXPLORE THE NETWORK
+            05 — EXPLORE THE NETWORK
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>

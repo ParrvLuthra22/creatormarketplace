@@ -178,7 +178,7 @@ export default function BentoFeatures() {
       <Container>
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            07 — WHY CREATORLYFF
+            06 — WHY CREATORLYFF
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>

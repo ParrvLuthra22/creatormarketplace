@@ -40,7 +40,7 @@ export default function TheProblemSpotlight() {
       <Container className="mb-16">
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            03 — THE PROBLEM
+            02 — THE PROBLEM
           </span>
         </RevealOnScroll>
       </Container>

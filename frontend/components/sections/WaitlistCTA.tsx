@@ -15,7 +15,7 @@ export default function SignupCTA() {
       <Container>
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-8 block">
-            12 — GET STARTED
+            10 — GET STARTED
           </span>
         </RevealOnScroll>
 
