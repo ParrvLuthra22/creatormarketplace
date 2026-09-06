@@ -200,7 +200,7 @@ export default function FeatureScrollThrough() {
       <Container className="pt-32 pb-16">
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            05 — HOW IT WORKS
+            04 — HOW IT WORKS
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>

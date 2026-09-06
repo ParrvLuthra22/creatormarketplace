@@ -13,11 +13,8 @@ import SplitCTA from "@/components/sections/SplitCTA";
 import StatsStrip from "@/components/sections/StatsStrip";
 import WaitlistCTA from "@/components/sections/WaitlistCTA";
 
-// WebGL (LiveCreatorFeed) and GSAP ScrollTrigger pin (FeatureScrollThrough) both
-// need the real browser/DOM — load them client-only and off the critical path.
-const LiveCreatorFeed = dynamic(() => import("@/components/sections/LiveCreatorFeed"), {
-  ssr: false,
-});
+// FeatureScrollThrough uses an IntersectionObserver, which needs the real
+// browser/DOM — load it client-only and off the critical path.
 const FeatureScrollThrough = dynamic(() => import("@/components/sections/FeatureScrollThrough"), {
   ssr: false,
 });
@@ -27,7 +24,6 @@ export default function Home() {
     <>
       <ScrollProgressBar />
       <HeroSection />
-      <LiveCreatorFeed />
       <TheProblemSpotlight />
       <BrandMarquee />
       <FeatureScrollThrough />

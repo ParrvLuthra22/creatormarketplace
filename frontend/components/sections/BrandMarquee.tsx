@@ -34,7 +34,7 @@ export default function BrandMarquee() {
       <RevealOnScroll>
         <Container className="mb-12">
           <p className="font-mono-utility text-mono-sm text-(--text-tertiary) text-center">
-            04 — TRUSTED BY FORWARD-THINKING BRANDS
+            03 — TRUSTED BY FORWARD-THINKING BRANDS
           </p>
         </Container>
       </RevealOnScroll>

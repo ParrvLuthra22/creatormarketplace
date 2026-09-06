@@ -76,7 +76,7 @@ export default function TestimonialMarquee() {
       <Container>
         <RevealOnScroll>
           <span className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-4 block">
-            09 — TRUSTED VOICES
+            08 — TRUSTED VOICES
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>
