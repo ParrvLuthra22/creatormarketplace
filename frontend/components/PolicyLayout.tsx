@@ -1,151 +1,82 @@
-"use client";
-
 import { ReactNode } from "react";
 import Link from "next/link";
 
 interface PolicyLayoutProps {
-    title: string;
-    lastUpdated: string;
-    children: ReactNode;
-    badge?: string;
+  title: string;
+  lastUpdated: string;
+  children: ReactNode;
+  badge?: string;
 }
 
 export function PolicyLayout({ title, lastUpdated, children, badge }: PolicyLayoutProps) {
-    return (
+  return (
+    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
+      {/* Hero header */}
+      <div className="border-b border-(--border) pt-40 pb-12 px-6 md:px-20 max-w-[1400px] mx-auto">
+        {badge && (
+          <span className="inline-block px-3 py-1 mb-5 rounded-md border border-(--accent)/20 bg-(--accent)/8 font-mono-utility text-mono-sm text-(--accent)">
+            {badge}
+          </span>
+        )}
+        <h1 className="text-hero font-display leading-[0.95] tracking-[-0.04em] mb-3">{title}</h1>
+        <p className="font-mono-utility text-mono-sm text-(--text-tertiary)">Last updated: {lastUpdated}</p>
+      </div>
+
+      {/* Content */}
+      <main className="max-w-[1400px] mx-auto px-6 md:px-20 py-12 md:pb-20">
         <div
-            style={{
-                minHeight: "100vh",
-                backgroundColor: "#FFFFFF",
-                backgroundImage:
-                    "radial-gradient(at 0% 0%, rgba(255,0,150,0.04) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(255,77,0,0.04) 0px, transparent 50%)",
-                color: "#18181b",
-                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-            }}
-        >
-            {/* Hero Header — matches landing page spacing (global nav is 100px tall) */}
-            <div
-                style={{
-                    borderBottom: "1px solid rgba(0,0,0,0.06)",
-                    paddingTop: "160px",
-                    paddingBottom: "48px",
-                    paddingLeft: "80px",
-                    paddingRight: "80px",
-                    maxWidth: "1400px",
-                    margin: "0 auto",
-                }}
-            >
-                {badge && (
-                    <span
-                        style={{
-                            display: "inline-block",
-                            padding: "4px 12px",
-                            background: "rgba(255,77,0,0.08)",
-                            border: "1px solid rgba(255,77,0,0.2)",
-                            color: "#FF4D00",
-                            fontSize: "10px",
-                            fontWeight: 700,
-                            letterSpacing: "0.12em",
-                            textTransform: "uppercase",
-                            borderRadius: "4px",
-                            marginBottom: "20px",
-                        }}
-                    >
-                        {badge}
-                    </span>
-                )}
-                <h1
-                    style={{
-                        fontSize: "clamp(36px, 4vw, 64px)",
-                        fontWeight: 950,
-                        color: "#000000",
-                        letterSpacing: "-0.04em",
-                        lineHeight: 1,
-                        marginBottom: "12px",
-                    }}
-                >
-                    {title}
-                </h1>
-                <p
-                    style={{
-                        fontSize: "13px",
-                        color: "#a1a1aa",
-                        fontWeight: 600,
-                        letterSpacing: "0.08em",
-                        textTransform: "uppercase",
-                    }}
-                >
-                    Last updated: {lastUpdated}
-                </p>
-            </div>
+          className="h-[2px] mb-10 rounded-full"
+          style={{ background: "linear-gradient(to right, var(--accent) 0%, color-mix(in srgb, var(--accent) 10%, transparent) 40%, transparent 80%)" }}
+          aria-hidden
+        />
 
-            {/* Content */}
-            <main
-                style={{
-                    maxWidth: "1400px",
-                    margin: "0 auto",
-                    padding: "48px 80px 80px",
-                }}
-            >
-                {/* Orange accent rule */}
-                <div
-                    style={{
-                        height: "2px",
-                        background: "linear-gradient(to right, #FF4D00 0%, rgba(255,77,0,0.1) 40%, transparent 80%)",
-                        marginBottom: "40px",
-                        borderRadius: "2px",
-                    }}
-                />
+        <div className="rounded-3xl border border-(--border) bg-(--bg-secondary) p-8 md:p-16">{children}</div>
 
-                {/* Card */}
-                <div
-                    style={{
-                        background: "rgba(255,255,255,0.8)",
-                        border: "1px solid rgba(0,0,0,0.07)",
-                        borderRadius: "24px",
-                        boxShadow: "0 8px 64px rgba(0,0,0,0.05)",
-                        backdropFilter: "blur(20px)",
-                        padding: "56px 64px",
-                    }}
-                >
-                    {children}
-                </div>
-
-                {/* Back link */}
-                <div style={{ marginTop: "36px", display: "flex", alignItems: "center", gap: "16px" }}>
-                    <Link
-                        href="/"
-                        style={{
-                            fontSize: "12px",
-                            fontWeight: 700,
-                            letterSpacing: "0.1em",
-                            textTransform: "uppercase",
-                            color: "#a1a1aa",
-                            textDecoration: "none",
-                            transition: "color 150ms",
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "#FF4D00")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#a1a1aa")}
-                    >
-                        ← Back to Home
-                    </Link>
-                    <span style={{ color: "#e4e4e7" }}>·</span>
-                    <a
-                        href="mailto:parrvcodes@gmail.com"
-                        style={{
-                            fontSize: "12px",
-                            fontWeight: 700,
-                            letterSpacing: "0.1em",
-                            textTransform: "uppercase",
-                            color: "#a1a1aa",
-                            textDecoration: "none",
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "#FF4D00")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#a1a1aa")}
-                    >
-                        Contact Us
-                    </a>
-                </div>
-            </main>
+        {/* Back link */}
+        <div className="mt-9 flex items-center gap-4">
+          <Link
+            href="/"
+            className="font-mono-utility text-mono-sm text-(--text-tertiary) hover:text-(--accent) transition-colors duration-150"
+            data-interactive
+          >
+            ← Back to Home
+          </Link>
+          <span className="text-(--border-strong)">·</span>
+          <a
+            href="mailto:parrvcodes@gmail.com"
+            className="font-mono-utility text-mono-sm text-(--text-tertiary) hover:text-(--accent) transition-colors duration-150"
+            data-interactive
+          >
+            Contact Us
+          </a>
         </div>
-    );
+      </main>
+    </div>
+  );
+}
+
+// ─── Shared content primitives — used by privacy-policy, terms-and-conditions,
+// and data-deletion, which all share this section/bullet/divider structure. ───
+
+export function PolicySection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="mb-10">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="block w-[3px] h-5 rounded-sm bg-(--accent) shrink-0" aria-hidden />
+        <h2 className="font-mono-utility text-mono-sm text-(--accent) tracking-[0.15em] uppercase m-0">{title}</h2>
+      </div>
+      <div className="pl-[15px]">{children}</div>
+    </section>
+  );
+}
+
+export const policyDivider = <div className="h-px bg-(--border) my-8" aria-hidden />;
+
+export function PolicyBullet({ children }: { children: ReactNode }) {
+  return (
+    <li className="flex items-start gap-2.5 mb-2.5">
+      <span className="mt-2 w-[5px] h-[5px] rounded-full bg-(--accent) shrink-0" aria-hidden />
+      <span className="text-sm text-(--text-secondary) leading-[1.9]">{children}</span>
+    </li>
+  );
 }

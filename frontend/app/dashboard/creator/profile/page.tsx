@@ -25,6 +25,7 @@ import { useAuthStore } from "@/lib/auth";
 import { API_URL } from "@/lib/api";
 import { showToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 import SectionLabel from "@/components/dashboard/SectionLabel";
 import MagneticButton from "@/components/dashboard/MagneticButton";
 import LimeToggle from "@/components/dashboard/LimeToggle";
@@ -68,6 +69,7 @@ function VerificationModal({ onClose }: { onClose: () => void }) {
   const requestVerification = useRequestVerification();
   const [evidence, setEvidence] = useState<{ type: string; url: string; filename: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  useEscapeToClose(onClose);
 
   async function addFiles(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []).slice(0, 10 - evidence.length);
@@ -90,9 +92,14 @@ function VerificationModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-lg rounded-2xl border border-(--border) bg-(--bg-secondary) p-6">
+      <div
+        className="w-full max-w-lg rounded-2xl border border-(--border) bg-(--bg-secondary) p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="verification-modal-title"
+      >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-h3 font-display">Request verification</h3>
+          <h3 id="verification-modal-title" className="text-h3 font-display">Request verification</h3>
           <button onClick={onClose} className="h-8 w-8 rounded-lg hover:bg-(--bg-surface) grid place-items-center" aria-label="Close" data-interactive>
             <X size={16} />
           </button>

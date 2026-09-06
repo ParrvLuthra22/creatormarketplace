@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 
 export default function Drawer({
   open,
@@ -16,6 +17,8 @@ export default function Drawer({
   children: React.ReactNode;
   width?: number;
 }) {
+  useEscapeToClose(onClose, open);
+
   return (
     <AnimatePresence>
       {open && (
@@ -31,6 +34,8 @@ export default function Drawer({
           <motion.div
             role="dialog"
             aria-modal="true"
+            aria-labelledby={title ? "drawer-title" : undefined}
+            aria-label={title ? undefined : "Details"}
             className="fixed top-0 right-0 bottom-0 z-[9997] bg-(--bg-secondary) border-l border-(--border) overflow-y-auto"
             style={{ width, maxWidth: "92vw" }}
             initial={{ x: "100%" }}
@@ -39,7 +44,7 @@ export default function Drawer({
             transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }}
           >
             <div className="flex items-center justify-between px-6 py-5 border-b border-(--border) sticky top-0 bg-(--bg-secondary) z-10">
-              {title ? <h2 className="text-h3 font-display truncate pr-4">{title}</h2> : <span />}
+              {title ? <h2 id="drawer-title" className="text-h3 font-display truncate pr-4">{title}</h2> : <span />}
               <button
                 onClick={onClose}
                 className="h-9 w-9 rounded-lg hover:bg-(--bg-surface) grid place-items-center ml-auto shrink-0"
