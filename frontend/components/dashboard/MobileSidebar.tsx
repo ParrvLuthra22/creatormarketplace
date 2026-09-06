@@ -7,6 +7,7 @@ import { X, Home, Search, Megaphone, MessageSquare, BarChart3, Settings, User, I
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/auth";
 import { useLogout } from "@/lib/hooks/useAuth";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 
 const BRAND_NAV = [
   { label: "Overview", href: "/dashboard/brand", icon: Home },
@@ -42,6 +43,7 @@ export default function MobileSidebar({ type, open, onClose, onNewCampaign }: Mo
   const nav = type === "brand" ? BRAND_NAV : CREATOR_NAV;
   const initials = (user?.fullName || "U").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
   const handle = String((profile as { instagramHandle?: string } | null)?.instagramHandle || "").replace(/^@+/, "");
+  useEscapeToClose(onClose, open);
 
   return (
     <AnimatePresence>
@@ -65,6 +67,9 @@ export default function MobileSidebar({ type, open, onClose, onNewCampaign }: Mo
             exit={{ x: "-100%" }}
             transition={{ duration: 0.28, ease: [0.65, 0, 0.35, 1] }}
             className="fixed left-0 top-0 bottom-0 z-[9995] w-72 bg-(--bg-secondary) border-r border-(--border) flex flex-col md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${type === "brand" ? "Brand" : "Creator"} navigation`}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-5 border-b border-(--border)">

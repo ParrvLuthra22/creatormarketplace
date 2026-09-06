@@ -14,7 +14,7 @@ const NAV = [
   { label: "Overview", href: "/dashboard/admin", icon: Home },
   { label: "Users", href: "/dashboard/admin/users", icon: Users },
   { label: "Verification Queue", href: "/dashboard/admin/verification-queue", icon: ShieldCheck, badge: true },
-  { label: "Reports", href: "/dashboard/admin/reports", icon: FileBarChart },
+  { label: "Reports", href: "/dashboard/admin/reports", icon: FileBarChart, comingSoon: true },
   { label: "Settings", href: "/dashboard/admin/settings", icon: Settings },
 ];
 
@@ -65,7 +65,7 @@ export default function AdminSidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-2 flex flex-col gap-1">
-        {NAV.map(({ label, href, icon: Icon, badge }) => {
+        {NAV.map(({ label, href, icon: Icon, badge, comingSoon }) => {
           const active = pathname === href || (href !== "/dashboard/admin" && pathname.startsWith(href));
           return (
             <Link
@@ -113,6 +113,9 @@ export default function AdminSidebar() {
               </AnimatePresence>
               {badge && pendingVerifications > 0 && expanded && (
                 <span className="font-mono-utility text-mono-sm" style={{ color: "var(--warning)" }}>{pendingVerifications}</span>
+              )}
+              {comingSoon && expanded && (
+                <span className="font-mono-utility text-mono-sm text-(--text-tertiary) border border-(--border) rounded px-1.5 py-0.5">SOON</span>
               )}
             </Link>
           );

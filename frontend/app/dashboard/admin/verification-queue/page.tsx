@@ -9,6 +9,7 @@ import {
   useRejectVerification,
 } from "@/lib/hooks/useAdmin";
 import { getProfilePhotoUrl } from "@/lib/api";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 import SectionLabel from "@/components/dashboard/SectionLabel";
 import MagneticButton from "@/components/dashboard/MagneticButton";
 import { SkeletonCard } from "@/components/dashboard/Skeleton";
@@ -27,6 +28,7 @@ function ApproveModal({ requestId, onClose }: { requestId: string; onClose: () =
   const approve = useApproveVerification();
   const [badge, setBadge] = useState<"verified" | "premium">("verified");
   const [notes, setNotes] = useState("");
+  useEscapeToClose(onClose);
 
   async function submit() {
     await approve.mutateAsync({ id: requestId, badge, notes });
@@ -35,9 +37,14 @@ function ApproveModal({ requestId, onClose }: { requestId: string; onClose: () =
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-(--border) bg-(--bg-secondary) p-6">
+      <div
+        className="w-full max-w-sm rounded-2xl border border-(--border) bg-(--bg-secondary) p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="approve-modal-title"
+      >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-h3 font-display">Approve verification</h3>
+          <h3 id="approve-modal-title" className="text-h3 font-display">Approve verification</h3>
           <button onClick={onClose} className="h-8 w-8 rounded-lg hover:bg-(--bg-surface) grid place-items-center" aria-label="Close" data-interactive>
             <X size={16} />
           </button>
@@ -76,6 +83,7 @@ function RejectModal({ requestId, onClose }: { requestId: string; onClose: () =>
   const reject = useRejectVerification();
   const [reason, setReason] = useState("");
   const [notes, setNotes] = useState("");
+  useEscapeToClose(onClose);
 
   async function submit() {
     await reject.mutateAsync({ id: requestId, reason, notes });
@@ -84,9 +92,14 @@ function RejectModal({ requestId, onClose }: { requestId: string; onClose: () =>
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-(--warning) bg-(--bg-secondary) p-6">
+      <div
+        className="w-full max-w-sm rounded-2xl border border-(--warning) bg-(--bg-secondary) p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reject-modal-title"
+      >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-h3 font-display">Reject verification</h3>
+          <h3 id="reject-modal-title" className="text-h3 font-display">Reject verification</h3>
           <button onClick={onClose} className="h-8 w-8 rounded-lg hover:bg-(--bg-surface) grid place-items-center" aria-label="Close" data-interactive>
             <X size={16} />
           </button>
@@ -94,6 +107,7 @@ function RejectModal({ requestId, onClose }: { requestId: string; onClose: () =>
         <label className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-2 block">REASON (SENT TO USER)</label>
         <input
           value={reason}
+          autoComplete="off"
           onChange={(e) => setReason(e.target.value)}
           placeholder="e.g. Evidence didn't confirm follower count"
           data-interactive

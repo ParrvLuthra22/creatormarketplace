@@ -73,7 +73,7 @@ const BRAND_PLANS = [
     badge: null,
     description: "For agencies managing multiple brand accounts and creator rosters.",
     cta: "Talk to us",
-    ctaHref: "mailto:agency@creatorlyff.com",
+    ctaHref: "mailto:parrvcodes@gmail.com",
     comingSoon: false,
     highlight: false,
     features: [

@@ -317,7 +317,7 @@ function TeamSection() {
           <p className="text-sm text-(--text-secondary) mt-6 max-w-lg">
             We&apos;re a small team of builders who believe the creator economy deserves better tooling.
             If you want to help build it,{" "}
-            <a href="mailto:team@creatorlyff.com" className="text-(--accent) hover:text-(--accent-hover) transition-colors">
+            <a href="mailto:parrvcodes@gmail.com" className="text-(--accent) hover:text-(--accent-hover) transition-colors">
               reach out →
             </a>
           </p>
