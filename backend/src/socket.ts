@@ -9,6 +9,7 @@ import cookie from 'cookie';
 import { trackEvent } from './config/posthog';
 import { addOnlineSocket, isUserOnline, onlineUsers, removeOnlineSocket } from './services/presenceService';
 import { sendChatNotification } from './services/notificationService';
+import { createNotification } from './services/notificationCenter';
 
 interface SocketUser extends JWTPayload {}
 
@@ -174,6 +175,21 @@ export function initSocket(httpServer: HttpServer) {
                 // Emit to sender's other sockets (if any)
                 socket.to(user.userId).emit('newMessage', message);
 
+                // Persisted + real-time notification for the bell dropdown. There's no
+                // server-side concept of "actively viewing this conversation" yet, so
+                // this fires on every message — the frontend already marks the
+                // conversation's messages read (and can clear the notification) as soon
+                // as it's opened, via the existing markAsRead flow below.
+                const sender = await User.findById(user.userId).select('fullName');
+                await createNotification(io, {
+                    userId: receiverId,
+                    type: 'new_message',
+                    actorId: user.userId,
+                    entityId: message._id.toString(),
+                    entityType: 'Message',
+                    message: `${sender?.fullName || 'Someone'} sent you a message`,
+                });
+
                 if (receiverOnline) {
                     io.to(user.userId).emit('messageDelivered', {
                         conversationId,
@@ -182,7 +198,6 @@ export function initSocket(httpServer: HttpServer) {
                         deliveredAt: new Date().toISOString(),
                     });
                 } else {
-                    const sender = await User.findById(user.userId).select('fullName');
                     await sendChatNotification(
                         receiverId,
                         sender?.fullName || 'Someone',

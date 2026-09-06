@@ -1,7 +1,9 @@
 import './config/env';
 import express, { Application, Request, Response, NextFunction } from 'express';
 import { createServer } from 'http';
+import mongoose from 'mongoose';
 import { initSocket } from './socket';
+import { onlineUsers } from './services/presenceService';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -16,13 +18,14 @@ import youtubeRoutes from './routes/youtube';
 import adminRoutes from './routes/admin';
 import verificationRoutes from './routes/verification';
 import activityRoutes from './routes/activity';
+import notificationsRoutes from './routes/notifications';
 import path from 'path';
 import './config/passport'; // Initialize Passport strategies
 import passport from 'passport';
 import { isCloudinaryConfigured } from './config/cloudinary';
 import { isResendConfigured } from './config/email';
 import { isPostHogConfigured, posthog } from './config/posthog';
-import { startSocialSyncJob } from './jobs/socialSync';
+import { startSocialSyncJob, lastSyncRun } from './jobs/socialSync';
 // import paymentsRoutes from './routes/payments';
 
 // Load environment variables
@@ -31,8 +34,10 @@ import { startSocialSyncJob } from './jobs/socialSync';
 const app: Application = express();
 const httpServer = createServer(app);
 
-// Initialize Socket.io
-initSocket(httpServer);
+// Initialize Socket.io — stashed on `app` so route handlers can push real-time
+// notifications (see services/notificationCenter.ts) without a circular import.
+const io = initSocket(httpServer);
+app.set('io', io);
 
 const PORT = process.env.PORT || 5001;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -102,6 +107,7 @@ app.use('/api/youtube', youtubeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/verification', verificationRoutes);
 app.use('/api/activity', activityRoutes);
+app.use('/api/notifications', notificationsRoutes);
 // app.use('/api/payments', paymentsRoutes);
 
 // Serve uploaded files (local dev)
@@ -117,16 +123,35 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Health check
+const MONGOOSE_STATES: Record<number, string> = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting',
+};
+
 app.get('/health', (req: Request, res: Response) => {
-    res.status(200).json({
-        status: 'OK',
-        message: 'Server is running',
+    const dbState = mongoose.connection.readyState;
+    const dbConnected = dbState === 1;
+
+    res.status(dbConnected ? 200 : 503).json({
+        status: dbConnected ? 'OK' : 'DEGRADED',
+        message: dbConnected ? 'Server is running' : 'Database is not connected',
         environment: process.env.NODE_ENV,
         services: {
             cloudinary: isCloudinaryConfigured ? 'configured' : 'not_configured',
             resend: isResendConfigured ? 'configured' : 'not_configured',
             posthog: isPostHogConfigured ? 'configured' : 'not_configured',
         },
+        database: {
+            status: MONGOOSE_STATES[dbState] || 'unknown',
+            connected: dbConnected,
+        },
+        socket: {
+            onlineUsers: onlineUsers.size,
+            activeConnections: Array.from(onlineUsers.values()).reduce((sum, sockets) => sum + sockets.size, 0),
+        },
+        socialSyncJob: lastSyncRun,
         timestamp: new Date().toISOString()
     });
 });

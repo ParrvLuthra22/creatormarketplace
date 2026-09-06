@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import type { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import { adminMiddleware } from '../middleware/adminAuth';
 import { AuthRequest } from '../middleware/auth';
@@ -11,6 +12,7 @@ import VerificationRequest from '../models/VerificationRequest';
 import { sendEmail } from '../config/email';
 import { verificationApprovedEmail, verificationRejectedEmail } from '../utils/emailTemplates';
 import { trackEvent } from '../config/posthog';
+import { createNotification } from '../services/notificationCenter';
 
 const router = Router();
 router.use(adminMiddleware);
@@ -464,6 +466,16 @@ router.post('/verification-requests/:id/approve', async (req: AuthRequest, res: 
             reviewedBy: req.userId,
         });
 
+        const io = req.app.get('io') as Server | undefined;
+        await createNotification(io, {
+            userId: user._id.toString(),
+            type: 'verification_approved',
+            actorId: req.userId,
+            entityId: verificationRequest._id.toString(),
+            entityType: 'VerificationRequest',
+            message: `Your verification was approved — you're now ${badge}`,
+        });
+
         res.status(200).json({ success: true, verificationRequest, user });
     } catch (error: any) {
         console.error('Admin approve verification error:', error);
@@ -517,6 +529,16 @@ router.post('/verification-requests/:id/reject', async (req: AuthRequest, res: R
             requestId: verificationRequest._id.toString(),
             reason,
             reviewedBy: req.userId,
+        });
+
+        const io = req.app.get('io') as Server | undefined;
+        await createNotification(io, {
+            userId: user._id.toString(),
+            type: 'verification_rejected',
+            actorId: req.userId,
+            entityId: verificationRequest._id.toString(),
+            entityType: 'VerificationRequest',
+            message: `Your verification request was declined: ${reason}`,
         });
 
         res.status(200).json({ success: true, verificationRequest, user });

@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "type-check": "tsc --noEmit",
     "check:public-creators": "tsx scripts/check-public-creators.ts",
-    "seed:admin": "tsx scripts/seed-admin.ts"
+    "seed:admin": "tsx scripts/seed-admin.ts",
+    "seed:mock-creators": "tsx scripts/seed-mock-creators.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
