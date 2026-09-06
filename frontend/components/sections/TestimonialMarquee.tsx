@@ -48,10 +48,15 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 
 function VerticalColumn({ items, direction, speed }: { items: Testimonial[]; direction: "up" | "down"; speed: number }) {
   return (
-    <div className="h-[560px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
+    <div className="relative h-[560px] overflow-hidden">
+      {/* Static gradient fades instead of mask-image — masking a continuously
+          animating layer is expensive to composite on many GPUs and was
+          starving the main thread badly enough to make page scroll feel stuck. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-(--bg-primary) to-transparent z-10" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-(--bg-primary) to-transparent z-10" aria-hidden />
       <div
         className={cn(
-          "flex flex-col gap-5",
+          "flex flex-col gap-5 will-change-transform",
           direction === "up" ? "animate-[marquee-up_linear_infinite]" : "animate-[marquee-down_linear_infinite]",
           "hover:[animation-play-state:paused]"
         )}
