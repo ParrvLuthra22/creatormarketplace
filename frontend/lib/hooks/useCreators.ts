@@ -65,10 +65,15 @@ export function useCreatorById(userId?: string) {
   });
 }
 
-export function useCreatorByHandle(handle?: string) {
+export function useCreatorByHandle(handle?: string, initialData?: any) {
   return useQuery({
     queryKey: ["creators", "handle", handle],
     enabled: Boolean(handle),
+    // Seeded from the server-rendered fetch in app/c/[handle]/page.tsx (also used
+    // for its metadata) so the client doesn't re-hit the by-handle endpoint on
+    // mount — that endpoint increments a real view counter per request.
+    initialData,
+    staleTime: 60_000,
     queryFn: async () =>
       unwrap<any>(await api.get(`/api/profile/creator/by-handle/${String(handle).replace(/^@+/, "")}`)),
   });

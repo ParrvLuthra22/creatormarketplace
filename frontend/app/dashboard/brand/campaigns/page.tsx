@@ -2,8 +2,9 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { MoreHorizontal, Plus } from "lucide-react";
 import { useProposals } from "@/lib/hooks/useProposals";
@@ -52,6 +53,15 @@ export default function BrandCampaignsPage() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const proposals = useProposals();
   const { openModal } = useCampaignModal();
+  const searchParams = useSearchParams();
+
+  // Public creator profile "Send Custom Proposal" CTAs land here with
+  // ?creatorId=... — open the modal pre-selected for that creator.
+  useEffect(() => {
+    const creatorId = searchParams.get("creatorId");
+    if (creatorId) openModal(creatorId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const all = proposals.data?.proposals || [];
   const withDerived = useMemo(() => all.map((p: any) => ({ ...p, _tab: deriveTab(p) })), [all]);

@@ -248,7 +248,28 @@ router.get('/creator/by-handle/:handle', optionalAuth, async (req: OptionalAuthR
 
         const visibleProfile = profile.pricingPublic === false && !isOwner ? { ...profile, pricing: undefined } : profile;
 
-        res.status(200).json({ success: true, creator: { user, profile: visibleProfile }, authenticated: !!req.userId });
+        // Past collaborations — distinct brands with at least one accepted proposal
+        // with this creator, for the public "Trusted By" logo wall.
+        const collaboratorBrandIds = await Proposal.find({ creatorId: profile.userId, status: 'accepted' }).distinct('brandId');
+        const collaborators = collaboratorBrandIds.length
+            ? await BrandProfile.find({ userId: { $in: collaboratorBrandIds } }).select('companyName logoUrl').lean()
+            : [];
+        const pastCollaborations = collaborators
+            .filter((c) => c.companyName)
+            .map((c) => ({ name: c.companyName, logoUrl: c.logoUrl || null }));
+
+        // Real, honest substitute for an unavailable "response time" metric — a
+        // rolling 30-day profile view count, computed from the existing view log.
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const profileViews30d = (profile.profileViewLog || []).filter((d: Date) => new Date(d) >= thirtyDaysAgo).length;
+
+        res.status(200).json({
+            success: true,
+            creator: { user, profile: visibleProfile },
+            pastCollaborations,
+            profileViews30d,
+            authenticated: !!req.userId,
+        });
     } catch (error: any) {
         console.error('Get creator by handle error:', error);
         res.status(500).json({ error: 'Server error' });
