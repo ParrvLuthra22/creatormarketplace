@@ -138,7 +138,7 @@ export default function BrandCreatorProfilePage() {
               <div key={i} className="rounded-xl border border-(--border) bg-(--bg-secondary) overflow-hidden">
                 {work.url && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={work.url} alt={work.title} className="h-36 w-full object-cover" />
+                  <img src={work.url} alt={work.title || "Brand partnership"} className="h-36 w-full object-cover" />
                 )}
                 <p className="p-4 text-sm font-medium">{work.title || "Brand partnership"}</p>
               </div>

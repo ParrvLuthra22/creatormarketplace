@@ -187,6 +187,7 @@ export default function CreatorShowcase() {
       <div
         className="overflow-x-auto scrollbar-none pl-6 md:pl-12"
         aria-label="Creator gallery"
+        data-drag-scroll
       >
         <div className="flex gap-5 pb-4 w-max">
           {creators.map((c) => (

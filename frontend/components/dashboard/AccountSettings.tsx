@@ -6,6 +6,7 @@ import { AlertTriangle, X } from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 import { api, apiErrorMessage } from "@/lib/api";
 import { showToast } from "@/lib/toast";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 import MagneticButton from "./MagneticButton";
 
 export function SettingsCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -23,6 +24,7 @@ export function PasswordModal({ onClose }: { onClose: () => void }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  useEscapeToClose(onClose);
 
   async function submit() {
     setError("");
@@ -44,9 +46,14 @@ export function PasswordModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-(--border) bg-(--bg-secondary) p-6">
+      <div
+        className="w-full max-w-sm rounded-2xl border border-(--border) bg-(--bg-secondary) p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="password-modal-title"
+      >
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-h3 font-display">Change password</h3>
+          <h3 id="password-modal-title" className="text-h3 font-display">Change password</h3>
           <button onClick={onClose} className="h-8 w-8 rounded-lg hover:bg-(--bg-surface) grid place-items-center" aria-label="Close" data-interactive>
             <X size={16} />
           </button>
@@ -54,6 +61,7 @@ export function PasswordModal({ onClose }: { onClose: () => void }) {
         <div className="space-y-3">
           <input
             type="password"
+            autoComplete="current-password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             placeholder="Current password"
@@ -62,6 +70,7 @@ export function PasswordModal({ onClose }: { onClose: () => void }) {
           />
           <input
             type="password"
+            autoComplete="new-password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             placeholder="New password"
@@ -70,6 +79,7 @@ export function PasswordModal({ onClose }: { onClose: () => void }) {
           />
           <input
             type="password"
+            autoComplete="new-password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm new password"
@@ -91,6 +101,7 @@ export function DeleteAccountModal({ onClose, profileLabel = "profile" }: { onCl
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const setUser = useAuthStore((s) => s.setUser);
+  useEscapeToClose(onClose);
 
   async function submit() {
     setLoading(true);
@@ -106,10 +117,15 @@ export function DeleteAccountModal({ onClose, profileLabel = "profile" }: { onCl
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-(--warning) bg-(--bg-secondary) p-6">
+      <div
+        className="w-full max-w-sm rounded-2xl border border-(--warning) bg-(--bg-secondary) p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-account-modal-title"
+      >
         <div className="flex items-center gap-3 mb-4">
           <AlertTriangle size={20} className="text-(--warning)" />
-          <h3 className="text-h3 font-display">Delete account</h3>
+          <h3 id="delete-account-modal-title" className="text-h3 font-display">Delete account</h3>
         </div>
         <p className="text-sm text-(--text-secondary) mb-4">
           This permanently deletes your account and {profileLabel}. This cannot be undone.
@@ -119,6 +135,7 @@ export function DeleteAccountModal({ onClose, profileLabel = "profile" }: { onCl
         </label>
         <input
           id="delete-confirm"
+          autoComplete="off"
           value={confirmText}
           onChange={(e) => setConfirmText(e.target.value)}
           placeholder="DELETE"

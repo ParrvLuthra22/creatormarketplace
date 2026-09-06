@@ -176,6 +176,7 @@ export default function EarningsPage() {
                       <button
                         disabled
                         title="Invoice PDF download — coming soon"
+                        aria-label="Invoice download — coming soon"
                         className="flex items-center gap-1 text-(--text-tertiary) opacity-50 cursor-not-allowed justify-self-end"
                       >
                         <FileText size={14} />

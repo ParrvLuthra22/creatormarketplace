@@ -30,6 +30,19 @@ export function useUnseenNotificationCount() {
   return items.filter((item) => new Date(item.timestamp).getTime() > lastSeen).length;
 }
 
+/** Same "since last opened the notification bell" cutoff, scoped to message activity — used for the mobile bottom nav's Messages badge. */
+export function useUnseenMessageCount() {
+  const activity = useActivity();
+  const [lastSeen, setLastSeen] = useState(0);
+
+  useEffect(() => {
+    setLastSeen(getLastSeen());
+  }, []);
+
+  const items = activity.data?.activity || [];
+  return items.filter((item) => item.type === "message" && new Date(item.timestamp).getTime() > lastSeen).length;
+}
+
 export default function NotificationCenter({ onClose }: { onClose: () => void }) {
   const activity = useActivity();
   const [tab, setTab] = useState<"all" | "unread">("all");
@@ -102,20 +115,32 @@ export default function NotificationCenter({ onClose }: { onClose: () => void })
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                <Link
-                  href={item.href || "#"}
-                  onClick={onClose}
-                  className="flex items-start gap-3 px-4 py-3 border-b border-(--border) last:border-b-0 hover:bg-(--bg-surface) transition-colors duration-150"
-                  data-interactive
-                >
-                  <span className="mt-0.5 shrink-0">{ICONS[item.type]}</span>
-                  <p className="flex-1 text-sm text-(--text-primary) leading-snug">
-                    <HighlightedText text={item.text} highlight={item.highlight} />
-                  </p>
-                  <span className="font-mono-utility text-mono-sm text-(--text-tertiary) shrink-0 mt-0.5">
-                    {timeAgo(item.timestamp)}
-                  </span>
-                </Link>
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className="flex items-start gap-3 px-4 py-3 border-b border-(--border) last:border-b-0 hover:bg-(--bg-surface) transition-colors duration-150"
+                    data-interactive
+                  >
+                    <span className="mt-0.5 shrink-0">{ICONS[item.type]}</span>
+                    <p className="flex-1 text-sm text-(--text-primary) leading-snug">
+                      <HighlightedText text={item.text} highlight={item.highlight} />
+                    </p>
+                    <span className="font-mono-utility text-mono-sm text-(--text-tertiary) shrink-0 mt-0.5">
+                      {timeAgo(item.timestamp)}
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="flex items-start gap-3 px-4 py-3 border-b border-(--border) last:border-b-0">
+                    <span className="mt-0.5 shrink-0">{ICONS[item.type]}</span>
+                    <p className="flex-1 text-sm text-(--text-primary) leading-snug">
+                      <HighlightedText text={item.text} highlight={item.highlight} />
+                    </p>
+                    <span className="font-mono-utility text-mono-sm text-(--text-tertiary) shrink-0 mt-0.5">
+                      {timeAgo(item.timestamp)}
+                    </span>
+                  </div>
+                )}
               </motion.div>
             ))}
           </AnimatePresence>

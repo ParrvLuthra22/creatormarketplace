@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import MagneticButton from "@/components/dashboard/MagneticButton";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 
 export default function ConfirmDestructiveModal({
   title,
@@ -22,14 +23,20 @@ export default function ConfirmDestructiveModal({
   onClose: () => void;
 }) {
   const [text, setText] = useState("");
+  useEscapeToClose(onClose);
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-(--warning) bg-(--bg-secondary) p-6">
+      <div
+        className="w-full max-w-sm rounded-2xl border border-(--warning) bg-(--bg-secondary) p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-destructive-title"
+      >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <AlertTriangle size={20} className="text-(--warning)" />
-            <h3 className="text-h3 font-display">{title}</h3>
+            <h3 id="confirm-destructive-title" className="text-h3 font-display">{title}</h3>
           </div>
           <button onClick={onClose} className="h-8 w-8 rounded-lg hover:bg-(--bg-surface) grid place-items-center shrink-0" aria-label="Close" data-interactive>
             <X size={16} />
@@ -41,6 +48,7 @@ export default function ConfirmDestructiveModal({
         </label>
         <input
           id="confirm-word"
+          autoComplete="off"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={confirmWord}

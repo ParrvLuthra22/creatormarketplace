@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Search, User, Megaphone } from "lucide-react";
 import { usePublicCreators } from "@/lib/hooks/useCreators";
 import { useProposals } from "@/lib/hooks/useProposals";
+import { useAuthStore } from "@/lib/auth";
 
 export default function CommandPalette({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
@@ -13,6 +14,7 @@ export default function CommandPalette({ onClose }: { onClose: () => void }) {
   const router = useRouter();
   const creators = usePublicCreators(query ? { search: query } : {});
   const proposals = useProposals();
+  const isBrand = useAuthStore((state) => state.isBrand);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -92,11 +94,13 @@ export default function CommandPalette({ onClose }: { onClose: () => void }) {
 
           {matchedCampaigns.length > 0 && (
             <div>
-              <p className="font-mono-utility text-mono-sm text-(--text-tertiary) px-4 py-1.5">CAMPAIGNS</p>
+              <p className="font-mono-utility text-mono-sm text-(--text-tertiary) px-4 py-1.5">
+                {isBrand ? "CAMPAIGNS" : "PROPOSALS"}
+              </p>
               {matchedCampaigns.map((p: { _id: string; title: string; status: string }) => (
                 <button
                   key={p._id}
-                  onClick={() => go(`/dashboard/brand/campaigns/${p._id}`)}
+                  onClick={() => go(isBrand ? `/dashboard/brand/campaigns/${p._id}` : "/dashboard/creator/inbox")}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-(--bg-surface) transition-colors duration-150"
                   data-interactive
                 >

@@ -271,6 +271,7 @@ export default function OnboardingPage() {
                         <input
                           id="ob-company"
                           value={companyName}
+                          autoComplete="organization"
                           onChange={(e) => setCompanyName(e.target.value)}
                           placeholder="Acme Inc."
                           data-interactive
@@ -303,6 +304,8 @@ export default function OnboardingPage() {
                         </label>
                         <input
                           id="ob-website"
+                          type="url"
+                          autoComplete="url"
                           value={website}
                           onChange={(e) => setWebsite(e.target.value)}
                           placeholder="https://yourbrand.com"

@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /dashboard/
+Disallow: /onboarding
+Disallow: /auth/
 Disallow: /login/brand
 Disallow: /login/creator
 

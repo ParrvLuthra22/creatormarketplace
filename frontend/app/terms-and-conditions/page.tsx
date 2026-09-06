@@ -33,7 +33,7 @@ export default function TermsAndConditions() {
 
             <Section title="Agreement to Terms">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    Welcome to CreatorSync. By accessing or using our website and services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you may not access the platform.
+                    Welcome to CreatorLyff. By accessing or using our website and services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you may not access the platform.
                 </p>
             </Section>
 
@@ -41,7 +41,7 @@ export default function TermsAndConditions() {
 
             <Section title="Nature of Service">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    CreatorSync is a digital SaaS platform that enables brands to discover, evaluate, and collaborate with social media creators. We provide the technology and tools — we are not a marketing agency, talent agency, or campaign manager. All collaborations are negotiated directly between brands and creators.
+                    CreatorLyff is a digital SaaS platform that enables brands to discover, evaluate, and collaborate with social media creators. We provide the technology and tools — we are not a marketing agency, talent agency, or campaign manager. All collaborations are negotiated directly between brands and creators.
                 </p>
             </Section>
 
@@ -49,7 +49,7 @@ export default function TermsAndConditions() {
 
             <Section title="User Eligibility">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    You must be at least 18 years old to create an account and use CreatorSync. By registering, you confirm that all information you provide is accurate and that you have the authority to enter into these Terms on behalf of yourself or your organization.
+                    You must be at least 18 years old to create an account and use CreatorLyff. By registering, you confirm that all information you provide is accurate and that you have the authority to enter into these Terms on behalf of yourself or your organization.
                 </p>
             </Section>
 
@@ -90,7 +90,7 @@ export default function TermsAndConditions() {
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     <Bullet>Misrepresent yourself, your brand, or your follower metrics</Bullet>
-                    <Bullet>Bypass the platform to complete collaborations negotiated through CreatorSync</Bullet>
+                    <Bullet>Bypass the platform to complete collaborations negotiated through CreatorLyff</Bullet>
                     <Bullet>Upload or transmit harmful, unlawful, or infringing content</Bullet>
                     <Bullet>Attempt to gain unauthorized access to any part of the platform</Bullet>
                     <Bullet>Use automated bots or scrapers to extract data from the platform</Bullet>
@@ -101,7 +101,7 @@ export default function TermsAndConditions() {
 
             <Section title="Intellectual Property">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    All CreatorSync branding, code, and platform design are the intellectual property of CreatorSync and its developers. Users retain ownership of content they upload (profile photos, bios, portfolio). By uploading content, you grant CreatorSync a limited license to display it within the platform.
+                    All CreatorLyff branding, code, and platform design are the intellectual property of CreatorLyff and its developers. Users retain ownership of content they upload (profile photos, bios, portfolio). By uploading content, you grant CreatorLyff a limited license to display it within the platform.
                 </p>
             </Section>
 
@@ -109,7 +109,7 @@ export default function TermsAndConditions() {
 
             <Section title="Limitation of Liability">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    CreatorSync provides a marketplace — we are not responsible for disputes, content quality, deliverable failures, or the outcome of any collaboration between brands and creators. To the maximum extent permitted by law, our liability is limited to the amount you paid to us in the 3 months preceding any claim.
+                    CreatorLyff provides a marketplace — we are not responsible for disputes, content quality, deliverable failures, or the outcome of any collaboration between brands and creators. To the maximum extent permitted by law, our liability is limited to the amount you paid to us in the 3 months preceding any claim.
                 </p>
             </Section>
 
@@ -125,7 +125,7 @@ export default function TermsAndConditions() {
 
             <Section title="Changes to Terms">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    We may update these Terms from time to time. Continued use of CreatorSync after changes constitutes acceptance of the revised Terms. We will notify users of material changes via email or in-app notice.
+                    We may update these Terms from time to time. Continued use of CreatorLyff after changes constitutes acceptance of the revised Terms. We will notify users of material changes via email or in-app notice.
                 </p>
             </Section>
 

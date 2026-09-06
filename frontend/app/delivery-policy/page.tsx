@@ -12,7 +12,7 @@ export default function DeliveryPolicy() {
                         SHIPPING / DELIVERY POLICY (DIGITAL SERVICE)
                     </h2>
                     <p className="text-[15px] text-[#3D3D3D] leading-[1.8]">
-                        CreatorSync provides digital services only.
+                        CreatorLyff provides digital services only.
                     </p>
                 </section>
 

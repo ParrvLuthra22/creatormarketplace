@@ -33,7 +33,7 @@ export default function PrivacyPolicy() {
 
             <Section title="Overview">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    At CreatorSync, your privacy is fundamental to everything we build. This Privacy Policy explains how we collect, use, protect, and handle your personal information when you use our platform — whether you&apos;re a brand discovering creators or a creator building your portfolio.
+                    At CreatorLyff, your privacy is fundamental to everything we build. This Privacy Policy explains how we collect, use, protect, and handle your personal information when you use our platform — whether you&apos;re a brand discovering creators or a creator building your portfolio.
                 </p>
             </Section>
 
@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
 
             <Section title="Information We Collect">
                 <p style={{ fontSize: "14px", color: "#52525b", lineHeight: 1.9, marginBottom: "16px" }}>
-                    We collect the following types of information to operate and improve CreatorSync:
+                    We collect the following types of information to operate and improve CreatorLyff:
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     <Bullet>Name, email address, and account credentials</Bullet>
@@ -59,7 +59,7 @@ export default function PrivacyPolicy() {
                     Your data is used exclusively to:
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                    <Bullet>Operate, maintain, and improve the CreatorSync platform</Bullet>
+                    <Bullet>Operate, maintain, and improve the CreatorLyff platform</Bullet>
                     <Bullet>Facilitate collaborations between brands and creators</Bullet>
                     <Bullet>Send service-related communications (new proposals, account alerts)</Bullet>
                     <Bullet>Display your profile and Instagram statistics to relevant brands (with your consent)</Bullet>

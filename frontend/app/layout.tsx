@@ -9,6 +9,7 @@ import InitialLoader from "@/components/InitialLoader";
 import EasterEgg from "@/components/EasterEgg";
 import Providers from "@/app/providers";
 import LenisController from "@/components/LenisController";
+import ScrollProgressBarGate from "@/components/ScrollProgressBarGate";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -101,6 +102,7 @@ export default function RootLayout({
           {/* LenisController pauses smooth scroll on /dashboard and /admin routes */}
           <LenisController />
           <Providers>
+            <ScrollProgressBarGate />
             <Cursor />
             <InitialLoader />
             <EasterEgg />

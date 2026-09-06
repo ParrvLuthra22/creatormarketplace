@@ -10,6 +10,7 @@ import { useCreateProposal } from "@/lib/hooks/useProposals";
 import { useCampaignModal } from "@/lib/CampaignModalContext";
 import { showToast } from "@/lib/toast";
 import { getProfilePhotoUrl } from "@/lib/api";
+import { useEscapeToClose } from "@/lib/hooks/useEscapeToClose";
 import MagneticButton from "./MagneticButton";
 
 const STEPS = ["Brief", "Deliverables", "Budget", "Creators", "Review"];
@@ -76,6 +77,7 @@ export default function CreateCampaignModal({
   const [selectedCreatorIds, setSelectedCreatorIds] = useState<string[]>([]);
   const creatorsQuery = usePublicCreators({ search });
   const createProposal = useCreateProposal();
+  useEscapeToClose(handleClose);
 
   useEffect(() => {
     if (open && prefilledCreatorId) {
@@ -149,11 +151,16 @@ export default function CreateCampaignModal({
 
   return (
     <div className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-(--border) bg-(--bg-secondary) text-(--text-primary) shadow-xl">
+      <div
+        className="w-full max-w-3xl rounded-2xl border border-(--border) bg-(--bg-secondary) text-(--text-primary) shadow-xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-campaign-modal-title"
+      >
         <div className="flex items-center justify-between border-b border-(--border) p-5">
           <div>
             <p className="font-mono-utility text-mono-sm text-(--accent)">NEW CAMPAIGN</p>
-            <h2 className="text-h3 font-display">{STEPS[step]}</h2>
+            <h2 id="create-campaign-modal-title" className="text-h3 font-display">{STEPS[step]}</h2>
           </div>
           <button onClick={handleClose} className="h-9 w-9 rounded-lg hover:bg-(--bg-surface) grid place-items-center" aria-label="Close" data-interactive>
             <X size={18} />

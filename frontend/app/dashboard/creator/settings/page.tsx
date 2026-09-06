@@ -84,7 +84,7 @@ export default function CreatorSettingsPage() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1.5 block">EMAIL</label>
-              <input value={user?.email || ""} readOnly className="w-full h-11 px-4 rounded-xl bg-(--bg-surface) border border-(--border) text-sm text-(--text-secondary) outline-none" />
+              <input type="email" value={user?.email || ""} readOnly className="w-full h-11 px-4 rounded-xl bg-(--bg-surface) border border-(--border) text-sm text-(--text-secondary) outline-none" />
             </div>
             <div>
               <label className="font-mono-utility text-mono-sm text-(--text-tertiary) mb-1.5 block">AVAILABILITY</label>
