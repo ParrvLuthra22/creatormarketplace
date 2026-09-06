@@ -30,7 +30,7 @@ function DiscoverCard({ creator, locked }: { creator: any; locked: boolean }) {
     >
       {creator.profilePicture ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={creator.profilePicture} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80" />
+        <img src={creator.profilePicture} alt={creator.name} className="absolute inset-0 h-full w-full object-cover opacity-80" />
       ) : (
         <div className="absolute inset-0 bg-[linear-gradient(135deg,#D4FF4F_0%,#1C1C1C_55%,#0A0A0A_100%)]" />
       )}

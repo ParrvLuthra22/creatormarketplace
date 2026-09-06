@@ -165,6 +165,8 @@ export default function BrandProfilePage() {
             </label>
             <input
               id="p-website"
+              type="url"
+              autoComplete="url"
               value={website}
               onChange={(e) => markDirty(setWebsite)(e.target.value)}
               placeholder="https://yourbrand.com"

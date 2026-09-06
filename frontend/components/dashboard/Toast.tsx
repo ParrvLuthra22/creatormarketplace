@@ -9,6 +9,7 @@ import {
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,9 +38,15 @@ export function useToast() {
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 const icons: Record<ToastType, React.ReactNode> = {
-  success: <CheckCircle size={16} className="shrink-0 text-(--success)" />,
+  success: <CheckCircle size={16} className="shrink-0 text-(--accent)" />,
   error: <AlertCircle size={16} className="shrink-0 text-(--warning)" />,
-  info: <Info size={16} className="shrink-0 text-(--text-secondary)" />,
+  info: <Info size={16} className="shrink-0 text-(--text-primary)" />,
+};
+
+const accentBorder: Record<ToastType, string> = {
+  success: "border-l-2 border-l-(--accent)",
+  error: "border-l-2 border-l-(--warning)",
+  info: "border-l-2 border-l-(--text-primary)",
 };
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
@@ -54,7 +61,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const toast = useCallback(
     (message: string, type: ToastType = "info") => {
       const id = Math.random().toString(36).slice(2);
-      setToasts((prev) => [...prev.slice(-4), { id, message, type }]);
+      // Max 3 visible at once — drop the oldest as new ones stack in.
+      setToasts((prev) => [...prev.slice(-2), { id, message, type }]);
       setTimeout(() => remove(id), 4000);
     },
     [remove]
@@ -74,11 +82,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           {toasts.map((t) => (
             <motion.div
               key={t.id}
+              layout
               initial={{ opacity: 0, x: 40, scale: 0.96 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 40, scale: 0.96 }}
-              transition={{ duration: 0.25, ease: [0.65, 0, 0.35, 1] }}
-              className="pointer-events-auto flex items-start gap-3 rounded-xl border border-(--border) bg-(--bg-surface) px-4 py-3 shadow-lg max-w-sm min-w-[280px]"
+              exit={{ opacity: 0, x: 40, scale: 0.96, transition: { duration: 0.2 } }}
+              transition={{ type: "spring", stiffness: 420, damping: 32 }}
+              className={cn(
+                "pointer-events-auto flex items-start gap-3 rounded-xl border border-(--border) bg-(--bg-surface) px-4 py-3 shadow-lg max-w-sm min-w-[280px]",
+                accentBorder[t.type]
+              )}
             >
               {icons[t.type]}
               <span className="flex-1 text-sm text-(--text-primary) leading-snug">

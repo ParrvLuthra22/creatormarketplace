@@ -6,6 +6,7 @@ import CreatorSidebar from "@/components/dashboard/CreatorSidebar";
 import TopBar from "@/components/dashboard/TopBar";
 import { ToastProvider } from "@/components/dashboard/Toast";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 import { useAuthStore } from "@/lib/auth";
 
 export default function CreatorDashboardLayout({
@@ -62,7 +63,7 @@ export default function CreatorDashboardLayout({
           <TopBar />
           {/* data-lenis-prevent: lets Lenis pass wheel events through so native
               overflow-y-auto scroll works without Lenis intercepting */}
-          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>{children}</main>
+          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 pb-24 md:p-7" data-lenis-prevent>{children}</main>
         </div>
       </div>
       <MobileSidebar
@@ -70,6 +71,7 @@ export default function CreatorDashboardLayout({
         open={mobileNavOpen}
         onClose={() => setMobileNavOpen(false)}
       />
+      <MobileBottomNav type="creator" />
     </ToastProvider>
   );
 }

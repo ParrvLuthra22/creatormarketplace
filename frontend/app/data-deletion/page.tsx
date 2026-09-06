@@ -55,7 +55,7 @@ export default function DataDeletion() {
 
             <Section title="Your Right to Delete">
                 <p style={{ fontSize: "15px", color: "#3f3f46", lineHeight: 1.9 }}>
-                    CreatorSync is committed to respecting your privacy and your right to be forgotten. You can request the deletion of your personal data — including any Instagram data accessed through Facebook Login — at any time using the methods below.
+                    CreatorLyff is committed to respecting your privacy and your right to be forgotten. You can request the deletion of your personal data — including any Instagram data accessed through Facebook Login — at any time using the methods below.
                 </p>
             </Section>
 
@@ -65,7 +65,7 @@ export default function DataDeletion() {
                 <p style={{ fontSize: "14px", color: "#52525b", lineHeight: 1.9, marginBottom: "20px" }}>
                     The fastest way to delete all your data is directly from your account settings:
                 </p>
-                <StepCard step="1" text="Log in to your CreatorSync account" />
+                <StepCard step="1" text="Log in to your CreatorLyff account" />
                 <StepCard step="2" text="Go to Dashboard → Settings" />
                 <StepCard step="3" text="Scroll down to the Danger Zone section" />
                 <StepCard step="4" text='Click "Delete Account" and confirm the action' />
@@ -96,8 +96,8 @@ export default function DataDeletion() {
                 </p>
                 <StepCard step="1" text="Go to facebook.com/settings" subdued />
                 <StepCard step="2" text="Navigate to Security & Login → Apps and Websites" subdued />
-                <StepCard step="3" text='Find "CreatorSync" in the list of connected apps' subdued />
-                <StepCard step="4" text='Click "Remove" next to CreatorSync' subdued />
+                <StepCard step="3" text='Find "CreatorLyff" in the list of connected apps' subdued />
+                <StepCard step="4" text='Click "Remove" next to CreatorLyff' subdued />
                 <StepCard step="5" text="Meta will automatically send us a deletion request and we will remove all your Instagram data within 30 days" subdued />
             </Section>
 
@@ -108,7 +108,7 @@ export default function DataDeletion() {
                     You can also request data deletion by emailing us directly. We will process your request within <strong style={{ color: "#18181b" }}>7 business days</strong> and send you a confirmation once completed.
                 </p>
                 <a
-                    href="mailto:parrvcodes@gmail.com?subject=Data Deletion Request&body=Hello,%0A%0AI would like to request the deletion of all my personal data from CreatorSync.%0A%0AAccount email: [your email here]%0A%0AThank you."
+                    href="mailto:parrvcodes@gmail.com?subject=Data Deletion Request&body=Hello,%0A%0AI would like to request the deletion of all my personal data from CreatorLyff.%0A%0AAccount email: [your email here]%0A%0AThank you."
                     style={{
                         display: "inline-flex",
                         alignItems: "center",

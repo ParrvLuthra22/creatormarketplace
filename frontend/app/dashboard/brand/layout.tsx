@@ -8,6 +8,7 @@ import { ToastProvider } from "@/components/dashboard/Toast";
 import CreateCampaignModal from "@/components/dashboard/CreateCampaignModal";
 import { CampaignModalProvider, useCampaignModal } from "@/lib/CampaignModalContext";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 import { useAuthStore } from "@/lib/auth";
 
 function BrandDashboardInner({ children }: { children: React.ReactNode }) {
@@ -62,7 +63,7 @@ function BrandDashboardInner({ children }: { children: React.ReactNode }) {
           <TopBar onNewCampaign={openModal} />
           {/* data-lenis-prevent: tells Lenis not to call e.preventDefault() on
               wheel events inside here, so native overflow-y-auto scroll works. */}
-          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>
+          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 pb-24 md:p-7" data-lenis-prevent>
             {children}
           </main>
         </div>
@@ -74,6 +75,7 @@ function BrandDashboardInner({ children }: { children: React.ReactNode }) {
         onClose={() => setMobileNavOpen(false)}
         onNewCampaign={openModal}
       />
+      <MobileBottomNav type="brand" />
     </>
   );
 }

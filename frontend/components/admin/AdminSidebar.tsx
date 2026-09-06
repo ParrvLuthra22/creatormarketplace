@@ -73,6 +73,7 @@ export default function AdminSidebar() {
               href={href}
               data-interactive
               data-cursor={label}
+              aria-label={label}
               className={cn(
                 "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors duration-150",
                 active ? "bg-(--bg-surface)" : "text-(--text-secondary) hover:bg-(--bg-surface)"
@@ -125,6 +126,7 @@ export default function AdminSidebar() {
           className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-(--text-secondary) hover:bg-(--bg-surface) hover:text-(--text-primary) transition-colors duration-150"
           data-interactive
           data-cursor="Exit admin mode"
+          aria-label="Exit admin mode"
         >
           <ArrowLeftRight size={18} className="shrink-0" />
           <AnimatePresence>

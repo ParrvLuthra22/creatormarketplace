@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import ScrollProgressBar from "@/components/ScrollProgressBar";
 import HeroSection from "@/components/sections/HeroSection";
 import TheProblemSpotlight from "@/components/sections/TheProblemSpotlight";
 import BrandMarquee from "@/components/sections/BrandMarquee";
@@ -22,7 +21,6 @@ const FeatureScrollThrough = dynamic(() => import("@/components/sections/Feature
 export default function Home() {
   return (
     <>
-      <ScrollProgressBar />
       <HeroSection />
       <TheProblemSpotlight />
       <BrandMarquee />

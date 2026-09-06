@@ -384,7 +384,7 @@ export default function EditProfilePage() {
               >
                 {profilePhoto ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profilePhoto} alt="" className="h-full w-full object-cover" />
+                  <img src={profilePhoto} alt="Profile photo preview" className="h-full w-full object-cover" />
                 ) : (
                   <Camera size={20} className="text-(--text-tertiary)" />
                 )}
@@ -397,7 +397,7 @@ export default function EditProfilePage() {
               <label className="mt-2 h-24 rounded-xl border border-(--border) bg-(--bg-surface) grid place-items-center overflow-hidden cursor-pointer hover:border-(--accent)">
                 {coverImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={coverImage} alt="" className="h-full w-full object-cover" />
+                  <img src={coverImage} alt="Cover image preview" className="h-full w-full object-cover" />
                 ) : (
                   <ImagePlus size={20} className="text-(--text-tertiary)" />
                 )}
@@ -410,11 +410,11 @@ export default function EditProfilePage() {
             <Field label="INSTAGRAM HANDLE">
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-(--text-tertiary) text-sm">@</span>
-                <input value={instagramHandle} onChange={(e) => { setInstagramHandle(e.target.value.replace(/^@+/, "")); markDirty(); }} className={cn(inputClass(), "w-full pl-8")} />
+                <input value={instagramHandle} autoComplete="off" onChange={(e) => { setInstagramHandle(e.target.value.replace(/^@+/, "")); markDirty(); }} className={cn(inputClass(), "w-full pl-8")} />
               </div>
             </Field>
             <Field label="LOCATION">
-              <input value={location} onChange={(e) => { setLocation(e.target.value); markDirty(); }} placeholder="City, Country" className={inputClass()} />
+              <input value={location} autoComplete="address-level2" onChange={(e) => { setLocation(e.target.value); markDirty(); }} placeholder="City, Country" className={inputClass()} />
             </Field>
           </div>
 

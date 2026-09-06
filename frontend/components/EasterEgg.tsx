@@ -1,6 +1,49 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import posthog from "posthog-js";
+
+const CONFETTI_COLORS = ["#d4ff4f", "#ffffff", "#0a0a0a", "#a3cc3f"];
+
+function spawnConfetti() {
+  const container = document.createElement("div");
+  container.style.cssText = "position:fixed;inset:0;z-index:9992;pointer-events:none;overflow:hidden;";
+  document.body.appendChild(container);
+
+  for (let i = 0; i < 48; i++) {
+    const piece = document.createElement("div");
+    const size = 6 + Math.random() * 6;
+    const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 120;
+    const endX = startX + (Math.random() - 0.5) * window.innerWidth * 0.8;
+    const endY = window.innerHeight * (0.5 + Math.random() * 0.6);
+    const rotation = Math.random() * 720 - 360;
+    piece.style.cssText = `
+      position:absolute; left:${startX}px; top:-20px;
+      width:${size}px; height:${size * (Math.random() > 0.5 ? 1 : 2.2)}px;
+      background:${CONFETTI_COLORS[i % CONFETTI_COLORS.length]};
+      border-radius:${Math.random() > 0.5 ? "50%" : "2px"};
+    `;
+    container.appendChild(piece);
+
+    piece.animate(
+      [
+        { transform: "translate(0, 0) rotate(0deg)", opacity: 1 },
+        {
+          transform: `translate(${endX - startX}px, ${endY}px) rotate(${rotation}deg)`,
+          opacity: 0,
+          offset: 1,
+        },
+      ],
+      {
+        duration: 1400 + Math.random() * 700,
+        easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        delay: Math.random() * 150,
+      }
+    );
+  }
+
+  setTimeout(() => container.remove(), 2400);
+}
 
 const KONAMI = [
   "ArrowUp", "ArrowUp",
@@ -43,7 +86,7 @@ export default function EasterEgg() {
       opacity:0;transform:translateX(2rem);pointer-events:none;
       transition:opacity 0.3s,transform 0.3s;font-family:var(--font-inter),sans-serif;
     `;
-    toast.textContent = "🎉 You found it.";
+    toast.textContent = "🎉 You found the secret. Welcome, curious one.";
     document.body.appendChild(toast);
     toastRef.current = toast;
 
@@ -54,6 +97,8 @@ export default function EasterEgg() {
       overlay.style.opacity = "1";
       toast.style.opacity = "1";
       toast.style.transform = "translateX(0)";
+      spawnConfetti();
+      posthog.capture("easter_egg_triggered");
 
       setTimeout(() => {
         overlay.style.opacity = "0";

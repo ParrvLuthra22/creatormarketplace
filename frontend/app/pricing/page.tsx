@@ -256,7 +256,14 @@ function PlanCard({ plan }: { plan: (typeof BRAND_PLANS)[number] }) {
 
 // ─── Comparison table ─────────────────────────────────────────────────────────
 
-const COMPARE_ROWS_BRAND = [
+interface CompareRow {
+  feature: string;
+  explorer: string;
+  studio: string;
+  agency?: string;
+}
+
+const COMPARE_ROWS_BRAND: CompareRow[] = [
   { feature: "Creator search", explorer: "Limited", studio: "Unlimited", agency: "Unlimited" },
   { feature: "Monthly outreach", explorer: "3", studio: "Unlimited", agency: "Unlimited" },
   { feature: "Audience filters", explorer: "Basic", studio: "Advanced", agency: "Advanced +" },
@@ -267,8 +274,21 @@ const COMPARE_ROWS_BRAND = [
   { feature: "API access", explorer: "—", studio: "—", agency: "✓" },
 ];
 
+// Same shape as the brand rows — ComparisonTable reads .explorer/.studio into
+// the Free/Pro columns regardless of plan type; creators have no third tier.
+const COMPARE_ROWS_CREATOR: CompareRow[] = [
+  { feature: "Public creator profile", explorer: "✓", studio: "✓" },
+  { feature: "Inbound collab requests", explorer: "✓", studio: "✓" },
+  { feature: "Deal management dashboard", explorer: "✓", studio: "✓" },
+  { feature: "Earnings withdrawal", explorer: "✓", studio: "✓" },
+  { feature: "Profile analytics", explorer: "—", studio: "✓" },
+  { feature: "Priority discovery placement", explorer: "—", studio: "✓" },
+  { feature: "Custom profile domain", explorer: "—", studio: "✓" },
+  { feature: "Advanced audience insights", explorer: "—", studio: "✓" },
+];
+
 function ComparisonTable({ type }: { type: "brand" | "creator" }) {
-  const rows = COMPARE_ROWS_BRAND;
+  const rows = type === "brand" ? COMPARE_ROWS_BRAND : COMPARE_ROWS_CREATOR;
   const cols =
     type === "brand"
       ? ["Feature", "Explorer", "Studio", "Agency"]

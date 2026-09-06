@@ -6,6 +6,7 @@ import { ShieldAlert } from "lucide-react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopBar from "@/components/admin/AdminTopBar";
 import { ToastProvider } from "@/components/dashboard/Toast";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 import { useAuthStore } from "@/lib/auth";
 
 function NotAuthorized() {
@@ -74,11 +75,12 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         <AdminSidebar />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <AdminTopBar />
-          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 md:p-7" data-lenis-prevent>
+          <main id="dashboard-scroll" className="flex-1 overflow-y-auto p-5 pb-24 md:p-7" data-lenis-prevent>
             {children}
           </main>
         </div>
       </div>
+      <MobileBottomNav type="admin" />
     </ToastProvider>
   );
 }
