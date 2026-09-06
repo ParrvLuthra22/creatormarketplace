@@ -1,16 +1,38 @@
 import { Router, Response } from 'express';
+import type { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { createProposalLimiter } from '../middleware/rateLimiter';
 import Proposal from '../models/Proposal';
 import User from '../models/User';
 import BrandProfile from '../models/BrandProfile';
 import CreatorProfile from '../models/CreatorProfile';
 import Payment from '../models/Payment';
 import { trackEvent } from '../config/posthog';
+import { sendEmail } from '../config/email';
+import { proposalReceivedEmail, proposalAcceptedEmail, proposalDeclinedEmail } from '../utils/emailTemplates';
+import { createNotification } from '../services/notificationCenter';
 
 const router = Router();
 
 const idToString = (value: any): string | undefined => value?._id?.toString?.() || value?.toString?.();
+const frontendUrl = () => process.env.FRONTEND_URL || 'http://localhost:3000';
+
+async function sendProposalEmail(
+    req: AuthRequest,
+    input: { proposalId: string; type: 'received' | 'accepted' | 'declined'; to: string; html: string; subject: string }
+) {
+    try {
+        await sendEmail({ to: input.to, subject: input.subject, html: input.html });
+        trackEvent(req.userId as string, 'proposal_email_sent', {
+            type: input.type,
+            proposalId: input.proposalId,
+        });
+    } catch (error) {
+        // Never fail the request over an email delivery hiccup.
+        console.error(`Proposal ${input.type} email failed:`, error);
+    }
+}
 
 // GET /api/proposals/summary - Summary counts for sidebar badges
 router.get('/summary', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
@@ -93,7 +115,7 @@ router.get('/dashboard-summary', authMiddleware, async (req: AuthRequest, res: R
 });
 
 // POST /api/proposals - Create a proposal (Brand only)
-router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/', authMiddleware, createProposalLimiter, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const brandId = req.userId;
 
@@ -136,6 +158,25 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
             creatorId,
             budget: proposal.budget,
             title: proposal.title,
+        });
+
+        const proposalsUrl = `${frontendUrl()}/dashboard/creator/proposals`;
+        void sendProposalEmail(req, {
+            proposalId: proposal._id.toString(),
+            type: 'received',
+            to: creatorUser.email,
+            subject: 'New collaboration proposal',
+            html: proposalReceivedEmail(creatorUser.fullName, brandUser.fullName, proposal.title, proposalsUrl),
+        });
+
+        const io = req.app.get('io') as Server | undefined;
+        await createNotification(io, {
+            userId: creatorId,
+            type: 'proposal_created',
+            actorId: brandId,
+            entityId: proposal._id.toString(),
+            entityType: 'Proposal',
+            message: `${brandUser.fullName} sent you a proposal: "${proposal.title}"`,
         });
 
         res.status(201).json({ success: true, proposal });
@@ -299,12 +340,43 @@ router.put('/:id/accept', authMiddleware, async (req: AuthRequest, res: Response
         await proposal.populate('brandId', 'fullName email');
         await proposal.populate('creatorId', 'fullName email');
 
+        const brandIdStr = idToString(proposal.brandId) as string;
+        const creatorIdStr = idToString(proposal.creatorId) as string;
+
         trackEvent(userId, 'proposal_accepted', {
             proposalId: proposal._id.toString(),
-            brandId: idToString(proposal.brandId),
-            creatorId: idToString(proposal.creatorId),
+            brandId: brandIdStr,
+            creatorId: creatorIdStr,
             budget: proposal.budget,
             title: proposal.title,
+        });
+
+        // Track this as a hired creator on the brand's profile.
+        await BrandProfile.findOneAndUpdate(
+            { userId: brandIdStr },
+            { $addToSet: { creatorsHired: creatorIdStr } },
+            { upsert: true }
+        );
+
+        const brandUser = proposal.brandId as any;
+        const creatorUser = proposal.creatorId as any;
+        const campaignsUrl = `${frontendUrl()}/dashboard/brand/campaigns`;
+        void sendProposalEmail(req, {
+            proposalId: proposal._id.toString(),
+            type: 'accepted',
+            to: brandUser.email,
+            subject: 'Proposal accepted',
+            html: proposalAcceptedEmail(brandUser.fullName, creatorUser.fullName, proposal.title, campaignsUrl),
+        });
+
+        const io = req.app.get('io') as Server | undefined;
+        await createNotification(io, {
+            userId: brandIdStr,
+            type: 'proposal_accepted',
+            actorId: creatorIdStr,
+            entityId: proposal._id.toString(),
+            entityType: 'Proposal',
+            message: `${creatorUser.fullName} accepted your proposal: "${proposal.title}"`,
         });
 
         res.status(200).json({ success: true, proposal });
@@ -342,12 +414,36 @@ router.put('/:id/decline', authMiddleware, async (req: AuthRequest, res: Respons
         await proposal.populate('brandId', 'fullName email');
         await proposal.populate('creatorId', 'fullName email');
 
+        const brandIdStr = idToString(proposal.brandId) as string;
+        const creatorIdStr = idToString(proposal.creatorId) as string;
+
         trackEvent(userId, 'proposal_declined', {
             proposalId: proposal._id.toString(),
-            brandId: idToString(proposal.brandId),
-            creatorId: idToString(proposal.creatorId),
+            brandId: brandIdStr,
+            creatorId: creatorIdStr,
             budget: proposal.budget,
             title: proposal.title,
+        });
+
+        const brandUser = proposal.brandId as any;
+        const creatorUser = proposal.creatorId as any;
+        const campaignsUrl = `${frontendUrl()}/dashboard/brand/campaigns`;
+        void sendProposalEmail(req, {
+            proposalId: proposal._id.toString(),
+            type: 'declined',
+            to: brandUser.email,
+            subject: 'Proposal declined',
+            html: proposalDeclinedEmail(brandUser.fullName, creatorUser.fullName, proposal.title, campaignsUrl),
+        });
+
+        const io = req.app.get('io') as Server | undefined;
+        await createNotification(io, {
+            userId: brandIdStr,
+            type: 'proposal_declined',
+            actorId: creatorIdStr,
+            entityId: proposal._id.toString(),
+            entityType: 'Proposal',
+            message: `${creatorUser.fullName} declined your proposal: "${proposal.title}"`,
         });
 
         res.status(200).json({ success: true, proposal });

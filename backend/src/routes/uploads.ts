@@ -1,11 +1,13 @@
 import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { uploadLimiter } from '../middleware/rateLimiter';
 import User from '../models/User';
 import CreatorProfile from '../models/CreatorProfile';
 import BrandProfile from '../models/BrandProfile';
 import cloudinary, { isCloudinaryConfigured, uploadCloudinary } from '../config/cloudinary';
 
 const router = Router();
+router.use(uploadLimiter);
 
 function getUploadResult(file: Express.Multer.File) {
     const publicId = file.filename;

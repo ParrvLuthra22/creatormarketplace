@@ -1,5 +1,12 @@
 "use client";
 
+// TODO: Razorpay checkout is intentionally disabled for the beta/validation
+// phase (see backend/src/config/razorpay.ts) — every CTA below routes to a
+// login page, not a real checkout, and comingSoon tiers show "Join beta
+// waitlist". Prices are reconciled with the backend's two live plan
+// definitions (routes/payments.ts, RAZORPAY_PLAN_BASIC=₹999 / PRO=₹2999):
+// Studio maps to the ₹2999 "pro" tier, Creator Pro to the ₹999 "basic" tier.
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -39,7 +46,7 @@ const BRAND_PLANS = [
   {
     id: "studio",
     name: "Studio",
-    price: "$499",
+    price: "₹2,999",
     billing: "per month",
     badge: "MOST POPULAR",
     description: "For brands running regular creator campaigns at scale.",
@@ -108,7 +115,7 @@ const CREATOR_PLANS = [
   {
     id: "pro",
     name: "Creator Pro",
-    price: "$29",
+    price: "₹999",
     billing: "per month",
     badge: "COMING SOON",
     description: "For full-time creators who want maximum visibility and insight.",

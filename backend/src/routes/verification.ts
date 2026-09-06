@@ -1,5 +1,7 @@
 import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { adminOrCronSecretMiddleware } from '../middleware/adminAuth';
+import { verificationRequestLimiter } from '../middleware/rateLimiter';
 import User from '../models/User';
 import CreatorProfile from '../models/CreatorProfile';
 import VerificationRequest from '../models/VerificationRequest';
@@ -20,7 +22,7 @@ function parseFollowerCount(value: unknown): number {
     return Math.round(amount * multiplier);
 }
 
-router.post('/request', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/request', authMiddleware, verificationRequestLimiter, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         if (!req.user || req.user.accountType !== 'Creator') {
             res.status(403).json({ error: 'Only creators can request verification' });
@@ -85,7 +87,9 @@ router.get('/status', authMiddleware, async (req: AuthRequest, res: Response): P
     }
 });
 
-router.get('/auto-flag', async (_req, res: Response): Promise<void> => {
+// Guarded by adminOrCronSecretMiddleware: an admin session, or a machine
+// caller sending a matching X-Cron-Secret header (see socialSync.ts).
+router.get('/auto-flag', adminOrCronSecretMiddleware, async (_req: AuthRequest, res: Response): Promise<void> => {
     try {
         const users = await User.find({
             accountType: 'Creator',

@@ -1,3 +1,9 @@
+// TODO: This entire router is unmounted in server.ts while Razorpay stays
+// disabled for the beta/validation phase — see the comment at the top of
+// config/razorpay.ts for why and how to turn it back on. Plan prices below
+// (₹999 basic / ₹2999 pro) already match the frontend pricing page and
+// RAZORPAY_PLAN_BASIC/PRO's documented amounts in backend/.env.example —
+// keep those three in sync if pricing changes before this is re-enabled.
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
 import Payment from '../models/Payment';

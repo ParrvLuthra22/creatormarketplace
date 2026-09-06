@@ -70,7 +70,10 @@ export const uploadCloudinary = multer({
     },
     fileFilter: (_req, file, cb) => {
         if (!allowedMimeTypes.includes(file.mimetype)) {
-            cb(new Error('Only jpg, jpeg, png, webp, mp4, and mov uploads are allowed'));
+            // Kept in sync with allowedFormats/allowedMimeTypes above — this
+            // previously only listed image/video types even though pdf, doc,
+            // docx, txt, csv, and zip were (and are) also accepted.
+            cb(new Error(`Unsupported file type. Allowed: ${allowedFormats.join(', ')} (max 10MB).`));
             return;
         }
         cb(null, true);
