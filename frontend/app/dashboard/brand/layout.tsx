@@ -9,6 +9,7 @@ import CreateCampaignModal from "@/components/dashboard/CreateCampaignModal";
 import { CampaignModalProvider, useCampaignModal } from "@/lib/CampaignModalContext";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
 import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
+import AuthLoading from "@/components/dashboard/AuthLoading";
 import { useAuthStore } from "@/lib/auth";
 
 function BrandDashboardInner({ children }: { children: React.ReactNode }) {
@@ -17,8 +18,10 @@ function BrandDashboardInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, isLoading, refreshUser } = useAuthStore();
 
-  // Middleware only checks that a token cookie exists — re-verify the actual
-  // role here once the store hydrates, and bounce mismatches to the right dashboard.
+  // This is the only auth guard for the dashboard: the API is on a different
+  // site than the frontend in production, so its httpOnly cookie is invisible
+  // to Next middleware. Verify the session (and role) here once the store
+  // hydrates, and bounce mismatches to the right place.
   useEffect(() => {
     void refreshUser();
   }, [refreshUser]);
@@ -50,6 +53,10 @@ function BrandDashboardInner({ children }: { children: React.ReactNode }) {
       delete (window as unknown as Record<string, unknown>).__openMobileNav;
     };
   }, []);
+
+  // Don't render the shell (or mount child pages that fire API calls) until
+  // we know this is a signed-in Brand; the effects above handle redirects.
+  if (isLoading || !user || user.accountType !== "Brand") return <AuthLoading />;
 
   return (
     <>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Camera, Check, Loader2, Upload } from "lucide-react";
@@ -76,6 +76,16 @@ function Step({ children, dir }: { children: React.ReactNode; dir: 1 | -1 }) {
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, refreshUser } = useAuthStore();
+
+  // Auth guard (there is no edge middleware — see dashboard layouts). If the
+  // store is empty (hard refresh / direct visit), check the session and send
+  // logged-out visitors to sign in.
+  useEffect(() => {
+    if (useAuthStore.getState().user) return;
+    void refreshUser().then((u) => {
+      if (!u) router.replace("/login");
+    });
+  }, [refreshUser, router]);
 
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
