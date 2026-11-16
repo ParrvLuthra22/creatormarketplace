@@ -8,19 +8,17 @@ import { ToastProvider, useToast } from "@/components/dashboard/Toast";
 import { useAuthStore } from "@/lib/auth";
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { refreshUser, isLoading } = useAuthStore();
+  const refreshUser = useAuthStore((state) => state.refreshUser);
 
+  // Hydrate the session in the background. This must NOT block rendering:
+  // the API is a separate service that can take ~30s to wake from idle, and
+  // gating on it replaced every public page (landing, pricing, discover, 404…)
+  // with a spinner — in the server HTML too, so crawlers and link previews saw
+  // an empty page. Routes that actually need a session (dashboards, admin,
+  // onboarding) gate themselves on `isLoading` in their own layouts.
   useEffect(() => {
     void refreshUser();
   }, [refreshUser]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-(--bg-primary) text-(--text-primary) grid place-items-center">
-        <div className="h-10 w-10 rounded-full border-2 border-(--border) border-t-(--accent) animate-spin" />
-      </div>
-    );
-  }
 
   return <>{children}</>;
 }
