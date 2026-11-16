@@ -2,6 +2,8 @@
 
 **The intelligent marketplace connecting brands with the right creators — by niche, audience, and authenticity. No more cold DMs.**
 
+**Live:** https://creatormarketplace.vercel.app
+
 ![CreatorLyff landing page](docs/screenshots/landing-hero.jpg)
 
 ---
